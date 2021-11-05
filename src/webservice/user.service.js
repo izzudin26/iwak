@@ -30,15 +30,17 @@ export const login = (username, password) => {
 
 /**
  * Registration user
- * @param {string} fullname
- * @param {string} email
- * @param {string} password
+ * @typedef {Object} registrationObject
+ * @property {string} fullname
+ * @property {string} email
+ * @property {string} password
+ * @param {registrationObject}
  * @returns {Promise} return object promise {
  *  status: response status
  *  body: response body
  * }
  */
-export const registration = (fullname, username, password) => {
+export const registration = ({fullname, username, password} = {}) => {
   const data = {
     fullname,
     username,
@@ -96,6 +98,33 @@ export const getCurrentProfile = () => {
         id_account: getCurrentIdAccount(),
       })
       .then(res => resolve({status: res.status, body: res.data}))
+      .catch(err => reject(err));
+  });
+};
+
+/**
+ * Update Current Profile
+ * @typedef {Object} response
+ * @property {number} status
+ * @property {Object} body
+ * @param {FormData} formData
+ * @returns {Promise<response>}
+ */
+export const updateProfile = formData => {
+  let id_account = getCurrentIdAccount();
+  formData.append('id_account', id_account);
+  const header = {
+    'content-type': 'multipart/form-data',
+  };
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${url}/api/editprofile`, formData, {headers: header})
+      .then(res =>
+        resolve({
+          status: res.status,
+          body: res.data,
+        }),
+      )
       .catch(err => reject(err));
   });
 };
