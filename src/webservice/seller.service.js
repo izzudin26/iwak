@@ -109,7 +109,7 @@ export const saveProduct = (
   } = {idProduct: null},
 ) => {
   photoFormData.append('id_account', getCurrentIdAccount());
-  photoFormData.append('id', idProduct);
+  idProduct && photoFormData.append('id', idProduct);
   photoFormData.append('name', productName);
   photoFormData.append('id_category', productCategory);
   photoFormData.append('price', price);
@@ -124,6 +124,170 @@ export const saveProduct = (
           'content-type': 'multipart/form-data',
         },
       })
+      .then(res => resolve({status: res.status, body: res.data}))
+      .catch(err => reject(err));
+  });
+};
+
+/**
+ * Product view
+ *  @param {number} idProduct
+ * @returns {Promise<response>}
+ */
+export const getProduct = idProduct => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${url}/api/penjual/produk/view`, {id: idProduct})
+      .then(res => resolve({status: res.status, body: res.data}))
+      .catch(err => reject(err));
+  });
+};
+
+/**
+ * Remove Image Product
+ * @param {number} idProduct
+ * @param {number} idImage
+ * @returns {Promise<response>}
+ */
+export const removeImage = (idProduct, idImage) => {
+  let idAccount = getCurrentIdAccount();
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${url}/api/penjual/produk`, {
+        id_account: idAccount,
+        id_produk: idProduct,
+        id_image: idImage,
+      })
+      .then(res => resolve({status: res.status, body: res.data}))
+      .catch(err => reject(err));
+  });
+};
+
+/**
+ * Remove Product
+ * Delete product with product id
+ * @param {number} productId
+ * @returns {Promise<response>}
+ */
+export const deleteProduct = productId => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${url}/api/penjual/produk/hapus`, {id: productId})
+      .then(res => resolve({status: res.status, body: res.data}))
+      .catch(err => reject(err));
+  });
+};
+
+export const lelang = () => {
+  let idAccount = getCurrentIdAccount();
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${url}/api/penjual/lelang`, {id_account: idAccount})
+      .then(res => resolve({status: res.status, body: res.data}))
+      .catch(err => reject(err));
+  });
+};
+
+/**
+ * ListBid
+ * @param {number} idLelang
+ * @returns {Promise<response>}
+ */
+export const listBidLelang = idLelang => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`${url}/api/penjual/lelang/${idLelang}`)
+      .then(res => resolve({status: res.status, body: res.data}))
+      .catch(err => reject(err));
+  });
+};
+
+/**
+ * Remove lelang
+ * @param {number} idLelang
+ * @returns {Promise<response>}
+ */
+export const removeLelang = idLelang => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${url}/api/penjual/lelang/hapus`, {id: idLelang})
+      .then(res => resolve({status: res.status, body: res.data}))
+      .catch(err => reject(err));
+  });
+};
+
+/**
+ * Get Active Lelang
+ * @param {number} idLelang
+ * @returns {Promise<response>}
+ */
+export const getActiveLelang = idLelang => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${url}/api/penjual/lelang/aktif`, {id: idLelang})
+      .then(res => resolve({status: res.status, body: res.data}))
+      .catch(err => reject(err));
+  });
+};
+
+/**
+ * Get NonActive lelang
+ * @param {number} idLelang
+ * @returns {Promise<response>}
+ */
+export const nonActiveLelang = idLelang => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${url}/api/penjual/lelang/nonaktif`, {id: idLelang})
+      .then(res => resolve({status: res.status, body: res.data}))
+      .catch(err => reject(err));
+  });
+};
+
+/**
+ * Lelang View
+ * @param {number} idLelang
+ * @return {Promise<response>}
+ */
+export const getLelang = idLelang => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${url}/api/penjual/lelang/view`, {id: idLelang})
+      .then(res => resolve({status: res.status, body: res.data}))
+      .catch(err => reject(err));
+  });
+};
+
+export const saveLelang = (
+  {id_produk, id_account, price} = {id_account: getCurrentIdAccount()},
+) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${url}/api/penjual/lelang/simpan`, {id_produk, id_account, price})
+      .then(res => resolve({status: res.status, body: res.data}))
+      .catch(err => reject(err));
+  });
+};
+
+/**
+ * Update Lelang
+ * @param {number} idLelang
+ * @param {number} price
+ * @returns {Promise<response>}
+ */
+export const updateLelang = (idLelang, price) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${url}/api/penjual/lelang/update`, {id_lelang: idLelang, price})
+      .then(res => resolve({status: res.status, body: res.data}))
+      .catch(err => reject(err));
+  });
+};
+
+export const getPemenangLelang = idLelang => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${url}/api/penjual/pemenang`, {id: idLelang})
       .then(res => resolve({status: res.status, body: res.data}))
       .catch(err => reject(err));
   });
