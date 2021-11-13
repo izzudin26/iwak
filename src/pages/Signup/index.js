@@ -64,13 +64,15 @@ const Signup = ({navigation}) => {
       if (res.body.code != 200) {
         throw res.body.message;
       }
-      Storage.save({
+      await Storage.save({
         key: 'userId',
-        value: res.body.data.id_account,
+        id: 'user',
+        data: res.body.data.id_account,
       });
-      Storage.save({
+      await Storage.save({
         key: 'user',
-        value: res.body.data,
+        id: 'user',
+        data: res.body.data,
       });
       navigation.replace('MainApp');
     } catch (error) {
