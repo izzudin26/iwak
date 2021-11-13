@@ -73,7 +73,7 @@ const Account = ({navigation}) => {
         <View style={styles.containerData}>
           <View style={{flexDirection: 'column'}}>
             <Text style={{fontSize: 18}}>Name</Text>
-            <Text style={{color: 'black', fontSize: 18}}>{email}</Text>
+            <Text style={{color: 'black', fontSize: 18}}>{name}</Text>
           </View>
           <TouchableOpacity
             style={{
@@ -91,7 +91,7 @@ const Account = ({navigation}) => {
         <View style={styles.containerData}>
           <View style={{flexDirection: 'column'}}>
             <Text style={{fontSize: 18}}>Email Address</Text>
-            <Text style={{color: 'black', fontSize: 18}}>{name}</Text>
+            <Text style={{color: 'black', fontSize: 18}}>{email}</Text>
           </View>
           <TouchableOpacity
             style={{
