@@ -1,1 +1,1 @@
-export const url = 'https://csc.javasolit.com/api/web/';
+export const url = 'https://iwakstore.my.id/';

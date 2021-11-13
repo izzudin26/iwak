@@ -1,21 +1,21 @@
 import {url} from './url';
 import axios from 'axios';
-import {AsyncStorage} from 'react-native';
+import Storage from '../storage';
 
 /**
  * Login user will response {
  *  status: response status
  *  body: response body
  * }
- * @param {string} username
+ * @param {string} email
  * @param {string} password
  * @returns {Promise} will return object from response server endpoint login
  */
-export const login = (username, password) => {
+export const login = (email, password) => {
   return new Promise((resolve, reject) => {
     axios
       .post(`${url}/api/login`, {
-        username,
+        username: email,
         password,
       })
       .then(res =>
@@ -40,11 +40,12 @@ export const login = (username, password) => {
  *  body: response body
  * }
  */
-export const registration = ({fullname, username, password} = {}) => {
+export const registration = ({fullname, email, password} = {}) => {
   const data = {
     fullname,
-    username,
+    email,
     password,
+    password_confirmation: password,
   };
   return new Promise((resolve, reject) => {
     axios
@@ -63,8 +64,8 @@ export const registration = ({fullname, username, password} = {}) => {
  * Get AccountID
  * @returns {string} accountId
  */
-export const getCurrentIdAccount = async () => {
-  return await AsyncStorage.getItem('account_id');
+export const getCurrentIdAccount = () => {
+  return Storage.load({key: 'userId', autoSync: true});
 };
 
 /**
