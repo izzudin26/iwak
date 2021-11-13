@@ -13,6 +13,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {logout} from '../../webservice/user.service';
 
 const Account = ({navigation}) => {
   const [name, setName] = useState('');
@@ -148,6 +149,12 @@ const Account = ({navigation}) => {
         </View>
         <TouchableOpacity
           onPress={async () => {
+            try {
+              const idUser = await Storage.load({key: 'userId', id: 'userId'});
+              await logout(idUser);
+            } catch (error) {
+              alert(error.message);
+            }
             await Storage.remove({key: 'user', id: 'user'});
             await Storage.remove({key: 'userId', id: 'userId'});
             navigation.navigate('Login');
@@ -163,13 +170,7 @@ const Account = ({navigation}) => {
             borderRadius: 10,
             alignSelf: 'center',
           }}>
-          <FontAwesome5
-            name="sign-out-alt"
-            solid
-            size={22}
-            color="#F0C341"
-            onPress={async () => {}}
-          />
+          <FontAwesome5 name="sign-out-alt" solid size={22} color="#F0C341" />
           <Text style={{color: '#F0C341', marginLeft: 5, fontSize: 17}}>
             LOGOUT
           </Text>
