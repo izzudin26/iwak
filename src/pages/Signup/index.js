@@ -1,9 +1,25 @@
-import React, { useState, createRef } from 'react'
-import { StyleSheet, Dimensions, TextInput, View, Text, ScrollView, Image, Keyboard, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
-import { Button } from 'react-native-elements'
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import React, {useState, createRef, useEffect} from 'react';
+import Storage from '../../storage';
+import {registration} from '../../webservice/user.service';
+import {
+  StyleSheet,
+  Dimensions,
+  TextInput,
+  View,
+  Text,
+  ScrollView,
+  Image,
+  Keyboard,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+} from 'react-native';
+import {Button} from 'react-native-elements';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
-const Signup = ({ navigation }) => {
+const Signup = ({navigation}) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userConfirm, setUserConfirm] = useState('');
@@ -14,33 +30,64 @@ const Signup = ({ navigation }) => {
   const passwordInputRef = createRef();
   const confirmInputRef = createRef();
 
+  useEffect(() => {
+    Storage.load({key: 'userId', id: 'userId'}).then(data => {
+      if (data) {
+        navigation.replace('MainApp');
+      }
+    });
+  });
 
-  const handleSubmitButton = () => {
-    setErrortext('');
-    if (!userName) {
-      alert('Mohon isi Nama');
-      return;
+  const handleSubmitButton = async () => {
+    try {
+      setErrortext('');
+      if (!userName) {
+        throw 'Mohon isi Nama';
+      }
+      if (!userEmail) {
+        throw 'Mohon isi Email';
+      }
+      if (!userPassword) {
+        throw 'Mohon isi Password';
+      }
+      if (!userConfirm) {
+        throw 'Mohon Konfirmasi Pssword';
+      }
+      if (userPassword != userConfirm) {
+        throw 'Konfirmasi Password tidak sama';
+      }
+      let res = await registration({
+        email: userEmail,
+        fullname: userName,
+        password: userPassword,
+      });
+      if (res.body.code != 200) {
+        throw res.body.message;
+      }
+      Storage.save({
+        key: 'userId',
+        value: res.body.data.id_account,
+      });
+      Storage.save({
+        key: 'user',
+        value: res.body.data,
+      });
+      navigation.replace('MainApp');
+    } catch (error) {
+      alert(error.message);
     }
-    if (!userEmail) {
-      alert('Mohon isi Email');
-      return;
-    }
-    if (!userPassword) {
-      alert('Mohon isi Password');
-      return;
-    }
-    if (!userConfirm) {
-      alert('Mohon Konfirmasi Pssword');
-      return;
-    }
-
-    navigation.replace('Login');
-  }
+  };
   return (
     <KeyboardAvoidingView>
       <View>
         <ScrollView>
-          <View style={{ alignItems: 'flex-start', marginTop: 50, marginLeft: 10, marginBottom: 20 }}>
+          <View
+            style={{
+              alignItems: 'flex-start',
+              marginTop: 50,
+              marginLeft: 10,
+              marginBottom: 20,
+            }}>
             <Text style={styles.teksSatu}>Create</Text>
             <Text style={styles.teksSatu}>Account</Text>
             <Text style={styles.teksDua}>Create your very own account</Text>
@@ -49,7 +96,7 @@ const Signup = ({ navigation }) => {
           <View style={styles.SectionStyle}>
             <TextInput
               style={styles.inputStyle}
-              onChangeText={(UserName) => setUserName(UserName)}
+              onChangeText={UserName => setUserName(UserName)}
               underlineColorAndroid="#f000"
               placeholder="Name"
               placeholderTextColor="#000"
@@ -65,7 +112,7 @@ const Signup = ({ navigation }) => {
           <View style={styles.SectionStyle}>
             <TextInput
               style={styles.inputStyle}
-              onChangeText={(UserEmail) => setUserEmail(UserEmail)}
+              onChangeText={UserEmail => setUserEmail(UserEmail)}
               underlineColorAndroid="#f000"
               placeholder="Email address"
               placeholderTextColor="#000"
@@ -73,8 +120,7 @@ const Signup = ({ navigation }) => {
               ref={emailInputRef}
               returnKeyType="next"
               onSubmitEditing={() =>
-                passwordInputRef.current &&
-                passwordInputRef.current.focus()
+                passwordInputRef.current && passwordInputRef.current.focus()
               }
               blurOnSubmit={false}
             />
@@ -83,9 +129,7 @@ const Signup = ({ navigation }) => {
           <View style={styles.SectionStyle}>
             <TextInput
               style={styles.inputStyle}
-              onChangeText={(UserPassword) =>
-                setUserPassword(UserPassword)
-              }
+              onChangeText={UserPassword => setUserPassword(UserPassword)}
               underlineColorAndroid="#f000"
               placeholder="Password"
               placeholderTextColor="#000"
@@ -93,8 +137,7 @@ const Signup = ({ navigation }) => {
               returnKeyType="next"
               secureTextEntry={true}
               onSubmitEditing={() =>
-                confirmInputRef.current &&
-                confirmInputRef.current.focus()
+                confirmInputRef.current && confirmInputRef.current.focus()
               }
               blurOnSubmit={false}
             />
@@ -103,9 +146,7 @@ const Signup = ({ navigation }) => {
           <View style={styles.SectionStyle}>
             <TextInput
               style={styles.inputStyle}
-              onChangeText={(UserConfirm) =>
-                setUserConfirm(UserConfirm)
-              }
+              onChangeText={UserConfirm => setUserConfirm(UserConfirm)}
               underlineColorAndroid="#f000"
               placeholder="Verify Password"
               placeholderTextColor="#000"
@@ -118,16 +159,14 @@ const Signup = ({ navigation }) => {
           </View>
 
           {errortext != '' ? (
-            <Text style={styles.errorTextStyle}>
-              {errortext}
-            </Text>
+            <Text style={styles.errorTextStyle}>{errortext}</Text>
           ) : null}
 
           <Button
             title={'Register'}
             titleStyle={{
               color: '#F0C341',
-              fontSize: 18
+              fontSize: 18,
             }}
             buttonStyle={{
               backgroundColor: '#043C88',
@@ -140,11 +179,12 @@ const Signup = ({ navigation }) => {
             onPress={handleSubmitButton}
           />
 
-          <View style={{ marginLeft: 15, marginTop: 10, marginBottom: 30 }}>
-            <Text style={{ color: '#000' }}>are you have an account ?
-              <Text
-                style={styles.masuk}
-                onPress={() => navigation.navigate('Login')}> Login
+          <View style={{marginLeft: 15, marginTop: 10, marginBottom: 30}}>
+            <Text style={{color: '#000'}}>
+              are you have an account ?
+              <Text style={styles.masuk} onPress={handleSubmitButton}>
+                {' '}
+                Login
               </Text>
             </Text>
           </View>
@@ -167,7 +207,7 @@ const styles = StyleSheet.create({
   },
   SectionStyle: {
     alignItems: 'center',
-    marginTop: 20
+    marginTop: 20,
   },
   inputStyle: {
     backgroundColor: '#F0F0F0',
@@ -175,7 +215,7 @@ const styles = StyleSheet.create({
     height: 50,
     paddingLeft: 20,
     borderRadius: 30,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -199,5 +239,5 @@ const styles = StyleSheet.create({
     color: '#043C88',
     fontWeight: '200',
     fontSize: 14,
-  }
+  },
 });
