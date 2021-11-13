@@ -103,21 +103,14 @@ export const getCurrentProfile = () => {
   });
 };
 
-/**
- * Update Current Profile
- * @typedef {Object} response
- * @property {number} status
- * @property {Object} body
- * @param {FormData} formData
- * @returns {Promise<response>}
- */
-export const updateProfile = formData => {
-  const header = {
-    'content-type': 'multipart/form-data',
+export const updateProfile = (body, header) => {
+  const headerRequest = {
+    'content-type':
+      header == 'json' ? 'application/json' : 'multipart/form-data',
   };
   return new Promise((resolve, reject) => {
     axios
-      .post(`${url}/api/editprofile`, formData, {headers: header})
+      .post(`${url}/api/editprofile`, body, {headers: headerRequest})
       .then(res =>
         resolve({
           status: res.status,
