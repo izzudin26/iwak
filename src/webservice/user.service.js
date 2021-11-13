@@ -72,11 +72,11 @@ export const getCurrentIdAccount = () => {
  * Logout
  * Logout user by sending id_account
  */
-export const logout = () => {
+export const logout = idAccount => {
   return new Promise((resolve, reject) => {
     axios
       .post(`${url}/api/logout`, {
-        id_account: getCurrentIdAccount(),
+        id_account: idAccount,
       })
       .then(res =>
         resolve({
@@ -112,8 +112,6 @@ export const getCurrentProfile = () => {
  * @returns {Promise<response>}
  */
 export const updateProfile = formData => {
-  let id_account = getCurrentIdAccount();
-  formData.append('id_account', id_account);
   const header = {
     'content-type': 'multipart/form-data',
   };
