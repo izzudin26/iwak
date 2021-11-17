@@ -18,6 +18,7 @@ import EditName from './EditName';
 import EditPassword from './EditPassword';
 import Notification from './Notification';
 import MyStore from './MyStore';
+import CreateStore from './CreateStore';
 
 export {
   Splash,
@@ -40,4 +41,5 @@ export {
   EditPassword,
   Notification,
   MyStore,
+  CreateStore,
 };
