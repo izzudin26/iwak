@@ -8,7 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "bundle-android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res"
+    "bundle-android": "react-native bundle --platform android --dev false --entry-file   index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.15.11",
@@ -20,9 +20,10 @@
     "react": "17.0.2",
     "react-native": "0.66.0",
     "react-native-elements": "^3.4.2",
+    "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-hide-show-password-input": "^1.2.0",
-    "react-native-image-picker": "^4.1.1",
+    "react-native-image-crop-picker": "^0.37.2",
     "react-native-mmkv-storage": "^0.6.5",
     "react-native-onboarding-swiper": "^1.1.4",
     "react-native-password-eye": "^1.0.2",
