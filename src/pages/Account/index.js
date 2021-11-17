@@ -9,36 +9,84 @@ import {
 } from 'react-native';
 import Storage from '../../storage';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import * as fs from 'react-native-fs';
+import {updateProfile} from '../../webservice/user.service';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import ImagePicker from 'react-native-image-crop-picker';
 import {logout} from '../../webservice/user.service';
 
 const Account = ({navigation}) => {
   const [name, setName] = useState('');
   const [email, setemail] = useState('');
+  const [imagePath, setImagePath] = useState(null);
   const [password, setpassword] = useState('');
+  const [toko, setToko] = useState('');
 
   useEffect(() => {
-    Storage.load({key: 'user', id: 'user'}).then(data => {
-      if (data) {
-        setName(data.fullname);
-        setemail(data.email);
-        setpassword(data.password);
-      }
-    });
+    if (name == '' || email == '' || password == '')
+      Storage.load({key: 'user', id: 'user'}).then(data => {
+        if (data) {
+          setName(data.fullname);
+          setemail(data.email);
+          setpassword(data.password);
+        }
+      });
   });
+
+  const changeImage = () => {
+    ImagePicker.openPicker({
+      multiple: false,
+      mediaType: 'photo',
+      cropping: true,
+      forceJpg: true,
+    }).then(async res => {
+      handleUpload(res);
+    });
+  };
+
+  const handleUpload = async (file = {}) => {
+    let form = new FormData();
+    let data = await Storage.load({key: 'user', id: 'user'});
+    form.append('id_account', data.id_account);
+    form.append('fullname', data.fullname);
+    form.append('password', data.password);
+    form.append('password_confirmation', data.confirm_password);
+    form.append('phone', data.phone);
+    form.append('address', data.address);
+    form.append('norek', data.nomor_rekening);
+    form.append('bank', data.bank);
+    form.append('image', {
+      name: file.filename,
+      type: file.mime,
+      uri: file.path,
+    });
+    console.log(file);
+    doUpload(form);
+  };
+
+  const doUpload = async formdata => {
+    try {
+      let res = await updateProfile(formdata, 'form-data');
+      console.log(res.body);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <ScrollView>
       <View style={{paddingHorizontal: 50}}>
         <View style={styles.SectionStyle}>
           <Image
-            source={require('../../assets/images/fotoUser.jpg')}
+            source={{uri: `data:image/png;base64, ${imagePath}`}}
             style={styles.Image}
           />
           <TouchableOpacity
+            onPress={() => changeImage()}
             style={{
               borderRadius: 50,
               width: 50,
@@ -49,13 +97,7 @@ const Account = ({navigation}) => {
               position: 'absolute',
               right: 40,
             }}>
-            <FontAwesome5
-              name="pen"
-              solid
-              size={15}
-              color="#000"
-              onPress={() => navigation.navigate('Login')}
-            />
+            <FontAwesome5 name="pen" solid size={15} color="#000" />
           </TouchableOpacity>
         </View>
         <Text
@@ -124,10 +166,10 @@ const Account = ({navigation}) => {
             <FontAwesome5 name="pen" solid size={12} color="#fff" />
           </TouchableOpacity>
         </View>
-        <View style={styles.containerData}>
+        <View style={styles.containerToko}>
           <View style={{flexDirection: 'column'}}>
-            <Text style={{fontSize: 18}}>Store</Text>
-            {/* <Text style={{ color: 'black', fontSize: 18 }}>Lordfish</Text> */}
+            {/* <Text style={{fontSize: 18, color: 'black'}}>Store</Text> */}
+            <Text style={{color: 'black', fontSize: 18}}>Lordfish</Text>
           </View>
           <TouchableOpacity
             style={{
@@ -143,7 +185,7 @@ const Account = ({navigation}) => {
               solid
               size={12}
               color="#fff"
-              onPress={() => navigation.navigate('MyStore')}
+              onPress={() => navigation.navigate('CreateStore')}
             />
           </TouchableOpacity>
         </View>
@@ -207,6 +249,24 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+    elevation: 6,
+  },
+  containerToko: {
+    flexDirection: 'row',
+    width: wp('75%'),
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: '#FAC93D',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
