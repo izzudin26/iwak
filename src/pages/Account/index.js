@@ -37,12 +37,9 @@ const Account = ({navigation}) => {
           setemail(data.email);
           setpassword(data.password);
           setToko(data.namatoko);
-          if (data.profile_picture != null || data.profile_picture != '') {
-            setImagePath(data.profile_picture);
-          }
-          if (data.profile_toko != null || data.profile_toko != '') {
-            setImagePath(data.profile_toko);
-          }
+          console.log(data);
+          setImagePath(`${url}/${data.profile_picture}`);
+          setTokoImage(data.profile_toko);
         }
       });
   });
@@ -84,9 +81,8 @@ const Account = ({navigation}) => {
       let img = res.body.data.profile_picture;
       console.log(res.body);
       setImagePath(`${url}/${img}`);
-      let data = await Storage.load({key: 'user', id: 'user'});
-      data.profile_picture = `${url}/${img}`;
-      Storage.save({key: 'user', id: 'user', data: data});
+      await Storage.remove({key: 'user', id: 'user'});
+      await Storage.save({key: 'user', id: 'user', data: res.body.data});
     } catch (error) {
       console.log(error.message);
     }
@@ -222,7 +218,11 @@ const Account = ({navigation}) => {
               solid
               size={12}
               color="#fff"
-              onPress={() => navigation.navigate('CreateStore')}
+              onPress={() =>
+                toko != ''
+                  ? navigation.navigate('MyStore')
+                  : navigation.navigate('CreateStore')
+              }
             />
           </TouchableOpacity>
         </View>
