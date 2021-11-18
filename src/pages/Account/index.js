@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import Storage from '../../storage';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import * as fs from 'react-native-fs';
 import {updateProfile} from '../../webservice/user.service';
 import {url} from '../../webservice/url';
 
@@ -37,9 +36,9 @@ const Account = ({navigation}) => {
           setemail(data.email);
           setpassword(data.password);
           setToko(data.namatoko);
-          console.log(data);
           setImagePath(`${url}/${data.profile_picture}`);
-          setTokoImage(data.profile_toko);
+          setTokoImage(`${url}/${data.profile_toko}`);
+          console.log(tokoImage);
         }
       });
   });
@@ -52,7 +51,6 @@ const Account = ({navigation}) => {
       forceJpg: true,
     }).then(async res => {
       handleUpload(res);
-      setImagePath(res.data);
     });
   };
 
@@ -79,8 +77,7 @@ const Account = ({navigation}) => {
     try {
       let res = await updateProfile(formdata, 'form-data');
       let img = res.body.data.profile_picture;
-      console.log(res.body);
-      setImagePath(`${url}/${img}`);
+      setImagePath(`${url}/${res.body.data.profile_picture}`);
       await Storage.remove({key: 'user', id: 'user'});
       await Storage.save({key: 'user', id: 'user', data: res.body.data});
     } catch (error) {
@@ -193,7 +190,7 @@ const Account = ({navigation}) => {
               }}
               source={
                 tokoImage != null
-                  ? {url: tokoImage}
+                  ? {uri: tokoImage}
                   : require('../../assets/images/store.png')
               }
             />
