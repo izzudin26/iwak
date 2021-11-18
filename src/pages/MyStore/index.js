@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,18 +12,83 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {getToko, updateToko} from '../../webservice/seller.service';
+import ImagePicker from 'react-native-image-crop-picker';
+import {url} from '../../webservice/url';
+import Storage from '../../storage';
 
 const MyStore = ({navigation}) => {
+  const [image, setImage] = useState(null);
+  const [toko, setToko] = useState('');
+  const [location, setLocation] = useState('');
+  const [isFetch, setIsFetch] = useState(true);
+
+  useEffect(() => {
+    if (isFetch) {
+      getToko().then(res => {
+        console.log(res);
+        setToko(res.body.data.namatoko);
+        setLocation(res.body.data.address);
+        setImage(`${url}/${res.body.data.profile_toko}`);
+      });
+      setIsFetch(false);
+    }
+  });
+
+  const changeImage = () => {
+    ImagePicker.openPicker({
+      multiple: false,
+      mediaType: 'photo',
+      cropping: true,
+      forceJpg: true,
+    }).then(async res => {
+      handleUpload(res);
+    });
+  };
+
+  const handleUpload = async (file = {}) => {
+    let form = new FormData();
+    let data = await Storage.load({key: 'user', id: 'user'});
+    form.append('id_account', data.id_account);
+    form.append('namatoko', data.namatoko);
+    form.append('nomor_rekening', data.nomor_rekening);
+    form.append('istoko', data.istoko);
+    form.append('bank', data.bank);
+    form.append('image', {
+      name: `${file.filename}.jpeg`,
+      type: file.mime,
+      uri: file.path,
+    });
+    doUpload(form);
+  };
+
+  const doUpload = async formdata => {
+    try {
+      let res = await updateToko(formdata);
+      console.log(res.body.data.profile_toko);
+      setImage(`${url}/${res.body.data.profile_toko}`);
+      console.log(image);
+      await Storage.remove({key: 'user', id: 'user'});
+      await Storage.save({key: 'user', id: 'user', data: res.body.data});
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <ScrollView>
       <View style={{paddingHorizontal: 50}}>
         <View style={styles.SectionStyle}>
           <Image
-            source={require('../../assets/images/fotoUser.jpg')}
+            source={
+              image != null
+                ? {uri: image}
+                : require('../../assets/images/fotoUser.jpg')
+            }
             style={styles.Image}
           />
           <TouchableOpacity
-            onPress={() => {}}
+            onPress={changeImage}
             style={{
               borderRadius: 50,
               width: 50,
@@ -51,8 +116,8 @@ const MyStore = ({navigation}) => {
         </Text>
         <View style={styles.containerData}>
           <View style={{flexDirection: 'column'}}>
-            <Text style={{fontSize: 18}}>Name</Text>
-            <Text style={{color: 'black', fontSize: 18}}>Store Name</Text>
+            <Text style={{fontSize: 18, color: 'black'}}>Name</Text>
+            <Text style={{color: 'black', fontSize: 18}}>{toko}</Text>
           </View>
           <TouchableOpacity
             style={{
@@ -69,10 +134,8 @@ const MyStore = ({navigation}) => {
         </View>
         <View style={styles.containerData}>
           <View style={{flexDirection: 'column'}}>
-            <Text style={{fontSize: 18}}>Location</Text>
-            <Text style={{color: 'black', fontSize: 18}}>
-              Email Location Store
-            </Text>
+            <Text style={{fontSize: 18, color: 'black'}}>Location</Text>
+            <Text style={{color: 'black', fontSize: 18}}>{location}</Text>
           </View>
           <TouchableOpacity
             style={{

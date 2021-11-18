@@ -25,8 +25,9 @@ export const getReport = () => {
  * @property {Object} body
  * @returns {Promise<response>}
  */
-export const getToko = () => {
-  let idAccount = getCurrentIdAccount();
+export const getToko = async () => {
+  let idAccount = await getCurrentIdAccount();
+  console.log(idAccount);
   return new Promise((resolve, reject) => {
     axios
       .post(`${url}/api/penjual/toko`, {id_account: idAccount})
@@ -157,6 +158,19 @@ export const removeImage = (idProduct, idImage) => {
         id_account: idAccount,
         id_produk: idProduct,
         id_image: idImage,
+      })
+      .then(res => resolve({status: res.status, body: res.data}))
+      .catch(err => reject(err));
+  });
+};
+
+export const updateToko = form => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${url}/api/penjual/toko/simpan`, form, {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
       })
       .then(res => resolve({status: res.status, body: res.data}))
       .catch(err => reject(err));
