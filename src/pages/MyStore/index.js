@@ -26,14 +26,13 @@ const MyStore = ({navigation}) => {
   useEffect(() => {
     if (isFetch) {
       getToko().then(res => {
-        console.log(res);
         setToko(res.body.data.namatoko);
         setLocation(res.body.data.address);
         setImage(`${url}/${res.body.data.profile_toko}`);
       });
       setIsFetch(false);
     }
-  });
+  }, [isFetch]);
 
   const changeImage = () => {
     ImagePicker.openPicker({
@@ -128,7 +127,7 @@ const MyStore = ({navigation}) => {
               justifyContent: 'center',
               backgroundColor: '#043C88',
             }}
-            onPress={() => navigation.navigate('EditName')}>
+            onPress={() => navigation.navigate('EditNameToko')}>
             <FontAwesome5 name="pen" solid size={12} color="#fff" />
           </TouchableOpacity>
         </View>

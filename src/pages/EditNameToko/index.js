@@ -11,7 +11,7 @@ import {
 
 const EditName = ({navigation}) => {
   const [name, setName] = useState(null);
-  const [isFetch, setIsFetch] = useState(false);
+  const [isFetch, setIsFetch] = useState(true);
   useEffect(() => {
     if (name == null)
       Storage.load({
@@ -20,8 +20,23 @@ const EditName = ({navigation}) => {
         autoSync: true,
       }).then(data => {
         setName(data.namatoko);
+        setIsFetch(false);
       });
-  });
+  }, [isFetch]);
+
+  const handleUpload = async () => {
+    let form = new FormData();
+    let data = await Storage.load({key: 'user', id: 'user'});
+    form.append('id_account', data.id_account);
+    form.append('namatoko', name);
+    form.append('nomor_rekening', data.nomor_rekening);
+    form.append('istoko', data.istoko);
+    form.append('bank', data.bank);
+    const res = await updateToko(form);
+    await Storage.remove({key: 'user', id: 'user'});
+    await Storage.save({key: 'user', id: 'user', data: res.body.data});
+    navigation.replace('MainApp');
+  };
 
   return (
     <View style={{alignSelf: 'center', justifyContent: 'center', flex: 1}}>
@@ -35,7 +50,7 @@ const EditName = ({navigation}) => {
             color: 'black',
             textAlign: 'left',
           }}>
-          Edit Your{'\n'}Name Account.
+          Edit Your{'\n'}Store Name.
         </Text>
       </View>
       <View style={styles.SectionStyle}>
@@ -47,7 +62,7 @@ const EditName = ({navigation}) => {
             fontWeight: 'bold',
             fontSize: 17,
           }}>
-          Name
+          Nama Toko
         </Text>
         <TextInput
           style={styles.inputStyle}
@@ -58,7 +73,6 @@ const EditName = ({navigation}) => {
           autoCapitalize="none"
           keyboardType="default"
           returnKeyType="next"
-          onSubmitEditing={() => {}}
           underlineColorAndroid="#f000"
           blurOnSubmit={false}
         />
@@ -74,7 +88,7 @@ const EditName = ({navigation}) => {
           justifyContent: 'center',
           alignSelf: 'center',
         }}
-        onPress={() => {}}>
+        onPress={handleUpload}>
         <Text style={{color: '#F0C341', fontWeight: 'bold'}}>DONE</Text>
       </TouchableOpacity>
     </View>
@@ -96,6 +110,7 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     backgroundColor: '#fff',
+    color: 'black',
     width: 250,
     height: 50,
     paddingLeft: 20,

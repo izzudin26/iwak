@@ -24,7 +24,7 @@ import {
   Notification,
   MyStore,
   CreateStore,
-  EditNameToko
+  EditNameToko,
 } from '../pages';
 import BottomNavigator from '../components/BottomNavigator';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -897,7 +897,7 @@ const MainApp = () => {
         })}
       />
 
-<Tab.Screen
+      <Tab.Screen
         name="EditNameToko"
         component={EditNameToko}
         options={({navigation, route}) => ({
