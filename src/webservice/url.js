@@ -1,1 +1,1 @@
-export const url = 'https://iwakstore.my.id/';
+export const url = 'https://iwakstore.my.id';
