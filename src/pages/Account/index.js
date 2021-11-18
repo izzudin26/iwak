@@ -11,6 +11,7 @@ import Storage from '../../storage';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as fs from 'react-native-fs';
 import {updateProfile} from '../../webservice/user.service';
+import {url} from '../../webservice/url';
 
 import {
   widthPercentageToDP as wp,
@@ -25,14 +26,23 @@ const Account = ({navigation}) => {
   const [imagePath, setImagePath] = useState(null);
   const [password, setpassword] = useState('');
   const [toko, setToko] = useState('');
+  const [tokoImage, setTokoImage] = useState(null);
 
   useEffect(() => {
     if (name == '' || email == '' || password == '')
       Storage.load({key: 'user', id: 'user'}).then(data => {
         if (data) {
+          console.log(data);
           setName(data.fullname);
           setemail(data.email);
           setpassword(data.password);
+          setToko(data.namatoko);
+          if (data.profile_picture != null || data.profile_picture != '') {
+            setImagePath(data.profile_picture);
+          }
+          if (data.profile_toko != null || data.profile_toko != '') {
+            setImagePath(data.profile_toko);
+          }
         }
       });
   });
@@ -45,6 +55,7 @@ const Account = ({navigation}) => {
       forceJpg: true,
     }).then(async res => {
       handleUpload(res);
+      setImagePath(res.data);
     });
   };
 
@@ -60,18 +71,22 @@ const Account = ({navigation}) => {
     form.append('norek', data.nomor_rekening);
     form.append('bank', data.bank);
     form.append('image', {
-      name: file.filename,
+      name: `${file.filename}.jpeg`,
       type: file.mime,
       uri: file.path,
     });
-    console.log(file);
     doUpload(form);
   };
 
   const doUpload = async formdata => {
     try {
       let res = await updateProfile(formdata, 'form-data');
+      let img = res.body.data.profile_picture;
       console.log(res.body);
+      setImagePath(`${url}/${img}`);
+      let data = await Storage.load({key: 'user', id: 'user'});
+      data.profile_picture = `${url}/${img}`;
+      Storage.save({key: 'user', id: 'user', data: data});
     } catch (error) {
       console.log(error.message);
     }
@@ -82,7 +97,11 @@ const Account = ({navigation}) => {
       <View style={{paddingHorizontal: 50}}>
         <View style={styles.SectionStyle}>
           <Image
-            source={{uri: `data:image/png;base64, ${imagePath}`}}
+            source={
+              imagePath != null
+                ? {uri: imagePath}
+                : require('../../assets/images/user.png')
+            }
             style={styles.Image}
           />
           <TouchableOpacity
@@ -114,7 +133,7 @@ const Account = ({navigation}) => {
         </Text>
         <View style={styles.containerData}>
           <View style={{flexDirection: 'column'}}>
-            <Text style={{fontSize: 18}}>Name</Text>
+            <Text style={{fontSize: 18, color: 'black'}}>Name</Text>
             <Text style={{color: 'black', fontSize: 18}}>{name}</Text>
           </View>
           <TouchableOpacity
@@ -132,7 +151,7 @@ const Account = ({navigation}) => {
         </View>
         <View style={styles.containerData}>
           <View style={{flexDirection: 'column'}}>
-            <Text style={{fontSize: 18}}>Email Address</Text>
+            <Text style={{fontSize: 18, color: 'black'}}>Email Address</Text>
             <Text style={{color: 'black', fontSize: 18}}>{email}</Text>
           </View>
           <TouchableOpacity
@@ -150,7 +169,7 @@ const Account = ({navigation}) => {
         </View>
         <View style={styles.containerData}>
           <View style={{flexDirection: 'column'}}>
-            <Text style={{fontSize: 18}}>Password</Text>
+            <Text style={{fontSize: 18, color: 'black'}}>Password</Text>
             <Text style={{color: 'black', fontSize: 18}}>********</Text>
           </View>
           <TouchableOpacity
@@ -167,9 +186,27 @@ const Account = ({navigation}) => {
           </TouchableOpacity>
         </View>
         <View style={styles.containerToko}>
-          <View style={{flexDirection: 'column'}}>
-            {/* <Text style={{fontSize: 18, color: 'black'}}>Store</Text> */}
-            <Text style={{color: 'black', fontSize: 18}}>Lordfish</Text>
+          <View style={{flexDirection: 'row'}}>
+            <Image
+              style={{
+                backgroundColor: '#fff',
+                borderRadius: 10,
+                width: 50,
+                height: 50,
+                marginRight: 20,
+              }}
+              source={
+                tokoImage != null
+                  ? {url: tokoImage}
+                  : require('../../assets/images/store.png')
+              }
+            />
+            <View style={{flexDirection: 'column'}}>
+              <Text style={{fontSize: 18, color: 'black', fontWeight: 'bold'}}>
+                Store
+              </Text>
+              <Text style={{color: 'black', fontSize: 18}}>{toko}</Text>
+            </View>
           </View>
           <TouchableOpacity
             style={{
