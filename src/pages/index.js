@@ -19,6 +19,7 @@ import EditPassword from './EditPassword';
 import Notification from './Notification';
 import MyStore from './MyStore';
 import CreateStore from './CreateStore';
+import EditNameToko from './EditNameToko';
 
 export {
   Splash,
@@ -42,4 +43,5 @@ export {
   Notification,
   MyStore,
   CreateStore,
+  EditNameToko,
 };
