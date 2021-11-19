@@ -17,7 +17,7 @@ import EditEmail from './EditEmail';
 import EditName from './EditName';
 import EditPassword from './EditPassword';
 import Notification from './Notification';
-import MyStore from './MyStore';
+import SettingStore from './SettingStore';
 import CreateStore from './CreateStore';
 import EditNameToko from './EditNameToko';
 
@@ -41,7 +41,7 @@ export {
   EditName,
   EditPassword,
   Notification,
-  MyStore,
+  SettingStore,
   CreateStore,
   EditNameToko,
 };

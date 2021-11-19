@@ -17,7 +17,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import {url} from '../../webservice/url';
 import Storage from '../../storage';
 
-const MyStore = ({navigation}) => {
+const SettingStore = ({navigation}) => {
   const [image, setImage] = useState(null);
   const [toko, setToko] = useState('');
   const [location, setLocation] = useState('');
@@ -154,7 +154,7 @@ const MyStore = ({navigation}) => {
   );
 };
 
-export default MyStore;
+export default SettingStore;
 
 const styles = StyleSheet.create({
   SectionStyle: {

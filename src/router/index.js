@@ -22,7 +22,7 @@ import {
   EditName,
   EditPassword,
   Notification,
-  MyStore,
+  SettingStore,
   CreateStore,
   EditNameToko,
 } from '../pages';
@@ -810,8 +810,8 @@ const MainApp = () => {
       />
 
       <Tab.Screen
-        name="MyStore"
-        component={MyStore}
+        name="SettingStore"
+        component={SettingStore}
         options={({navigation, route}) => ({
           headerStyle: {
             backgroundColor: '#043C88',
