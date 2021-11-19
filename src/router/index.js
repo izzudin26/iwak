@@ -23,6 +23,7 @@ import {
   EditPassword,
   Notification,
   SettingStore,
+  MyStore,
   CreateStore,
   EditNameToko,
 } from '../pages';
@@ -908,6 +909,50 @@ const MainApp = () => {
           headerTitle: () => (
             <View>
               <Text style={styles.teksHeadLoginSignup}> Edit Nama Toko </Text>
+            </View>
+          ),
+          headerLeft: () => {
+            return (
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  justifyContent: 'center',
+                  width: 80,
+                  height: 35,
+                  marginLeft: -30,
+                  borderRadius: 30,
+                  overflow: 'hidden',
+                }}>
+                <FontAwesome5
+                  name="arrow-left"
+                  solid
+                  size={23}
+                  color="#F0C341"
+                  style={{
+                    alignSelf: 'flex-end',
+                    paddingHorizontal: 20,
+                  }}
+                  onPress={() => navigation.navigate('Account')}
+                />
+              </View>
+            );
+          },
+          headerBackVisible: false,
+          headerTitleAlign: 'center',
+        })}
+      />
+
+      <Tab.Screen
+        name="MyStore"
+        component={MyStore}
+        options={({navigation, route}) => ({
+          headerStyle: {
+            backgroundColor: '#043C88',
+            height: 70,
+          },
+          headerTitle: () => (
+            <View>
+              <Text style={styles.teksHeadLoginSignup}> My Store </Text>
             </View>
           ),
           headerLeft: () => {
