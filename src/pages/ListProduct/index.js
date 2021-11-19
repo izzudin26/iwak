@@ -35,7 +35,9 @@ const ListProduct = ({navigation}) => {
               marginLeft: 10,
             }}></TextInput>
         </View>
-        <TouchableOpacity style={styles.addButton}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => navigation.navigate('AddProduct')}>
           <Image
             style={{width: 15, height: 15}}
             source={require('../../assets/icons/add.png')}></Image>
