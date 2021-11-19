@@ -21,6 +21,7 @@ import SettingStore from './SettingStore';
 import CreateStore from './CreateStore';
 import EditNameToko from './EditNameToko';
 import MyStore from './MyStore';
+import ListProduct from './ListProduct';
 
 export {
   Splash,
@@ -45,5 +46,6 @@ export {
   SettingStore,
   CreateStore,
   EditNameToko,
-  MyStore
+  MyStore,
+  ListProduct,
 };

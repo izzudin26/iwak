@@ -109,7 +109,7 @@ const MyStore = ({navigation}) => {
           <View style={styles.containerData}>
             <TouchableOpacity
               style={styles.containerBody}
-              onPress={() => navigation.navigate('IncomingOrder')}>
+              onPress={() => navigation.navigate('ListProduct')}>
               <Text style={{fontSize: 18, color: 'black'}}>List Product</Text>
             </TouchableOpacity>
           </View>
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 3,
     },
-    shadowOpacity: 0.10,
+    shadowOpacity: 0.1,
     shadowRadius: 4.65,
     elevation: 5,
   },
