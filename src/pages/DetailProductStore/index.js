@@ -180,7 +180,9 @@ const DetailProductStore = ({navigation}) => {
               <Text style={{fontSize: 30, fontWeight: 'bold', color: 'black'}}>
                 Rp. {price}
               </Text>
-              <TouchableOpacity style={{marginVertical: 5}}>
+              <TouchableOpacity
+                style={{marginVertical: 5}}
+                onPress={() => navigation.navigate('OpenBidding')}>
                 <Text
                   style={{fontSize: 20, color: '#043C88', fontWeight: 'bold'}}>
                   ADD TO BID

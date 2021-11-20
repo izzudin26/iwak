@@ -30,7 +30,7 @@ const Login = ({navigation}) => {
       if (data) {
         navigation.replace('MainApp');
       }
-      setIsFetch(false)
+      setIsFetch(false);
     });
   }, [isFetch]);
 

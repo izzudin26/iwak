@@ -25,6 +25,7 @@ import ListProduct from './ListProduct';
 import AddProduct from './AddProduct';
 import DetailProductStore from './DetailProductStore';
 import EditProduct from './EditProduct';
+import OpenBidding from './OpenBidding';
 
 export {
   Splash,
@@ -54,4 +55,5 @@ export {
   AddProduct,
   DetailProductStore,
   EditProduct,
+  OpenBidding,
 };
