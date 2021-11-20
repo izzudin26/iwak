@@ -12,6 +12,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Modal from 'react-native-modal';
 
 const OpenBidding = ({navigation}) => {
   const [image, setImage] = useState(
@@ -20,9 +21,59 @@ const OpenBidding = ({navigation}) => {
   const [product, setProduct] = useState('Oranda Fish');
   const [stock, setStock] = useState(200);
   const [price, setPrice] = useState('');
+  const [visibleModal, setVisibleModal] = useState(false);
+
+  const showModal = () => (
+    <Modal isVisible={visibleModal}>
+      <View style={styles.modalCard}>
+        <Text style={{color: 'black', fontSize: 25, fontWeight: 'bold'}}>
+          Konfirmasi Lelang !
+        </Text>
+        <Text style={{color: 'black', fontSize: 15, fontWeight: 'normal'}}>
+          Setelah melakukan konfirmasi lelang tidak dapat dirubah
+        </Text>
+        <View style={styles.modalButtonSection}>
+          <TouchableOpacity
+            onPress={() => setVisibleModal(!visibleModal)}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#F33030',
+              marginVertical: 20,
+              height: 30,
+              width: wp('25%'),
+              borderRadius: 10,
+              alignSelf: 'center',
+            }}>
+            <Text style={{color: '#FFFF', fontWeight: 'bold', fontSize: 17}}>
+              Batal
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setVisibleModal(!visibleModal)}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#48C42F',
+              marginVertical: 20,
+              height: 30,
+              width: wp('25%'),
+              borderRadius: 10,
+              alignSelf: 'center',
+            }}>
+            <Text style={{color: '#FFFF', fontWeight: 'bold', fontSize: 17}}>
+              Ya
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
 
   return (
-    <View style={{height: hp('97%')}}>
+    <View style={{height: hp('95%')}}>
       <View style={styles.header}>
         <Text style={styles.textHeader}>
           fill in your product information in down below.
@@ -53,8 +104,9 @@ const OpenBidding = ({navigation}) => {
             value={price}></TextInput>
         </View>
       </View>
+      <View>{showModal()}</View>
       <TouchableOpacity
-        onPress={() => {}}
+        onPress={() => setVisibleModal(true)}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -67,6 +119,7 @@ const OpenBidding = ({navigation}) => {
           alignSelf: 'center',
           position: 'absolute',
           bottom: 0,
+          elevation: 0
         }}>
         <Text style={{color: '#F0C341', marginLeft: 5, fontSize: 17}}>
           DONE
@@ -147,5 +200,28 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
     elevation: 6,
+  },
+  modalCard: {
+    width: wp('80%'),
+    height: hp('15%'),
+    borderRadius: 20,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+    elevation: 6,
+  },
+  modalButtonSection: {
+    flexDirection: 'row',
+    marginBottom: -55,
+    width: wp('60%'),
+    justifyContent: 'space-between',
   },
 });
