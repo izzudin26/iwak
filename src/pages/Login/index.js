@@ -19,6 +19,7 @@ import {
 } from 'react-native-responsive-screen';
 
 const Login = ({navigation}) => {
+  const [isFetch, setIsFetch] = useState(true);
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [errortext, setErrortext] = useState('');
@@ -29,8 +30,9 @@ const Login = ({navigation}) => {
       if (data) {
         navigation.replace('MainApp');
       }
+      setIsFetch(false)
     });
-  });
+  }, [isFetch]);
 
   const handleSubmitPress = async () => {
     setErrortext('');
