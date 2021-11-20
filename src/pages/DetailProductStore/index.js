@@ -13,8 +13,28 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-const DetailProduct = ({navigation}) => {
+const DetailProductStore = ({navigation}) => {
   const [click, setClick] = useState(1);
+  const [indexImage, setIndexImage] = useState(0);
+  const [stock, setStock] = useState(10);
+  const [price, setPrice] = useState(200000);
+  const [images, setImages] = useState([
+    {
+      url: require('../../assets/images/agaru.png'),
+    },
+    {
+      url: require('../../assets/images/Auction.png'),
+    },
+    {
+      url: require('../../assets/images/agaru.png'),
+    },
+    {
+      url: require('../../assets/images/Auction.png'),
+    },
+    {
+      url: require('../../assets/images/agaru.png'),
+    },
+  ]);
 
   const PressedPlus = () => {
     setClick(click + 1);
@@ -46,59 +66,30 @@ const DetailProduct = ({navigation}) => {
     <ScrollView>
       <View style={{alignItems: 'center', justifyContent: 'center'}}>
         <View style={styles.ContainerMainImage}>
-          <Image
-            source={require('../../assets/images/MainImage.png')}
-            style={styles.MainImage}
-          />
+          <Image source={images[indexImage].url} style={styles.MainImage} />
         </View>
 
         <View
           style={{
-            flexDirection: 'row',
-            width: wp('75%'),
+            width: wp('80%'),
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
+            padding: 15,
+            height: hp('15%'),
           }}>
-          <View style={styles.ContainerButton}>
-            <FontAwesome5
-              name="arrow-left"
-              solid
-              size={25}
-              color="#F0C341"
-              onPress={() => navigation.navigate('Product')}
-            />
-          </View>
-          <View style={styles.ContainerSmallImage}>
-            <Image
-              source={require('../../assets/images/MainImage.png')}
-              style={styles.ImageSmall}
-            />
-          </View>
-          <View style={styles.ContainerSmallImage}>
-            <Image
-              source={require('../../assets/images/MainImage.png')}
-              style={styles.ImageSmall}
-            />
-          </View>
-          <View style={styles.ContainerSmallImage}>
-            <Image
-              source={require('../../assets/images/MainImage.png')}
-              style={styles.ImageSmall}
-            />
-          </View>
-          <View style={styles.ContainerButton}>
-            <FontAwesome5
-              name="arrow-right"
-              solid
-              size={25}
-              color="#F0C341"
-              onPress={() => navigation.navigate('Product')}
-            />
-          </View>
+          <ScrollView horizontal={true}>
+            {images.map((image, i) => (
+              <TouchableOpacity
+                onPress={() => setIndexImage(i)}
+                style={styles.ContainerSmallImage}
+                key={i}>
+                <Image source={image.url} style={styles.ImageSmall} />
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         </View>
-
         <View style={{width: wp('75%'), marginVertical: 20}}>
-          <Text style={{color: 'black'}}>
+          <Text style={{color: 'black', fontSize: 18}}>
             Ini adalah keterangan tentang jenis ikan yang akan dijual pada toko
             ini. Ikan ini merupakan ikan hias oranda berukuran jumbo dengan
             kualitas premium
@@ -125,16 +116,20 @@ const DetailProduct = ({navigation}) => {
               </Text>
               <Text
                 style={{
-                  height: 20,
-                  width: 200,
+                  marginVertical: 5,
+                  width: wp('60%'),
                   fontSize: 15,
                   color: 'black',
-                  marginBottom: 2,
                 }}>
                 Ini adalah keterangan product
               </Text>
-              <View style={{flexDirection: 'row', marginBottom: 5}}>
+              <View style={{flexDirection: 'row', marginVertical: 5}}>
                 {star(5)}
+              </View>
+              <View style={{marginVertical: 5}}>
+                <Text style={{fontSize: 15, color: 'black'}}>
+                  Stock : {stock}
+                </Text>
               </View>
             </View>
 
@@ -172,58 +167,42 @@ const DetailProduct = ({navigation}) => {
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'space-around',
+              justifyContent: 'space-between',
               marginBottom: 10,
+              padding: 20,
             }}>
-            <Text style={{fontSize: 25, fontWeight: 'bold', color: 'black'}}>
-              Rp. 600.000
-            </Text>
-
             <View
               style={{
-                flexDirection: 'row',
+                justifyContent: 'center',
                 alignItems: 'center',
-                justifyContent: 'space-evenly',
+                flexDirection: 'column',
               }}>
-              <View style={styles.ContainerButtonCart}>
-                <FontAwesome5
-                  name="minus"
-                  solid
-                  size={15}
-                  color="#000"
-                  onPress={() => PressedMinus()}
-                />
-                <Text style={{fontSize: 20, color: 'black', fontWeight: '900'}}>
-                  {click}
+              <Text style={{fontSize: 30, fontWeight: 'bold', color: 'black'}}>
+                Rp. {price}
+              </Text>
+              <TouchableOpacity style={{marginVertical: 5}}>
+                <Text
+                  style={{fontSize: 20, color: '#043C88', fontWeight: 'bold'}}>
+                  ADD TO BID
                 </Text>
-                <FontAwesome5
-                  name="plus"
-                  solid
-                  size={15}
-                  color="#000"
-                  onPress={() => PressedPlus()}
-                />
-              </View>
-
-              <TouchableOpacity
-                style={{
-                  width: 60,
-                  height: 40,
-                  backgroundColor: 'blue',
-                  borderRadius: 10,
-                  marginLeft: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onPress={() =>
-                  navigation.navigate(
-                    'Cart',
-                    // { qty: click }
-                  )
-                }>
-                <Text style={{color: 'white', fontWeight: 'bold'}}> CART </Text>
               </TouchableOpacity>
             </View>
+            <TouchableOpacity
+              style={{
+                width: 150,
+                height: 40,
+                backgroundColor: '#043C88',
+                marginVertical: 20,
+                borderRadius: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                alignSelf: 'center',
+              }}
+              onPress={() => navigation.navigate('EditProduct')}>
+              <Text style={{color: '#FFF', fontWeight: 'bold'}}>
+                Edit Product
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -231,15 +210,15 @@ const DetailProduct = ({navigation}) => {
   );
 };
 
-export default DetailProduct;
+export default DetailProductStore;
 
 const styles = StyleSheet.create({
   ContainerMainImage: {
-    width: 280,
-    height: 280,
+    width: wp('70%'),
+    height: hp('30%'),
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 20,
+    marginVertical: 30,
     borderRadius: 30,
     backgroundColor: 'white',
     shadowColor: '#000',
@@ -249,14 +228,15 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
   },
   ContainerSmallImage: {
-    width: 60,
-    height: 60,
+    alignContent: 'center',
+    width: 90,
+    height: 90,
+    marginHorizontal: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 30,
+    borderRadius: 20,
     backgroundColor: 'white',
     shadowColor: '#000',
     shadowOffset: {
@@ -272,7 +252,6 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    // paddingTop: 10,
     borderRadius: 30,
     backgroundColor: 'white',
     shadowColor: '#000',
@@ -286,12 +265,12 @@ const styles = StyleSheet.create({
   },
   ContainerBottom: {
     width: '102%',
-    height: 210,
+    height: hp('30%'),
     overflow: 'hidden',
     borderTopStartRadius: 50,
     borderTopEndRadius: 50,
-    paddingVertical: 30,
-    paddingHorizontal: 15,
+    paddingVertical: 20,
+    paddingHorizontal: 30,
     backgroundColor: 'white',
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 5},
@@ -309,11 +288,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   MainImage: {
-    height: 250,
-    width: 250,
+    height: wp('50%'),
+    width: wp('50%'),
   },
   ImageSmall: {
-    width: 30,
-    height: 30,
+    width: 50,
+    height: 50,
   },
 });

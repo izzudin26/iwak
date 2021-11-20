@@ -5,7 +5,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-const ProductForSale = () => {
+const ProductForSale = props => {
   const [datas, setData] = useState([
     {name: 'Oranda', price: '600000', stock: 10},
     {name: 'Obat Biru', price: '20000', stock: 100},
@@ -20,7 +20,11 @@ const ProductForSale = () => {
   return (
     <View style={style.container}>
       {datas.map((data, i) => (
-        <TouchableOpacity activeOpacity={0.6} style={style.product} key={i}>
+        <TouchableOpacity
+          activeOpacity={0.6}
+          style={style.product}
+          key={i}
+          onPress={() => props.navigation.navigate('DetailProductStore')}>
           <View style={style.photoContainer}>
             <Image
               style={style.photo}

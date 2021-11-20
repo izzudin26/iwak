@@ -23,6 +23,8 @@ import EditNameToko from './EditNameToko';
 import MyStore from './MyStore';
 import ListProduct from './ListProduct';
 import AddProduct from './AddProduct';
+import DetailProductStore from './DetailProductStore';
+import EditProduct from './EditProduct';
 
 export {
   Splash,
@@ -50,4 +52,6 @@ export {
   MyStore,
   ListProduct,
   AddProduct,
+  DetailProductStore,
+  EditProduct,
 };

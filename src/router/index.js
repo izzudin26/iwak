@@ -28,6 +28,8 @@ import {
   EditNameToko,
   ListProduct,
   AddProduct,
+  DetailProductStore,
+  EditProduct,
 } from '../pages';
 import BottomNavigator from '../components/BottomNavigator';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -287,88 +289,6 @@ const MainApp = () => {
                   style={{marginHorizontal: 15}}
                   color="#F0C341"
                   onPress={() => navigation.navigate('Cart')}
-                />
-              </View>
-            );
-          },
-        })}
-      />
-
-      <Tab.Screen
-        name="DetailProduct"
-        component={DetailProduct}
-        options={({navigation, route}) => ({
-          headerStyle: {
-            backgroundColor: '#043C88',
-            height: 70,
-          },
-          headerTitle: '',
-          headerLeft: () => {
-            return (
-              <View
-                style={{
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  width: 80,
-                  height: 35,
-                  marginLeft: -30,
-                  borderRadius: 30,
-                  overflow: 'hidden',
-                }}>
-                <FontAwesome5
-                  name="arrow-left"
-                  solid
-                  size={23}
-                  color="#F0C341"
-                  style={{
-                    alignSelf: 'flex-end',
-                    paddingHorizontal: 20,
-                  }}
-                  onPress={() => navigation.navigate('Sale')}
-                />
-              </View>
-            );
-          },
-          headerBackVisible: false,
-          headerTitleAlign: 'center',
-          headerRight: () => {
-            return (
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-                <FontAwesome5
-                  name="bell"
-                  solid
-                  size={23}
-                  color="#F0C341"
-                  onPress={() => navigation.navigate('Notification')}
-                />
-                <Badge
-                  status="error"
-                  value={5}
-                  containerStyle={{
-                    position: 'absolute',
-                    top: -4,
-                    left: 10,
-                    zIndex: 2,
-                  }}
-                />
-                <FontAwesome5
-                  name="shopping-cart"
-                  solid
-                  size={23}
-                  style={{marginHorizontal: 15}}
-                  color="#F0C341"
-                  onPress={() => navigation.navigate('Cart')}
-                />
-                <Badge
-                  status="error"
-                  value={15}
-                  containerStyle={{
-                    position: 'absolute',
-                    top: -4,
-                    right: 2,
-                    zIndex: 2,
-                  }}
                 />
               </View>
             );
@@ -1145,6 +1065,176 @@ const Router = () => {
           },
           headerBackVisible: false,
           headerTitleAlign: 'center',
+        })}
+      />
+
+      <Stack.Screen
+        name="EditProduct"
+        component={EditProduct}
+        options={({navigation, route}) => ({
+          headerStyle: {
+            backgroundColor: '#043C88',
+            height: 70,
+          },
+          headerTitle: () => (
+            <View>
+              <Text style={styles.teksHeadLoginSignup}> Edit Product </Text>
+            </View>
+          ),
+          headerLeft: () => {
+            return (
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  justifyContent: 'center',
+                  width: 80,
+                  height: 35,
+                  marginLeft: -30,
+                  borderRadius: 30,
+                  overflow: 'hidden',
+                }}>
+                <FontAwesome5
+                  name="arrow-left"
+                  solid
+                  size={23}
+                  color="#F0C341"
+                  style={{
+                    alignSelf: 'flex-end',
+                    paddingHorizontal: 20,
+                  }}
+                  onPress={() => navigation.navigate('Account')}
+                />
+              </View>
+            );
+          },
+          headerBackVisible: false,
+          headerTitleAlign: 'center',
+        })}
+      />
+
+      <Stack.Screen
+        name="DetailProductStore"
+        component={DetailProductStore}
+        options={({navigation, route}) => ({
+          headerStyle: {
+            backgroundColor: '#043C88',
+            height: 70,
+          },
+          headerTitle: () => (
+            <View>
+              <Text style={styles.teksHeadLoginSignup}> </Text>
+            </View>
+          ),
+          headerLeft: () => {
+            return (
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  justifyContent: 'center',
+                  width: 80,
+                  height: 35,
+                  marginLeft: -30,
+                  borderRadius: 30,
+                  overflow: 'hidden',
+                }}>
+                <FontAwesome5
+                  name="arrow-left"
+                  solid
+                  size={23}
+                  color="#F0C341"
+                  style={{
+                    alignSelf: 'flex-end',
+                    paddingHorizontal: 20,
+                  }}
+                  onPress={() => navigation.navigate('Account')}
+                />
+              </View>
+            );
+          },
+          headerBackVisible: false,
+          headerTitleAlign: 'center',
+        })}
+      />
+
+      <Stack.Screen
+        name="DetailProduct"
+        component={DetailProduct}
+        options={({navigation, route}) => ({
+          headerStyle: {
+            backgroundColor: '#043C88',
+            height: 70,
+          },
+          headerTitle: '',
+          headerLeft: () => {
+            return (
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  justifyContent: 'center',
+                  width: 80,
+                  height: 35,
+                  marginLeft: -30,
+                  borderRadius: 30,
+                  overflow: 'hidden',
+                }}>
+                <FontAwesome5
+                  name="arrow-left"
+                  solid
+                  size={23}
+                  color="#F0C341"
+                  style={{
+                    alignSelf: 'flex-end',
+                    paddingHorizontal: 20,
+                  }}
+                  onPress={() => navigation.navigate('Sale')}
+                />
+              </View>
+            );
+          },
+          headerBackVisible: false,
+          headerTitleAlign: 'center',
+          headerRight: () => {
+            return (
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                <FontAwesome5
+                  name="bell"
+                  solid
+                  size={23}
+                  color="#F0C341"
+                  onPress={() => navigation.navigate('Notification')}
+                />
+                <Badge
+                  status="error"
+                  value={5}
+                  containerStyle={{
+                    position: 'absolute',
+                    top: -4,
+                    left: 10,
+                    zIndex: 2,
+                  }}
+                />
+                <FontAwesome5
+                  name="shopping-cart"
+                  solid
+                  size={23}
+                  style={{marginHorizontal: 15}}
+                  color="#F0C341"
+                  onPress={() => navigation.navigate('Cart')}
+                />
+                <Badge
+                  status="error"
+                  value={15}
+                  containerStyle={{
+                    position: 'absolute',
+                    top: -4,
+                    right: 2,
+                    zIndex: 2,
+                  }}
+                />
+              </View>
+            );
+          },
         })}
       />
 

@@ -104,7 +104,11 @@ const ListProduct = ({navigation}) => {
       <View>{topBar()}</View>
       <View>{toggleComponent()}</View>
       <View>
-        {togglePageIndex == 0 ? <ProductForSale /> : <ProductForAuction />}
+        {togglePageIndex == 0 ? (
+          <ProductForSale navigation={navigation} />
+        ) : (
+          <ProductForAuction />
+        )}
       </View>
     </ScrollView>
   );
