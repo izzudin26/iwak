@@ -1031,50 +1031,6 @@ const MainApp = () => {
           headerTitleAlign: 'center',
         })}
       />
-
-<Tab.Screen
-        name="AddProduct"
-        component={AddProduct}
-        options={({navigation, route}) => ({
-          headerStyle: {
-            backgroundColor: '#043C88',
-            height: 70,
-          },
-          headerTitle: () => (
-            <View>
-              <Text style={styles.teksHeadLoginSignup}> Add Product </Text>
-            </View>
-          ),
-          headerLeft: () => {
-            return (
-              <View
-                style={{
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  width: 80,
-                  height: 35,
-                  marginLeft: -30,
-                  borderRadius: 30,
-                  overflow: 'hidden',
-                }}>
-                <FontAwesome5
-                  name="arrow-left"
-                  solid
-                  size={23}
-                  color="#F0C341"
-                  style={{
-                    alignSelf: 'flex-end',
-                    paddingHorizontal: 20,
-                  }}
-                  onPress={() => navigation.navigate('Account')}
-                />
-              </View>
-            );
-          },
-          headerBackVisible: false,
-          headerTitleAlign: 'center',
-        })}
-      />
     </Tab.Navigator>
   );
 };
@@ -1147,6 +1103,51 @@ const Router = () => {
           headerTitleAlign: 'center',
         }}
       />
+
+      <Stack.Screen
+        name="AddProduct"
+        component={AddProduct}
+        options={({navigation, route}) => ({
+          headerStyle: {
+            backgroundColor: '#043C88',
+            height: 70,
+          },
+          headerTitle: () => (
+            <View>
+              <Text style={styles.teksHeadLoginSignup}> Add Product </Text>
+            </View>
+          ),
+          headerLeft: () => {
+            return (
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  justifyContent: 'center',
+                  width: 80,
+                  height: 35,
+                  marginLeft: -30,
+                  borderRadius: 30,
+                  overflow: 'hidden',
+                }}>
+                <FontAwesome5
+                  name="arrow-left"
+                  solid
+                  size={23}
+                  color="#F0C341"
+                  style={{
+                    alignSelf: 'flex-end',
+                    paddingHorizontal: 20,
+                  }}
+                  onPress={() => navigation.navigate('Account')}
+                />
+              </View>
+            );
+          },
+          headerBackVisible: false,
+          headerTitleAlign: 'center',
+        })}
+      />
+
       <Stack.Screen
         name="MainApp"
         component={MainApp}

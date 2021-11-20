@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.15.11",
-    "@react-native-picker/picker": "^2.1.0",
     "@react-navigation/bottom-tabs": "^6.0.9",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.2.4",
@@ -25,6 +24,7 @@
     "react-native-hide-show-password-input": "^1.2.0",
     "react-native-image-crop-picker": "^0.37.2",
     "react-native-mmkv-storage": "^0.6.5",
+    "react-native-modal": "^13.0.0",
     "react-native-onboarding-swiper": "^1.1.4",
     "react-native-password-eye": "^1.0.2",
     "react-native-picker-select": "^8.0.4",

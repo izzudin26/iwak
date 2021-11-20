@@ -96,28 +96,8 @@ export const getProducts = () => {
  * @param {!productData} productData
  * @returns {Promise<response>}
  */
-export const saveProduct = (
-  photoFormData,
-  {
-    idProduct,
-    productName,
-    productCategory,
-    price,
-    stock,
-    discount,
-    isDiscount,
-    description,
-  } = {idProduct: null},
-) => {
+export const saveProduct = photoFormData => {
   photoFormData.append('id_account', getCurrentIdAccount());
-  idProduct && photoFormData.append('id', idProduct);
-  photoFormData.append('name', productName);
-  photoFormData.append('id_category', productCategory);
-  photoFormData.append('price', price);
-  photoFormData.append('stock', stock);
-  photoFormData.append('diskon', discount);
-  photoFormData.append('isdiskon', isDiscount);
-  photoFormData.append('description', description);
   return new Promise((resolve, reject) => {
     axios
       .post(`${url}/api/penjual/produk/simpan`, photoFormData, {
