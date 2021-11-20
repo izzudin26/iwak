@@ -15,6 +15,8 @@ import {
 } from 'react-native-responsive-screen';
 import {getToko, getReport} from '../../webservice/seller.service';
 import {url} from '../../webservice/url';
+import ProductForSale from './productForSale';
+import ProductForAuction from './productForAuction';
 
 const ListProduct = ({navigation}) => {
   const [togglePageIndex, setTogglePageIndex] = useState(0);
@@ -50,7 +52,10 @@ const ListProduct = ({navigation}) => {
     return (
       <View style={styles.containerToggle}>
         <TouchableOpacity
-          onPress={() => setTogglePageIndex(0)}
+          onPress={() => {
+            setTogglePageIndex(0);
+            console.log(togglePageIndex);
+          }}
           style={{
             backgroundColor: togglePageIndex == 0 ? '#36629F' : '#FFF',
             width: wp('50%'),
@@ -69,7 +74,10 @@ const ListProduct = ({navigation}) => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => setTogglePageIndex(1)}
+          onPress={() => {
+            setTogglePageIndex(1);
+            console.log(togglePageIndex);
+          }}
           style={{
             backgroundColor: togglePageIndex == 1 ? '#36629F' : '#FFFF',
             width: wp('50%'),
@@ -95,6 +103,9 @@ const ListProduct = ({navigation}) => {
     <ScrollView>
       <View>{topBar()}</View>
       <View>{toggleComponent()}</View>
+      <View>
+        {togglePageIndex == 0 ? <ProductForSale /> : <ProductForAuction />}
+      </View>
     </ScrollView>
   );
 };
