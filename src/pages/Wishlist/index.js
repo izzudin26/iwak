@@ -33,7 +33,6 @@ const Wishlist = ({navigation}) => {
       location: 'Kota Surabaya, Jawa Timur',
       rating: 5,
     },
-    
   ]);
 
   const topBar = () => {
@@ -116,14 +115,14 @@ const Wishlist = ({navigation}) => {
                 </View>
               </View>
             </View>
-            {buttons()}
+            {buttons(data.stock)}
           </View>
         ))}
       </View>
     </View>
   );
 
-  const buttons = () => (
+  const buttons = stock => (
     <View style={styles.cardBottom}>
       <TouchableOpacity style={styles.trashBtn}>
         <Image
@@ -131,18 +130,21 @@ const Wishlist = ({navigation}) => {
           style={{width: 30, height: 30}}></Image>
       </TouchableOpacity>
       <TouchableOpacity
+        disabled={stock <= 0}
         style={{
           marginLeft: 20,
           width: wp('67%'),
           padding: 5,
-          backgroundColor: '#043C88',
+          backgroundColor: stock > 0 ? '#043C88' : '#C3C3C3',
           borderRadius: 50,
           alignItems: 'center',
           justifyContent: 'center',
           alignSelf: 'center',
         }}
         onPress={() => {}}>
-        <Text style={{color: '#FFF', fontWeight: 'bold'}}>+ Cart</Text>
+        <Text style={{color: '#FFF', fontWeight: 'bold'}}>
+          {stock > 0 ? '+ Cart' : 'Out of stock'}
+        </Text>
       </TouchableOpacity>
     </View>
   );
