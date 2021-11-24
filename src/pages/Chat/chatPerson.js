@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   Text,
   View,
@@ -18,7 +18,7 @@ const height = Dimensions.get('window').height;
 
 const ChatPerson = () => {
   const [opponentName, setOpponentName] = useState('Opponent Name');
-  const [messageInput, setMessage] = useState('');
+  const msgRef = useRef();
   const [chats, setChats] = useState([
     {
       label: 'self',
@@ -60,26 +60,6 @@ const ChatPerson = () => {
       message: 'Hallo juga Selamat Siang',
       time: '10:20',
     },
-    {
-      label: 'self',
-      message: 'Bagaimana Kabar Anda',
-      time: '10:20',
-    },
-    {
-      label: 'opponent',
-      message: 'Baik Sekali',
-      time: '10:20',
-    },
-    {
-      label: 'opponent',
-      message: 'Bagaimana juga kabar anda',
-      time: '10:20',
-    },
-    {
-      label: 'self',
-      message: 'Saya sangat sehat',
-      time: '10:20',
-    },
   ]);
 
   const NavbarComponent = () => {
@@ -96,7 +76,7 @@ const ChatPerson = () => {
   const ChatComponent = () => {
     return (
       <View style={style.chatContainer}>
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView focusable={false}>
           {chats.map((chat, i) => (
             <View
               style={{
@@ -119,22 +99,30 @@ const ChatPerson = () => {
     );
   };
 
+  const ChatTextInput = () => {
+    const [messageInput, setMessage] = useState('');
+
+    return (
+      <View style={style.chatInputBox}>
+        <TextInput
+          value={messageInput}
+          onChangeText={val => {
+            setMessage(val);
+          }}
+          style={style.textInput}
+          placeholder="Tulis pesan"
+          placeholderTextColor="black"></TextInput>
+        <TouchableOpacity style={style.btnSend}>
+          <FontAwesome5 name="plus" size={20} solid color="black" />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   const ChatInput = () => (
     <KeyboardAvoidingView behavior="height">
       <View style={style.chatInputContainer}>
-        <View style={style.chatInputBox}>
-          <TextInput
-            value={messageInput}
-            onChangeText={val => {
-              setMessage(val);
-            }}
-            style={style.textInput}
-            placeholder="Tulis pesan"
-            placeholderTextColor="black"></TextInput>
-          <TouchableOpacity style={style.btnSend}>
-            <FontAwesome5 name="plus" size={20} solid color="black" />
-          </TouchableOpacity>
-        </View>
+        <ChatTextInput />
         <TouchableOpacity style={style.btnSend}>
           <FontAwesome5 name="paper-plane" size={20} solid color="#EBC043" />
         </TouchableOpacity>
@@ -210,7 +198,7 @@ const style = StyleSheet.create({
     width: width * 0.75,
   },
   textInput: {
-      paddingHorizontal: 20,
+    paddingHorizontal: 20,
     width: width * 0.6,
     color: 'black',
   },
