@@ -11,7 +11,7 @@ import {
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
-const TokoChat = () => {
+const TokoChat = props => {
   const [chats, setChats] = useState([
     {
       name: 'Opponent 1 Toko',
@@ -38,7 +38,12 @@ const TokoChat = () => {
   return (
     <ScrollView style={style.chatList}>
       {chats.map((chat, i) => (
-        <TouchableOpacity key={i} style={style.chatContainer}>
+        <TouchableOpacity
+          key={i}
+          style={style.chatContainer}
+          onPress={() => {
+            props.navigation.navigate('ChatPerson');
+          }}>
           <Image source={chat.image} style={style.chatImage}></Image>
           <View style={style.chatDetail}>
             <Text style={style.textTitle}>{chat.name}</Text>

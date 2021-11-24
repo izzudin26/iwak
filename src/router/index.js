@@ -31,6 +31,7 @@ import {
   DetailProductStore,
   EditProduct,
   OpenBidding,
+  ChatPerson,
 } from '../pages';
 import BottomNavigator from '../components/BottomNavigator';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -1147,6 +1148,14 @@ const Router = () => {
           headerBackVisible: false,
           headerTitleAlign: 'center',
         })}
+      />
+
+      <Stack.Screen
+        name="ChatPerson"
+        component={ChatPerson}
+        options={{
+          headerShown: false,
+        }}
       />
 
       <Stack.Screen

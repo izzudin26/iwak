@@ -47,7 +47,13 @@ const Chat = ({navigation}) => {
   return (
     <View style={{flexDirection: 'column'}}>
       {navbar()}
-      <View>{navState == 0 ? <UserChat /> : <TokoChat />}</View>
+      <View>
+        {navState == 0 ? (
+          <UserChat navigation={navigation} />
+        ) : (
+          <TokoChat navigation={navigation} />
+        )}
+      </View>
     </View>
   );
 };
