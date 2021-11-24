@@ -74,9 +74,15 @@ const ChatPerson = () => {
   };
 
   const ChatComponent = () => {
+    let scrollref = useRef();
     return (
       <View style={style.chatContainer}>
-        <ScrollView focusable={false}>
+        <ScrollView
+          focusable={false}
+          ref={scrollref}
+          onContentSizeChange={() =>
+            scrollref.current.scrollToEnd({animated: true})
+          }>
           {chats.map((chat, i) => (
             <View
               style={{
@@ -99,36 +105,45 @@ const ChatPerson = () => {
     );
   };
 
-  const ChatTextInput = () => {
+  const ChatInput = () => {
     const [messageInput, setMessage] = useState('');
 
     return (
-      <View style={style.chatInputBox}>
-        <TextInput
-          value={messageInput}
-          onChangeText={val => {
-            setMessage(val);
-          }}
-          style={style.textInput}
-          placeholder="Tulis pesan"
-          placeholderTextColor="black"></TextInput>
-        <TouchableOpacity style={style.btnSend}>
-          <FontAwesome5 name="plus" size={20} solid color="black" />
-        </TouchableOpacity>
-      </View>
+      <KeyboardAvoidingView behavior="height">
+        <View style={style.chatInputContainer}>
+          <View style={style.chatInputBox}>
+            <TextInput
+              value={messageInput}
+              onChangeText={val => {
+                setMessage(val);
+              }}
+              style={style.textInput}
+              placeholder="Tulis pesan"
+              placeholderTextColor="black"></TextInput>
+            <TouchableOpacity style={style.btnSend}>
+              <FontAwesome5 name="plus" size={20} solid color="black" />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            style={style.btnSend}
+            onPress={() => {
+              const date = new Date();
+              setChats(oldChat => [
+                ...oldChat,
+                {
+                  label: 'self',
+                  message: messageInput,
+                  time: `${date.getHours()}:${date.getMinutes()}`,
+                },
+              ]);
+              setMessage('');
+            }}>
+            <FontAwesome5 name="paper-plane" size={20} solid color="#EBC043" />
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     );
   };
-
-  const ChatInput = () => (
-    <KeyboardAvoidingView behavior="height">
-      <View style={style.chatInputContainer}>
-        <ChatTextInput />
-        <TouchableOpacity style={style.btnSend}>
-          <FontAwesome5 name="paper-plane" size={20} solid color="#EBC043" />
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
-  );
 
   return (
     <SafeAreaView style={{flex: 1}}>
