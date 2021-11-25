@@ -24,7 +24,8 @@ const ProductFeedback = () => {
       rate: 5,
       date: '10/12/2021',
       name: 'Nama Pembeli',
-      description: 'Kondisi Ikan sehat dan sempurna mantap mantap penjualn',
+      description:
+        'Kondisi ikan sehat sempurna perfect dan seperti di deskpripsi (emotapi) (emotapi)',
     },
     {
       rate: 6,
@@ -57,9 +58,44 @@ const ProductFeedback = () => {
     </View>
   );
 
+  const stars = n =>
+    Array(n)
+      .fill(0)
+      .map(() => (
+        <FontAwesome5Icon
+          onPress={() => {}}
+          name="star"
+          size={15}
+          color="#f1c40f"
+          solid={true}
+        />
+      ));
+
+  const Content = () => {
+    return reviews.map((review, i) => (
+      <View style={css.contentContainer}>
+        <View style={{flexDirection: 'row'}}>
+          {stars(review.rate)}
+          <Text style={{color: 'black', marginLeft: 10}}>{review.date}</Text>
+        </View>
+        <Text style={{color: 'black', fontSize: 15, fontWeight: 'bold'}}>
+          {review.name}
+        </Text>
+        <View style={css.descriptionBox}>
+          <Text style={{color: 'black', fontSize: 17}}>
+            {review.description}
+          </Text>
+        </View>
+      </View>
+    ));
+  };
+
   return (
     <View>
       <Header />
+      <ScrollView>
+        <Content />
+      </ScrollView>
     </View>
   );
 };
@@ -101,5 +137,29 @@ const css = StyleSheet.create({
     color: 'black',
     fontWeight: 'bold',
     marginLeft: 10,
+  },
+  contentContainer: {
+    flexDirection: 'column',
+    marginHorizontal: 25,
+    marginVertical: 5,
+    padding: 20,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4.65,
+    elevation: 5,
+  },
+  descriptionBox: {
+    maxWidth: w * 0.8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 5,
   },
 });
