@@ -28,6 +28,7 @@ import EditProduct from './EditProduct';
 import OpenBidding from './OpenBidding';
 import ChatPerson from './Chat/chatPerson';
 import Feedback from './Feedback';
+import ProductFeedback from './Feedback/ProductFeedback';
 
 export {
   Splash,
@@ -60,4 +61,5 @@ export {
   OpenBidding,
   ChatPerson,
   Feedback,
+  ProductFeedback,
 };

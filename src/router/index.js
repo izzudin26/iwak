@@ -33,6 +33,7 @@ import {
   OpenBidding,
   ChatPerson,
   Feedback,
+  ProductFeedback,
 } from '../pages';
 import BottomNavigator from '../components/BottomNavigator';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -1238,6 +1239,50 @@ const Router = () => {
                     paddingHorizontal: 20,
                   }}
                   onPress={() => navigation.navigate('Account')}
+                />
+              </View>
+            );
+          },
+          headerBackVisible: false,
+          headerTitleAlign: 'center',
+        })}
+      />
+
+      <Stack.Screen
+        name="ProductFeedback"
+        component={ProductFeedback}
+        options={({navigation, route}) => ({
+          headerStyle: {
+            backgroundColor: '#043C88',
+            height: 70,
+          },
+          headerTitle: () => (
+            <View>
+              <Text style={styles.teksHeadLoginSignup}> Feedback </Text>
+            </View>
+          ),
+          headerLeft: () => {
+            return (
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  justifyContent: 'center',
+                  width: 80,
+                  height: 35,
+                  marginLeft: -30,
+                  borderRadius: 30,
+                  overflow: 'hidden',
+                }}>
+                <FontAwesome5
+                  name="arrow-left"
+                  solid
+                  size={23}
+                  color="#F0C341"
+                  style={{
+                    alignSelf: 'flex-end',
+                    paddingHorizontal: 20,
+                  }}
+                  onPress={() => navigation.navigate('Feedback')}
                 />
               </View>
             );
