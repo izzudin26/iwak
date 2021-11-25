@@ -13,7 +13,7 @@ import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
 
-const Feedback = () => {
+const Feedback = ({navigation}) => {
   const [feeds, setFeeds] = useState([
     {
       productName: 'Oranda',
@@ -39,7 +39,9 @@ const Feedback = () => {
             style={style.productCard}
             key={i}
             activeOpacity={0.7}
-            onPress={() => {}}>
+            onPress={() => {
+              navigation.navigate('ProductFeedback');
+            }}>
             <View style={{flexDirection: 'row'}}>
               <View style={style.containerImage}>
                 <Image
