@@ -1,9 +1,16 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Dimensions} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import PersonNotification from './PersonNotification';
+import StoreNotification from './StoreNotification';
 
-const height = Dimensions.get('window').height
+const height = Dimensions.get('window').height;
 
 const Notification = () => {
   const [navState, setNavState] = useState(0);
@@ -49,7 +56,7 @@ const Notification = () => {
     <View style={{flex: 1, flexDirection: 'column'}}>
       <Navbar />
       <View style={{padding: 20, marginVertical: 20, height: height * 0.82}}>
-        <PersonNotification />
+        {navState == 0 ? <PersonNotification /> : <StoreNotification />}
       </View>
     </View>
   );

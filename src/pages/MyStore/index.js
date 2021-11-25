@@ -116,7 +116,7 @@ const MyStore = ({navigation}) => {
           <View style={styles.containerData}>
             <TouchableOpacity
               style={styles.containerBody}
-              onPress={() => navigation.navigate('IncomingOrder')}>
+              onPress={() => navigation.navigate('Feedback')}>
               <Text style={{fontSize: 18, color: 'black'}}>
                 Review & Rating
               </Text>
