@@ -12,7 +12,7 @@ import {
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-const StoreNotification = () => {
+const PersonNotification = () => {
   const [histories, setHistory] = useState([
     {
       status: 'success',
@@ -157,7 +157,7 @@ const StoreNotification = () => {
   );
 };
 
-export default StoreNotification;
+export default PersonNotification;
 
 const style = StyleSheet.create({
   containerHistory: {

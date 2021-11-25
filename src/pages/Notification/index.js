@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Dimensions} from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import StoreNotification from './StoreNotification';
+import PersonNotification from './PersonNotification';
 
 const height = Dimensions.get('window').height
 
@@ -49,7 +49,7 @@ const Notification = () => {
     <View style={{flex: 1, flexDirection: 'column'}}>
       <Navbar />
       <View style={{padding: 20, marginVertical: 20, height: height * 0.82}}>
-        <StoreNotification />
+        <PersonNotification />
       </View>
     </View>
   );
