@@ -286,3 +286,12 @@ export const getPemenangLelang = idLelang => {
       .catch(err => reject(err));
   });
 };
+
+export const getCategories = () => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`${url}/api/category`)
+      .then(res => resolve({status: res.status, body: res.data}))
+      .catch(err => reject(err));
+  });
+};

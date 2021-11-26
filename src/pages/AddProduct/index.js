@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,27 +14,31 @@ import {
 } from 'react-native-responsive-screen';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
-import {saveProduct} from '../../webservice/seller.service';
+import {saveProduct, getCategories} from '../../webservice/seller.service';
 
 function AddProduct({navigation}) {
   const [images, setImages] = useState([]);
-  const [categories, setCategories] = useState([
-    'Ikan Hias',
-    'Makanan Ikan',
-    'Obat Ikan',
-    'Vitamin Ikan',
-  ]);
-  const [category, setCategory] = useState('');
+  const [categories, setCategories] = useState(['iwak']);
+  const [indexCategory, setIndexCategory] = useState(null);
   const [name, setName] = useState('');
   const [detail, setDetail] = useState('');
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
   const [showDialog, setShowDialog] = useState(false);
+  const [isFetch, setFetch] = useState(true);
+
+  useEffect(() => {
+    if (isFetch) {
+      getCategories().then(res => {
+        setCategories(res.body.data);
+      });
+    }
+  });
 
   const handlerSave = () => {
     let form = new FormData();
     form.append('name', name);
-    form.append('id_category', categories.indexOf(category));
+    form.append('id_category', categories.indexOf(indexCategory));
     form.append('price', price);
     form.append('stock', stock);
   };
@@ -81,14 +85,14 @@ function AddProduct({navigation}) {
         isVisible={showDialog}
         style={{alignItems: 'center', justifyContent: 'center'}}>
         <View style={styles.cardBody}>
-          {categories.map(c => (
+          {categories.map((c, i) => (
             <TouchableOpacity
               style={styles.btnCategories}
               onPress={() => {
-                setCategory(c);
+                setIndexCategory(i);
                 setShowDialog(!showDialog);
               }}>
-              <Text style={{color: 'black'}}>{c}</Text>
+              <Text style={{color: 'black'}}>{c.category_name}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -109,7 +113,11 @@ function AddProduct({navigation}) {
           <TextInput
             editable={false}
             style={styles.form}
-            value={category}
+            value={
+              indexCategory != null
+                ? categories[indexCategory].category_name
+                : ''
+            }
             placeholder="Categories"
             placeholderTextColor="#707070"></TextInput>
         </TouchableOpacity>
