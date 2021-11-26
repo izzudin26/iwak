@@ -27,7 +27,7 @@ const Cart = ({navigation, route}) => {
       description: 'Pancawarna Rostail 15 cm',
     },
     {
-      productName: 'Oranda',
+      productName: 'Oranda2',
       price: 10000,
       qty: 3,
       description: 'Pancawarna Rostail 15 cm',
@@ -66,6 +66,12 @@ const Cart = ({navigation, route}) => {
     );
   };
 
+  const _removeItem = index => {
+    let currentItem = carts;
+    carts.splice(index, 1);
+    setCart([...currentItem]);
+  };
+
   const _incrementItem = index => {
     let currentItem = carts;
     currentItem[index].qty = currentItem[index].qty + 1;
@@ -84,7 +90,7 @@ const Cart = ({navigation, route}) => {
     return carts.map((cart, i) => (
       <View style={css.cartCard} key={i}>
         <View style={css.containerImage}>
-          <TouchableOpacity style={css.closeBtn}>
+          <TouchableOpacity style={css.closeBtn} onPress={() => _removeItem(i)}>
             <FontAwesome
               name="times"
               solid
