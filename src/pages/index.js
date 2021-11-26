@@ -29,6 +29,7 @@ import OpenBidding from './OpenBidding';
 import ChatPerson from './Chat/chatPerson';
 import Feedback from './Feedback';
 import ProductFeedback from './Feedback/ProductFeedback';
+import IncomingOrder from './IncomingOrder';
 
 export {
   Splash,
@@ -62,4 +63,5 @@ export {
   ChatPerson,
   Feedback,
   ProductFeedback,
+  IncomingOrder,
 };
