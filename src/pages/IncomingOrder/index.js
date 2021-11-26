@@ -163,6 +163,7 @@ const IncomingOrder = () => {
     return (
       <View>
         <Modal
+          onBackdropPress={_closeModal}
           isVisible={isShowModal}
           style={{alignItems: 'center', justifyContent: 'center'}}>
           <View style={css.modalCard}>
@@ -182,6 +183,7 @@ const IncomingOrder = () => {
     return (
       <View>
         <Modal
+          onBackdropPress={_closeModal}
           isVisible={isShowTransactionModal}
           style={{alignItems: 'center', justifyContent: 'center'}}>
           <View style={css.modalCard}>
