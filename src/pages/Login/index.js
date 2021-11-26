@@ -105,7 +105,7 @@ const Login = ({navigation}) => {
             <TextInput
               style={styles.inputStyle}
               onChangeText={UserPassword => setUserPassword(UserPassword)}
-              placeholder="Password" //12345
+              placeholder="Password"
               placeholderTextColor="#000"
               keyboardType="default"
               ref={passwordInputRef}
@@ -189,6 +189,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    color: 'black',
   },
   registerTextStyle: {
     color: '#043C88',
