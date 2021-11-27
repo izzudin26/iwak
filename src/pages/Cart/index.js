@@ -59,7 +59,13 @@ const Cart = ({navigation, route}) => {
             Rp. {_getTotal()}
           </Text>
         </View>
-        <TouchableOpacity style={css.checkoutBtn} onPress={() => {}}>
+        <TouchableOpacity
+          style={css.checkoutBtn}
+          onPress={() => {
+            navigation.navigate('Shipping', {
+              items: carts,
+            });
+          }}>
           <Text style={{color: '#F5C63F'}}>Check Out</Text>
         </TouchableOpacity>
       </View>
