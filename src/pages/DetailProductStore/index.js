@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,12 +12,20 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {getProduct, getToko} from '../../webservice/seller.service';
+import {url} from '../../webservice/url';
 
-const DetailProductStore = ({navigation}) => {
+const DetailProductStore = ({navigation, route}) => {
   const [click, setClick] = useState(1);
   const [indexImage, setIndexImage] = useState(0);
   const [stock, setStock] = useState(10);
   const [price, setPrice] = useState(200000);
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [stars, setStar] = useState(0);
+  const [toko, setToko] = useState('');
+  const [tokoImg, setTokoImg] = useState(null);
+  const [tokoAddress, setTokoAddress] = useState('');
   const [images, setImages] = useState([
     {
       url: require('../../assets/images/agaru.png'),
@@ -35,6 +43,31 @@ const DetailProductStore = ({navigation}) => {
       url: require('../../assets/images/agaru.png'),
     },
   ]);
+  const [isFetch, setFetch] = useState(true);
+  const {productId} = route.params;
+
+  useEffect(() => {
+    if (isFetch) {
+      getProduct(productId)
+        .then(res => {
+          setName(res.body.product.name);
+          setPrice(res.body.product.price);
+          setStock(res.body.product.stock);
+          setDescription(res.body.product.description);
+        })
+        .catch(err => alert(err));
+
+      getToko()
+        .then(res => {
+          const {data} = res.body;
+          setToko(data.namatoko);
+          setTokoImg(`${url}/${data.profile_toko}`);
+          setTokoAddress(data.address);
+        })
+        .catch(err => alert(err));
+      setFetch(false);
+    }
+  });
 
   const PressedPlus = () => {
     setClick(click + 1);
@@ -89,11 +122,7 @@ const DetailProductStore = ({navigation}) => {
           </ScrollView>
         </View>
         <View style={{width: wp('75%'), marginVertical: 20}}>
-          <Text style={{color: 'black', fontSize: 18}}>
-            Ini adalah keterangan tentang jenis ikan yang akan dijual pada toko
-            ini. Ikan ini merupakan ikan hias oranda berukuran jumbo dengan
-            kualitas premium
-          </Text>
+          <Text style={{color: 'black', fontSize: 18}}>{description}</Text>
         </View>
 
         <View style={styles.ContainerBottom}>
@@ -112,7 +141,7 @@ const DetailProductStore = ({navigation}) => {
                   fontWeight: 'bold',
                   color: 'black',
                 }}>
-                Nama Product
+                {name}
               </Text>
               <Text
                 style={{
@@ -121,10 +150,10 @@ const DetailProductStore = ({navigation}) => {
                   fontSize: 15,
                   color: 'black',
                 }}>
-                Ini adalah keterangan product
+                {/* Ini adalah keterangan product */}
               </Text>
               <View style={{flexDirection: 'row', marginVertical: 5}}>
-                {star(5)}
+                {star(stars)}
               </View>
               <View style={{marginVertical: 5}}>
                 <Text style={{fontSize: 15, color: 'black'}}>
@@ -135,7 +164,7 @@ const DetailProductStore = ({navigation}) => {
 
             <View style={{flexDirection: 'column', alignItems: 'center'}}>
               <Image
-                source={require('../../assets/images/fotoUser.jpg')}
+                source={{uri: tokoImg}}
                 style={{
                   width: 70,
                   height: 70,
@@ -149,7 +178,7 @@ const DetailProductStore = ({navigation}) => {
                   width: 120,
                   textAlign: 'center',
                 }}>
-                Nama Toko
+                {toko}
               </Text>
               <Text
                 style={{
@@ -158,7 +187,7 @@ const DetailProductStore = ({navigation}) => {
                   width: 120,
                   textAlign: 'center',
                 }}>
-                Lokasi Toko
+                {tokoAddress}
               </Text>
             </View>
           </View>

@@ -1350,7 +1350,7 @@ const Router = () => {
                     alignSelf: 'flex-end',
                     paddingHorizontal: 20,
                   }}
-                  onPress={() => navigation.navigate('Account')}
+                  onPress={() => navigation.pop()}
                 />
               </View>
             );

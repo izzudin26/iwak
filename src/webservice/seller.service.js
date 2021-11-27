@@ -70,12 +70,12 @@ export const getFeed = () => {
  * get product collection
  * @returns {Promise<response>}
  */
-export const getProducts = () => {
-  let idAccount = getCurrentIdAccount();
+export const getProducts = async () => {
+  let idAccount = await getCurrentIdAccount();
   return new Promise((resolve, reject) => {
     axios
-      .post(`${url}/api/penjual/produk`, {id_account: idAccount})
-      .then(res => resolve({status: res.status, body: res.data}))
+      .get(`${url}/api/penjual/produk?id_account=${idAccount}`)
+      .then(res => resolve({status: res.data.status, body: res.data}))
       .catch(err => reject(err));
   });
 };

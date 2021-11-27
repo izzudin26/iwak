@@ -1,21 +1,26 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {getProducts} from '../../webservice/seller.service';
 
 const ProductForSale = props => {
-  const [datas, setData] = useState([
-    {name: 'Oranda', price: '600000', stock: 10},
-    {name: 'Obat Biru', price: '20000', stock: 100},
-    {name: 'Obat Biru', price: '20000', stock: 100},
-    {name: 'Obat Biru', price: '20000', stock: 100},
-    {name: 'Obat Biru', price: '20000', stock: 100},
-    {name: 'Obat Biru', price: '20000', stock: 100},
-    {name: 'Obat Biru', price: '20000', stock: 100},
-    {name: 'Obat Biru', price: '20000', stock: 100},
-  ]);
+  const [datas, setData] = useState([]);
+  const [isFetch, setFetch] = useState(true);
+
+  useEffect(() => {
+    if (isFetch) {
+      getProducts()
+        .then(res => {
+          setFetch(false);
+          setData(res.body.data);
+          console.log(res);
+        })
+        .catch(err => alert(err));
+    }
+  });
 
   return (
     <View style={style.container}>
@@ -23,8 +28,12 @@ const ProductForSale = props => {
         <TouchableOpacity
           activeOpacity={0.6}
           style={style.product}
-          key={i}
-          onPress={() => props.navigation.navigate('DetailProductStore')}>
+          key={data.id_produk}
+          onPress={() =>
+            props.navigation.navigate('DetailProductStore', {
+              productId: data.id_produk,
+            })
+          }>
           <View style={style.photoContainer}>
             <Image
               style={style.photo}

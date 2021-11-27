@@ -64,7 +64,7 @@ export const registration = ({fullname, email, password} = {}) => {
  * Get AccountID
  * @returns {string} accountId
  */
-export const getCurrentIdAccount = () => {
+export const getCurrentIdAccount = async () => {
   return Storage.load({key: 'userId', id: 'userId', autoSync: true});
 };
 
