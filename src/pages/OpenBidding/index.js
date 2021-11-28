@@ -13,15 +13,32 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Modal from 'react-native-modal';
+import {getProduct} from '../../webservice/seller.service';
 
-const OpenBidding = ({navigation}) => {
+const OpenBidding = ({navigation, route}) => {
   const [image, setImage] = useState(
     require('../../assets/images/Oranda2.png'),
   );
-  const [product, setProduct] = useState('Oranda Fish');
-  const [stock, setStock] = useState(200);
+  const [product, setProduct] = useState('');
+  const [stock, setStock] = useState(0);
   const [price, setPrice] = useState('');
   const [visibleModal, setVisibleModal] = useState(false);
+  const [doFetch, setDoFetch] = useState(true);
+  const {productId} = route.params;
+  useEffect(() => {
+    if (doFetch) {
+      getProduct(productId)
+        .then(res => {
+          const {product} = res.body;
+          console.log(res);
+          setProduct(product.name);
+          setStock(product.stock);
+        })
+        .catch(err => alert(err));
+
+      setDoFetch(false);
+    }
+  });
 
   const showModal = () => (
     <Modal isVisible={visibleModal}>
@@ -119,7 +136,7 @@ const OpenBidding = ({navigation}) => {
           alignSelf: 'center',
           position: 'absolute',
           bottom: 0,
-          elevation: 0
+          elevation: 0,
         }}>
         <Text style={{color: '#F0C341', marginLeft: 5, fontSize: 17}}>
           DONE
@@ -146,6 +163,7 @@ const styles = StyleSheet.create({
   containerProduct: {
     justifyContent: 'center',
     width: wp('80%'),
+    alignSelf: 'center',
     flexDirection: 'row',
     paddingHorizontal: 30,
     paddingVertical: 30,
