@@ -16,27 +16,32 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
 import {saveProduct} from '../../webservice/seller.service';
 
-function EditProduct({navigation}) {
+function EditProduct({navigation, route}) {
   const [images, setImages] = useState([]);
-  const [categories, setCategories] = useState([
-    'Ikan Hias',
-    'Makanan Ikan',
-    'Obat Ikan',
-    'Vitamin Ikan',
-  ]);
-  const [category, setCategory] = useState('');
-  const [name, setName] = useState('');
-  const [detail, setDetail] = useState('');
-  const [price, setPrice] = useState('');
-  const [stock, setStock] = useState('');
-  const [showDialog, setShowDialog] = useState(false);
+  const {product} = route.params;
+  const [name, setName] = useState(product.name);
+  const [detail, setDetail] = useState(product.description);
+  const [price, setPrice] = useState(product.price.toString());
+  const [stock, setStock] = useState(product.stock.toString());
 
   const handlerSave = () => {
     let form = new FormData();
+    form.append('id', product.id);
     form.append('name', name);
-    form.append('id_category', categories.indexOf(category));
-    form.append('price', price);
-    form.append('stock', stock);
+    form.append('description', detail);
+    form.append('price', parseInt(price));
+    form.append('stock', parseInt(stock));
+    form.append('category', product.category);
+    form.append('isdiskon', product.isdiskon);
+    form.append('diskon', product.diskon);
+    saveProduct(form)
+      .then(res => {
+        if (res.status == 200) {
+          alert('Data Berhasil Disimpan');
+          navigation.navigate('ListProduct');
+        }
+      })
+      .catch(err => alert(err));
   };
 
   const handlerImage = () => {
@@ -75,27 +80,6 @@ function EditProduct({navigation}) {
     );
   };
 
-  const showModal = () => (
-    <View>
-      <Modal
-        isVisible={showDialog}
-        style={{alignItems: 'center', justifyContent: 'center'}}>
-        <View style={styles.cardBody}>
-          {categories.map(c => (
-            <TouchableOpacity
-              style={styles.btnCategories}
-              onPress={() => {
-                setCategory(c);
-                setShowDialog(!showDialog);
-              }}>
-              <Text style={{color: 'black'}}>{c}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </Modal>
-    </View>
-  );
-
   const form = () => {
     return (
       <View>
@@ -105,14 +89,7 @@ function EditProduct({navigation}) {
           onChangeText={value => setName(value)}
           placeholder="Nama Produk"
           placeholderTextColor="#707070"></TextInput>
-        <TouchableOpacity onPress={() => setShowDialog(true)}>
-          <TextInput
-            editable={false}
-            style={styles.form}
-            value={category}
-            placeholder="Categories"
-            placeholderTextColor="#707070"></TextInput>
-        </TouchableOpacity>
+
         <TextInput
           style={styles.form}
           value={detail}
@@ -135,7 +112,6 @@ function EditProduct({navigation}) {
           placeholder="Stok"
           keyboardType="numeric"
           placeholderTextColor="#707070"></TextInput>
-        {showModal()}
       </View>
     );
   };
@@ -191,7 +167,7 @@ function EditProduct({navigation}) {
       <View>{photoProduct()}</View>
       <View style={{paddingVertical: 15}}>
         <TouchableOpacity
-          onPress={() => {}}
+          onPress={handlerSave}
           style={{
             flexDirection: 'row',
             alignItems: 'center',

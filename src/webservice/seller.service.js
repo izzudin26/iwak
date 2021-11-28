@@ -96,8 +96,8 @@ export const getProducts = async () => {
  * @param {!productData} productData
  * @returns {Promise<response>}
  */
-export const saveProduct = photoFormData => {
-  photoFormData.append('id_account', getCurrentIdAccount());
+export const saveProduct = async photoFormData => {
+  photoFormData.append('id_account', await getCurrentIdAccount());
   return new Promise((resolve, reject) => {
     axios
       .post(`${url}/api/penjual/produk/simpan`, photoFormData, {
@@ -105,7 +105,7 @@ export const saveProduct = photoFormData => {
           'content-type': 'multipart/form-data',
         },
       })
-      .then(res => resolve({status: res.status, body: res.data}))
+      .then(res => resolve({status: res.data.code, body: res.data}))
       .catch(err => reject(err));
   });
 };
@@ -119,7 +119,7 @@ export const getProduct = idProduct => {
   return new Promise((resolve, reject) => {
     axios
       .post(`${url}/api/penjual/produk/view`, {id: idProduct})
-      .then(res => resolve({status: res.status, body: res.data}))
+      .then(res => resolve({status: res.data.code, body: res.data}))
       .catch(err => reject(err));
   });
 };

@@ -26,6 +26,9 @@ const DetailProductStore = ({navigation, route}) => {
   const [toko, setToko] = useState('');
   const [tokoImg, setTokoImg] = useState(null);
   const [tokoAddress, setTokoAddress] = useState('');
+  const [idCategory, setIdCategory] = useState(null);
+  const [isDiskon, setIsDiskon] = useState(null);
+  const [diskon, setDiskon] = useState(null);
   const [images, setImages] = useState([
     {
       url: require('../../assets/images/agaru.png'),
@@ -54,6 +57,9 @@ const DetailProductStore = ({navigation, route}) => {
           setPrice(res.body.product.price);
           setStock(res.body.product.stock);
           setDescription(res.body.product.description);
+          setDiskon(res.body.product.diskon);
+          setIsDiskon(res.body.product.isdiskon);
+          setIdCategory(res.body.product.category);
         })
         .catch(err => alert(err));
 
@@ -229,7 +235,20 @@ const DetailProductStore = ({navigation, route}) => {
                 justifyContent: 'center',
                 alignSelf: 'center',
               }}
-              onPress={() => navigation.navigate('EditProduct')}>
+              onPress={() =>
+                navigation.navigate('EditProduct', {
+                  product: {
+                    id: productId,
+                    name: name,
+                    description: description,
+                    price: price,
+                    stock: stock,
+                    category: idCategory,
+                    isDiskon: isDiskon,
+                    diskon: diskon,
+                  },
+                })
+              }>
               <Text style={{color: '#FFF', fontWeight: 'bold'}}>
                 Edit Product
               </Text>
