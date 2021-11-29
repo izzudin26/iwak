@@ -24,3 +24,26 @@ export const getProduct = async (
     throw error;
   }
 };
+
+export const getProductLelang = async (
+  {sort, sortfield, category, keyword} = {sort: 'DESC'},
+) => {
+  const idAccount = await getCurrentIdAccount();
+  const data = {
+    id_account: idAccount,
+    sort,
+    sortfield,
+    category,
+    keyword,
+  };
+
+  try {
+    const res = await axios.post(`${url}/api/pembeli/lelang`, data);
+    return {
+      status: res.data.code,
+      body: res.data,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
