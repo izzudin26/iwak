@@ -17,6 +17,7 @@ const ProductList = ({
   profileToko,
   productImage,
   urlSegment,
+  productStar,
 }) => {
   const star = n => {
     let stars = [];
@@ -29,6 +30,23 @@ const ProductList = ({
           size={10}
           color="#f1c40f"
           solid={true}
+          key={i}
+        />,
+      );
+    }
+    return stars;
+  };
+
+  const unstar = n => {
+    let stars = [];
+
+    for (let i = 0; i < n; i++) {
+      stars.push(
+        <FontAwesome5
+          onPress={() => {}}
+          name="star"
+          size={10}
+          color="#f1c40f"
           key={i}
         />,
       );
@@ -68,6 +86,7 @@ const ProductList = ({
       profileToko,
       productImage,
       urlSegment,
+      productStar,
     };
     if (isLikeExist) {
       await Storage.remove({
@@ -101,7 +120,10 @@ const ProductList = ({
       <Text style={{height: 15, fontSize: 10, color: 'black', marginBottom: 2}}>
         Ini adalah keterangan product
       </Text>
-      <View style={{flexDirection: 'row', marginBottom: 5}}>{star(5)}</View>
+      <View style={{flexDirection: 'row', marginBottom: 5}}>
+        {star(productStar)}
+        {unstar(5 - productStar)}
+      </View>
       <View
         style={{flexDirection: 'row', alignItems: 'center', marginBottom: 7}}>
         <Image
