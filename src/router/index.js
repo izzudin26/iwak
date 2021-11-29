@@ -1368,7 +1368,11 @@ const Router = () => {
             backgroundColor: '#043C88',
             height: 70,
           },
-          headerTitle: '',
+          headerTitle: () => (
+            <View>
+              <Text style={styles.teksHeadLoginSignup}> D E T A I L  P R O D U K </Text>
+            </View>
+          ),
           headerLeft: () => {
             return (
               <View
@@ -1397,48 +1401,6 @@ const Router = () => {
           },
           headerBackVisible: false,
           headerTitleAlign: 'center',
-          headerRight: () => {
-            return (
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-                <FontAwesome5
-                  name="bell"
-                  solid
-                  size={23}
-                  color="#F0C341"
-                  onPress={() => navigation.navigate('Notification')}
-                />
-                <Badge
-                  status="error"
-                  value={5}
-                  containerStyle={{
-                    position: 'absolute',
-                    top: -4,
-                    left: 10,
-                    zIndex: 2,
-                  }}
-                />
-                <FontAwesome5
-                  name="shopping-cart"
-                  solid
-                  size={23}
-                  style={{marginHorizontal: 15}}
-                  color="#F0C341"
-                  onPress={() => navigation.navigate('Cart')}
-                />
-                <Badge
-                  status="error"
-                  value={15}
-                  containerStyle={{
-                    position: 'absolute',
-                    top: -4,
-                    right: 2,
-                    zIndex: 2,
-                  }}
-                />
-              </View>
-            );
-          },
         })}
       />
 
