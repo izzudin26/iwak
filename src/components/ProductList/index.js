@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Storage from '../../storage';
 
 const ProductList = ({
   navigation,
@@ -33,6 +34,56 @@ const ProductList = ({
       );
     }
     return stars;
+  };
+
+  const [isLikeExist, setIsLike] = useState(false);
+  const [doGet, setDoGet] = useState(true);
+  useEffect(() => {
+    if (doGet) {
+      isLike().then(res => {
+        if (res) {
+          setIsLike(true);
+        } else {
+          setIsLike(false);
+        }
+      });
+    }
+    setDoGet(false);
+  });
+
+  const isLike = async () => {
+    return await Storage.load({
+      key: 'wishlist',
+      id: idproduct,
+    });
+  };
+
+  const triggerWishlist = async () => {
+    const data = {
+      productname,
+      idproduct,
+      tokoname,
+      price,
+      address,
+      profileToko,
+      productImage,
+      urlSegment,
+    };
+    if (isLikeExist) {
+      await Storage.remove({
+        key: 'wishlist',
+        id: idproduct,
+      });
+      setIsLike(false);
+    } else {
+      await Storage.save({
+        key: 'wishlist',
+        id: idproduct,
+        data: data,
+        expires: null,
+      });
+      setIsLike(true);
+    }
   };
 
   return (
@@ -81,10 +132,10 @@ const ProductList = ({
           Rp. {price}
         </Text>
         <FontAwesome5
-          onPress={() => {}}
+          onPress={triggerWishlist}
           name="gratipay"
           size={30}
-          color="pink"
+          color={isLikeExist ? 'red' : 'pink'}
           solid={true}
         />
       </View>
