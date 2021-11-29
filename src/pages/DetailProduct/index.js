@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,37 +12,58 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {url} from '../../webservice/url';
+import {getProductSegment} from '../../webservice/buyer.service';
 
-const DetailProductStore = ({navigation}) => {
+const DetailProductStore = ({navigation, route}) => {
   const [click, setClick] = useState(1);
-  const [indexImage, setIndexImage] = useState(0);
+  const [indexImage, setIndexImage] = useState(null);
   const [stock, setStock] = useState(10);
   const [price, setPrice] = useState(200000);
   const [total, setTotal] = useState(0);
-  const [images, setImages] = useState([
-    {
-      url: require('../../assets/images/agaru.png'),
-    },
-    {
-      url: require('../../assets/images/Auction.png'),
-    },
-    {
-      url: require('../../assets/images/agaru.png'),
-    },
-    {
-      url: require('../../assets/images/Auction.png'),
-    },
-    {
-      url: require('../../assets/images/agaru.png'),
-    },
-  ]);
+  const [idProduct, setIdProduct] = useState(null);
+  const [name, setName] = useState('');
+  const [tokoName, setTokoName] = useState('');
+  const [profileToko, setProfileToko] = useState('');
+  const [productStar, setStar] = useState(0);
+  const [address, setAddress] = useState('');
+  const [detail, setDetail] = useState('');
+  const [doFetch, setFetch] = useState(true);
+  const [images, setImages] = useState([]);
+
+  const {urlSegment} = route.params;
+  useEffect(() => {
+    if (doFetch) {
+      getProductSegment({urlSegment: urlSegment})
+        .then(res => {
+          const {data, image} = res.body;
+          setName(data[0].name);
+          setIdProduct(data[0].id_produk);
+          setPrice(data[0].price);
+          setDetail(data[0].description);
+          setStock(data[0].stock);
+          setTokoName(data[0].namatoko);
+          setProfileToko(`${url}/${data[0].profile_toko}`);
+          setStar(parseInt(data[0].star));
+          image.map(i => {
+            const listImage = images;
+            listImage.push(`${url}/${i.image}`);
+            setImages([...listImage]);
+          });
+          setIndexImage(0);
+          console.log(images);
+        })
+        .catch(err => alert(err));
+      setFetch(false);
+    }
+  });
 
   const PressedPlus = () => {
-    setClick(click + 1);
+    if (total < stock) setTotal(prevTotal => total + 1);
   };
 
   const PressedMinus = () => {
-    setClick(click - 1);
+    if (total > 0) setTotal(prevTotal => total - 1);
   };
 
   const star = n => {
@@ -63,6 +84,23 @@ const DetailProductStore = ({navigation}) => {
     return stars;
   };
 
+  const unstar = n => {
+    let stars = [];
+
+    for (let i = 0; i < n; i++) {
+      stars.push(
+        <FontAwesome5
+          onPress={() => {}}
+          name="star"
+          size={15}
+          color="#f1c40f"
+          key={i}
+        />,
+      );
+    }
+    return stars;
+  };
+
   const Many = () => {
     return (
       <View style={styles.contaienrValue}>
@@ -71,11 +109,7 @@ const DetailProductStore = ({navigation}) => {
             name="minus"
             size={15}
             color="black"
-            onPress={() => {
-              if (total > 0) {
-                setTotal(prevTotal => prevTotal - 1);
-              }
-            }}></FontAwesome5>
+            onPress={PressedMinus}></FontAwesome5>
         </TouchableOpacity>
         <Text style={{color: 'black', marginHorizontal: 20}}>{total}</Text>
         <TouchableOpacity>
@@ -83,9 +117,7 @@ const DetailProductStore = ({navigation}) => {
             name="plus"
             size={15}
             color="black"
-            onPress={() => {
-              setTotal(prevTotal => prevTotal + 1);
-            }}></FontAwesome5>
+            onPress={PressedPlus}></FontAwesome5>
         </TouchableOpacity>
       </View>
     );
@@ -95,7 +127,10 @@ const DetailProductStore = ({navigation}) => {
     <ScrollView>
       <View style={{alignItems: 'center', justifyContent: 'center'}}>
         <View style={styles.ContainerMainImage}>
-          <Image source={images[indexImage].url} style={styles.MainImage} />
+          <Image
+            source={{uri: indexImage != null ? images[indexImage] : null}}
+            style={styles.MainImage}
+          />
         </View>
 
         <View
@@ -107,22 +142,19 @@ const DetailProductStore = ({navigation}) => {
             height: hp('15%'),
           }}>
           <ScrollView horizontal={true}>
-            {images.map((image, i) => (
-              <TouchableOpacity
-                onPress={() => setIndexImage(i)}
-                style={styles.ContainerSmallImage}
-                key={i}>
-                <Image source={image.url} style={styles.ImageSmall} />
-              </TouchableOpacity>
-            ))}
+            {images.length > 0 &&
+              images.map((image, i) => (
+                <TouchableOpacity
+                  onPress={() => setIndexImage(i)}
+                  style={styles.ContainerSmallImage}
+                  key={i}>
+                  <Image source={{uri: image}} style={styles.ImageSmall} />
+                </TouchableOpacity>
+              ))}
           </ScrollView>
         </View>
         <View style={{width: wp('75%'), marginVertical: 20}}>
-          <Text style={{color: 'black', fontSize: 18}}>
-            Ini adalah keterangan tentang jenis ikan yang akan dijual pada toko
-            ini. Ikan ini merupakan ikan hias oranda berukuran jumbo dengan
-            kualitas premium
-          </Text>
+          <Text style={{color: 'black', fontSize: 18}}>{detail}</Text>
         </View>
 
         <View style={styles.ContainerBottom}>
@@ -141,7 +173,7 @@ const DetailProductStore = ({navigation}) => {
                   fontWeight: 'bold',
                   color: 'black',
                 }}>
-                Nama Product
+                {name}
               </Text>
               <Text
                 style={{
@@ -153,7 +185,8 @@ const DetailProductStore = ({navigation}) => {
                 Ini adalah keterangan product
               </Text>
               <View style={{flexDirection: 'row', marginVertical: 5}}>
-                {star(5)}
+                {star(productStar)}
+                {unstar(5 - productStar)}
               </View>
               <View style={{marginVertical: 5}}>
                 <Text style={{fontSize: 15, color: 'black'}}>
@@ -164,7 +197,7 @@ const DetailProductStore = ({navigation}) => {
 
             <View style={{flexDirection: 'column', alignItems: 'center'}}>
               <Image
-                source={require('../../assets/images/fotoUser.jpg')}
+                source={{uri: profileToko}}
                 style={{
                   width: 70,
                   height: 70,
@@ -178,7 +211,7 @@ const DetailProductStore = ({navigation}) => {
                   width: 120,
                   textAlign: 'center',
                 }}>
-                Nama Toko
+                {tokoName}
               </Text>
               <Text
                 style={{
@@ -187,7 +220,7 @@ const DetailProductStore = ({navigation}) => {
                   width: 120,
                   textAlign: 'center',
                 }}>
-                Lokasi Toko
+                {/* {address.slice(0, 20)}... */}
               </Text>
             </View>
           </View>

@@ -150,7 +150,7 @@ const Sale = ({navigation}) => {
                 address={`${product.address.slice(0, 15)}...`}
                 productImage={`${url}/${product.image}`}
                 price={product.price}
-                urlsegment={product.url_segment}
+                urlSegment={product.url_segment}
               />
             ))}
         </View>

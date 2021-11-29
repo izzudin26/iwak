@@ -15,6 +15,7 @@ const ProductList = ({
   address,
   profileToko,
   productImage,
+  urlSegment,
 }) => {
   const star = n => {
     let stars = [];
@@ -37,7 +38,11 @@ const ProductList = ({
   return (
     <TouchableOpacity
       style={styles.Container}
-      onPress={() => navigation.navigate('DetailProduct')}>
+      onPress={() =>
+        navigation.navigate('DetailProduct', {
+          urlSegment,
+        })
+      }>
       <Image source={{uri: productImage}} style={styles.Gambar} />
       <Text style={{height: 25, fontSize: 20, color: 'black'}}>
         {productname}

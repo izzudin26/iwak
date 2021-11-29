@@ -47,3 +47,18 @@ export const getProductLelang = async (
     throw error;
   }
 };
+
+export const getProductSegment = async ({urlSegment}) => {
+  console.log(`${url}/api/pembeli/product/detail/${urlSegment}`);
+  try {
+    const res = await axios.get(
+      `${url}/api/pembeli/product/detail/${urlSegment}`,
+    );
+    return {
+      status: res.data.code,
+      body: res.data,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
