@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import {SearchBar, Button} from 'react-native-elements';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -7,8 +7,22 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {getProduct} from '../../webservice/buyer.service';
+import {url} from '../../webservice/url';
 
 const Sale = ({navigation}) => {
+  const [datas, setData] = useState([]);
+  const [doFetch, setFetch] = useState(true);
+  useEffect(() => {
+    if (doFetch) {
+      getProduct()
+        .then(res => {
+          setData(res.body.data.data);
+        })
+        .catch(err => alert(err));
+    }
+    setFetch(false);
+  });
   return (
     <ScrollView>
       <View style={{marginBottom: 20}}>
@@ -124,9 +138,21 @@ const Sale = ({navigation}) => {
             }}>
             Found{'\n'}3 Results
           </Text>
-          <ProductList navigation={navigation} />
-          <ProductList navigation={navigation} />
-          <ProductList navigation={navigation} />
+          {datas.length > 0 &&
+            datas.map((product, i) => (
+              <ProductList
+                navigation={navigation}
+                key={product.id_produk}
+                productname={product.name}
+                idproduct={product.id_produk}
+                tokoname={product.namatoko}
+                profileToko={`${url}/${product.profile_toko}`}
+                address={`${product.address.slice(0, 15)}...`}
+                productImage={`${url}/${product.image}`}
+                price={product.price}
+                urlsegment={product.url_segment}
+              />
+            ))}
         </View>
       </View>
     </ScrollView>
