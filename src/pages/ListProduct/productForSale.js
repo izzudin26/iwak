@@ -5,6 +5,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {getProducts} from '../../webservice/seller.service';
+import {url} from '../../webservice/url';
 
 const ProductForSale = props => {
   const [datas, setData] = useState([]);
@@ -16,7 +17,6 @@ const ProductForSale = props => {
         .then(res => {
           setFetch(false);
           setData(res.body.data);
-          console.log(res);
         })
         .catch(err => alert(err));
     }
@@ -37,7 +37,7 @@ const ProductForSale = props => {
           <View style={style.photoContainer}>
             <Image
               style={style.photo}
-              source={require('../../assets/images/agaru.png')}></Image>
+              source={{uri: `${url}/${data.image}`}}></Image>
           </View>
           <View
             style={{
