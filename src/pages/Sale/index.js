@@ -1,5 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import {SearchBar, Button} from 'react-native-elements';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import ProductList from '../../components/ProductList';
@@ -9,10 +15,24 @@ import {
 } from 'react-native-responsive-screen';
 import {getProduct} from '../../webservice/buyer.service';
 import {url} from '../../webservice/url';
+import Modal from 'react-native-modal';
 
 const Sale = ({navigation}) => {
   const [datas, setData] = useState([]);
   const [doFetch, setFetch] = useState(true);
+  const [isShowModal, setModal] = useState(false);
+  const [filter, setFilter] = useState(null);
+  const [category, setCategory] = useState(null);
+  const [filterMenu] = useState([
+    {
+      name: 'Lowest Price',
+      method: 'ASC',
+    },
+    {
+      name: 'Highest Price',
+      method: 'DESC',
+    },
+  ]);
   useEffect(() => {
     if (doFetch) {
       getProduct()
@@ -23,8 +43,40 @@ const Sale = ({navigation}) => {
     }
     setFetch(false);
   });
+
+  const OptionModal = () => (
+    <Modal
+      isVisible={isShowModal}
+      onBackdropPress={() => setModal(false)}
+      style={{
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+      }}>
+      <View style={styles.modalBody}>
+        <View style={styles.box}></View>
+        <View style={{flexDirection: 'column'}}>
+          <Text
+            style={{
+              color: 'black',
+              fontSize: 30,
+              fontWeight: 'bold',
+              marginBottom: 15,
+            }}>
+            Filter
+          </Text>
+          {filterMenu.map((filter, indexFilter) => (
+            <TouchableOpacity style={styles.buttonFilter} key={indexFilter}>
+              <Text style={{color: 'black'}}>{filter.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+    </Modal>
+  );
+
   return (
     <ScrollView>
+      <OptionModal />
       <View style={{marginBottom: 20}}>
         <View
           style={{
@@ -73,7 +125,8 @@ const Sale = ({navigation}) => {
             onSubmitEditing={() => {}}
           />
 
-          <View
+          <TouchableOpacity
+            onPress={() => setModal(true)}
             style={{
               width: 50,
               height: 50,
@@ -91,13 +144,12 @@ const Sale = ({navigation}) => {
               elevation: 5,
             }}>
             <FontAwesome5
-              onPress={() => {}}
               name="chart-bar"
               size={25}
               color="#777"
               solid={false}
             />
-          </View>
+          </TouchableOpacity>
         </View>
 
         <View
@@ -163,4 +215,34 @@ const Sale = ({navigation}) => {
 
 export default Sale;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  modalBody: {
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+    backgroundColor: '#FFFF',
+    width: wp('100%'),
+    height: hp('50%'),
+    flexDirection: 'column',
+    bottom: -20,
+    elevation: 30,
+  },
+  box: {
+    alignSelf: 'center',
+    width: wp('20%'),
+    height: hp('0.8%'),
+    backgroundColor: '#747474',
+    borderRadius: 100,
+  },
+  buttonFilter: {
+    width: wp('30%'),
+    borderColor: '#00000',
+    borderRadius: 15,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 5,
+    marginVertical: 6,
+  },
+});

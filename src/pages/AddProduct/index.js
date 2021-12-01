@@ -33,35 +33,66 @@ function AddProduct({navigation}) {
         setCategories(res.body.data);
       });
     }
+    setFetch(false);
   });
 
   const handlerSave = () => {
     let form = new FormData();
     form.append('name', name);
-    form.append('id_category', categories.indexOf(indexCategory));
+    form.append('category', categories[indexCategory].id_category);
     form.append('price', price);
     form.append('stock', stock);
+    form.append('diskon', 0);
+    form.append('isdiskon', 'N');
+    form.append('description', detail);
+    for (let i in images) {
+      form.append(`file[${i}]`, {
+        name: `${images[i].filename}.jpeg`,
+        uri: images[i].path,
+        mime: images[i].mime,
+      });
+    }
+    for (let i in images) {
+      console.log(i);
+      form.append(`file`, {
+        name: `${images[i].filename}.jpeg`,
+        mime: images[i].mime,
+        uri: images[i].path,
+      });
+    }
+    saveProduct(form)
+      .then(res => {
+        console.log(res);
+        if (res.status == 200) {
+          alert('Berhasil Menyimpan data');
+          navigation.pop();
+        } else {
+          alert(res.body.message);
+        }
+      })
+      .catch(err => alert(err));
   };
 
   const handlerImage = () => {
     ImageCropPicker.openPicker({
       cropping: true,
       forceJpg: true,
-    }).then(res => {
-      if (res.width != res.height) {
-        alert('Mohon pilih rasio 1:1');
-      } else {
-        setImages(currentImages => [
-          ...currentImages,
-          {
-            filename: res.filename,
-            mime: res.mime,
-            path: res.path,
-          },
-        ]);
-        console.log(images);
-      }
-    });
+    })
+      .then(res => {
+        if (res.width != res.height) {
+          alert('Mohon pilih rasio 1:1');
+        } else {
+          setImages(currentImages => [
+            ...currentImages,
+            {
+              filename: res.filename,
+              mime: res.mime,
+              path: res.path,
+            },
+          ]);
+        }
+      }, 100)
+      .catch(err => console.log(err));
   };
 
   const header = () => {
@@ -87,9 +118,11 @@ function AddProduct({navigation}) {
         <View style={styles.cardBody}>
           {categories.map((c, i) => (
             <TouchableOpacity
+              key={i}
               style={styles.btnCategories}
               onPress={() => {
                 setIndexCategory(i);
+                console.log(indexCategory);
                 setShowDialog(!showDialog);
               }}>
               <Text style={{color: 'black'}}>{c.category_name}</Text>
@@ -151,10 +184,10 @@ function AddProduct({navigation}) {
   const photos = () => {
     return (
       <ScrollView horizontal={true}>
-        {images.map(i => {
+        {images.map((image, i) => {
           return (
-            <TouchableOpacity style={styles.imageAddButton} key={i.filename}>
-              <Image style={styles.images} source={{uri: i.path}}></Image>
+            <TouchableOpacity style={styles.imageAddButton} key={i}>
+              <Image style={styles.images} source={{uri: image.path}}></Image>
             </TouchableOpacity>
           );
         })}
@@ -211,7 +244,9 @@ function AddProduct({navigation}) {
             borderRadius: 10,
             alignSelf: 'center',
           }}>
-          <Text style={{color: '#F0C341', marginLeft: 5, fontSize: 17}}>
+          <Text
+            style={{color: '#F0C341', marginLeft: 5, fontSize: 17}}
+            onPress={handlerSave}>
             DONE
           </Text>
         </TouchableOpacity>
