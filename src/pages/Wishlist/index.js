@@ -24,8 +24,8 @@ const Wishlist = ({navigation}) => {
     if (doFetch) {
       Storage.getAllDataForKey('wishlist')
         .then(res => {
-          console.log(res);
           setDatas(res);
+          console.log(res);
         })
         .catch(err => {
           console.log(err);
@@ -84,6 +84,13 @@ const Wishlist = ({navigation}) => {
     return stars;
   };
 
+  const remove = index => {
+    Storage.remove({key: 'wishlist', id: datas[index].idproduct});
+    setDatas(oldData =>
+      oldData.filter(data => data.idproduct != datas[index].idproduct),
+    );
+  };
+
   const dataView = () => (
     <View style={styles.containerCard}>
       <View style={styles.containerCard}>
@@ -136,39 +143,43 @@ const Wishlist = ({navigation}) => {
                 </View>
               </View>
             </View>
-            {buttons(data.stock)}
+            <Buttons stock={data.stock} indexItem={i} />
           </View>
         ))}
       </View>
     </View>
   );
 
-  const buttons = stock => (
-    <View style={styles.cardBottom}>
-      <TouchableOpacity style={styles.trashBtn}>
-        <Image
-          source={require('../../assets/icons/delete.png')}
-          style={{width: 30, height: 30}}></Image>
-      </TouchableOpacity>
-      <TouchableOpacity
-        disabled={stock <= 0}
-        style={{
-          marginLeft: 20,
-          width: wp('67%'),
-          padding: 5,
-          backgroundColor: stock > 0 ? '#043C88' : '#C3C3C3',
-          borderRadius: 50,
-          alignItems: 'center',
-          justifyContent: 'center',
-          alignSelf: 'center',
-        }}
-        onPress={() => {}}>
-        <Text style={{color: '#FFF', fontWeight: 'bold'}}>
-          {stock > 0 ? '+ Cart' : 'Out of stock'}
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
+  const Buttons = ({stock, indexItem}) => {
+    return (
+      <View style={styles.cardBottom}>
+        <TouchableOpacity
+          style={styles.trashBtn}
+          onPress={() => remove(indexItem)}>
+          <Image
+            source={require('../../assets/icons/delete.png')}
+            style={{width: 30, height: 30}}></Image>
+        </TouchableOpacity>
+        <TouchableOpacity
+          disabled={stock <= 0}
+          style={{
+            marginLeft: 20,
+            width: wp('67%'),
+            padding: 5,
+            backgroundColor: stock > 0 ? '#043C88' : '#C3C3C3',
+            borderRadius: 50,
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'center',
+          }}
+          onPress={() => {}}>
+          <Text style={{color: '#FFF', fontWeight: 'bold'}}>
+            {stock > 0 ? '+ Cart' : 'Out of stock'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   return (
     <ScrollView>

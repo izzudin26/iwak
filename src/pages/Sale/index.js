@@ -152,6 +152,7 @@ const Sale = ({navigation}) => {
                 price={product.price}
                 urlSegment={product.url_segment}
                 productStar={product.star}
+                stock={product.stock}
               />
             ))}
         </View>
