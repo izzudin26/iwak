@@ -14,6 +14,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {getProduct} from '../../webservice/buyer.service';
+import {getCategories} from '../../webservice/seller.service';
 import {url} from '../../webservice/url';
 import Modal from 'react-native-modal';
 
@@ -23,6 +24,7 @@ const Sale = ({navigation}) => {
   const [isShowModal, setModal] = useState(false);
   const [filter, setFilter] = useState(null);
   const [category, setCategory] = useState(null);
+  const [categoryMenu, setCategoryMenu] = useState([]);
   const [filterMenu] = useState([
     {
       name: 'Lowest Price',
@@ -38,6 +40,12 @@ const Sale = ({navigation}) => {
       getProduct()
         .then(res => {
           setData(res.body.data.data);
+        })
+        .catch(err => alert(err));
+
+      getCategories()
+        .then(res => {
+          setCategoryMenu(res.body.data);
         })
         .catch(err => alert(err));
     }
@@ -59,7 +67,6 @@ const Sale = ({navigation}) => {
             style={{
               color: 'black',
               fontSize: 30,
-              fontWeight: 'bold',
               marginBottom: 15,
             }}>
             Filter
@@ -69,7 +76,32 @@ const Sale = ({navigation}) => {
               <Text style={{color: 'black'}}>{filter.name}</Text>
             </TouchableOpacity>
           ))}
+          <Text
+            style={{
+              color: 'black',
+              fontSize: 30,
+              marginBottom: 15,
+              marginTop: 30,
+            }}>
+            Categories
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              width: wp('70%'),
+              backgroundColor: '#0000',
+            }}>
+            {categoryMenu.map((category, indexFilter) => (
+              <TouchableOpacity style={styles.buttonFilter} key={indexFilter}>
+                <Text style={{color: 'black'}}>{category.category_name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
+        <TouchableOpacity style={styles.searchButton}>
+          <Text style={{color: '#FFFF', fontWeight: 'bold'}}>Search</Text>
+        </TouchableOpacity>
       </View>
     </Modal>
   );
@@ -223,7 +255,6 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     backgroundColor: '#FFFF',
     width: wp('100%'),
-    height: hp('50%'),
     flexDirection: 'column',
     bottom: -20,
     elevation: 30,
@@ -237,12 +268,24 @@ const styles = StyleSheet.create({
   },
   buttonFilter: {
     width: wp('30%'),
-    borderColor: '#00000',
+    borderColor: '#BBBBBB',
     borderRadius: 15,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 5,
     marginVertical: 6,
+    marginRight: 10,
+  },
+  searchButton: {
+    marginTop: 25,
+    backgroundColor: '#043C88',
+    padding: 5,
+    width: wp('50%'),
+    height: hp('4%'),
+    alignSelf: 'center',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
