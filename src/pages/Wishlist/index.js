@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -13,27 +13,26 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Storage from '../../storage/index';
 
 const Wishlist = ({navigation}) => {
   const [searh, setSearch] = useState('');
-  const [datas, setDatas] = useState([
-    {
-      product: 'Oranda',
-      image: require('../../assets/images/MainImage.png'),
-      price: 50000,
-      stock: 50,
-      location: 'Kota Surabaya, Jawa Timur',
-      rating: 3,
-    },
-    {
-      product: 'Oranda Fish',
-      image: require('../../assets/images/obat.png'),
-      price: 50000,
-      stock: 0,
-      location: 'Kota Surabaya, Jawa Timur',
-      rating: 5,
-    },
-  ]);
+  const [doFetch, setFetch] = useState(true);
+  const [datas, setDatas] = useState([]);
+
+  useEffect(() => {
+    if (doFetch) {
+      Storage.getAllDataForKey('wishlist')
+        .then(res => {
+          console.log(res);
+          setDatas(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      setFetch(false);
+    }
+  });
 
   const topBar = () => {
     return (
@@ -68,14 +67,33 @@ const Wishlist = ({navigation}) => {
         />
       ));
 
+  const unstar = n => {
+    let stars = [];
+
+    for (let i = 0; i < n; i++) {
+      stars.push(
+        <FontAwesome5
+          onPress={() => {}}
+          name="star"
+          size={10}
+          color="#f1c40f"
+          key={i}
+        />,
+      );
+    }
+    return stars;
+  };
+
   const dataView = () => (
     <View style={styles.containerCard}>
       <View style={styles.containerCard}>
         {datas.map((data, i) => (
-          <View style={styles.cardBody}>
+          <View style={styles.cardBody} key={i}>
             <View style={styles.productSection}>
               <View style={styles.ContainerImage}>
-                <Image style={styles.productImage} source={data.image}></Image>
+                <Image
+                  style={styles.productImage}
+                  source={{uri: data.productImage}}></Image>
               </View>
               <View style={styles.productDetail}>
                 <Text
@@ -83,7 +101,7 @@ const Wishlist = ({navigation}) => {
                     fontSize: 20,
                     color: 'black',
                   }}>
-                  {data.product}
+                  {data.productname}
                 </Text>
                 <Text
                   style={{
@@ -93,7 +111,10 @@ const Wishlist = ({navigation}) => {
                   }}>
                   Rp. {data.price}
                 </Text>
-                <View style={styles.starsRow}>{stars(data.rating)}</View>
+                <View style={styles.starsRow}>
+                  {stars(data.productStar)}
+                  {unstar(5 - data.productStar)}
+                </View>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -110,7 +131,7 @@ const Wishlist = ({navigation}) => {
                       fontSize: 15,
                       color: 'black',
                     }}>
-                    {data.location}
+                    {data.address}
                   </Text>
                 </View>
               </View>
