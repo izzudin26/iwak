@@ -18,6 +18,7 @@ const ProductList = ({
   productImage,
   urlSegment,
   productStar,
+  stock,
 }) => {
   const star = n => {
     let stars = [];
@@ -87,6 +88,7 @@ const ProductList = ({
       productImage,
       urlSegment,
       productStar,
+      stock,
     };
     if (isLikeExist) {
       await Storage.remove({
