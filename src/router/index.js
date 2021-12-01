@@ -147,6 +147,7 @@ const MainApp = () => {
         name="Wishlist"
         component={Wishlist}
         options={({navigation, route}) => ({
+          unmountOnBlur: true,
           headerStyle: {
             backgroundColor: '#043C88',
             height: 70,
@@ -253,6 +254,7 @@ const MainApp = () => {
         name="Sale"
         component={Sale}
         options={({navigation, route}) => ({
+          unmountOnBlur: true,
           headerStyle: {
             backgroundColor: '#043C88',
             height: 70,
@@ -319,6 +321,7 @@ const MainApp = () => {
         name="Auction"
         component={Auction}
         options={({navigation, route}) => ({
+          unmountOnBlur: true,
           headerStyle: {
             backgroundColor: '#043C88',
             height: 70,
@@ -557,6 +560,7 @@ const MainApp = () => {
         name="EditName"
         component={EditName}
         options={({navigation, route}) => ({
+          unmountOnBlur: true,
           headerStyle: {
             backgroundColor: '#043C88',
             height: 70,
@@ -1370,7 +1374,10 @@ const Router = () => {
           },
           headerTitle: () => (
             <View>
-              <Text style={styles.teksHeadLoginSignup}> D E T A I L  P R O D U K </Text>
+              <Text style={styles.teksHeadLoginSignup}>
+                {' '}
+                D E T A I L P R O D U K{' '}
+              </Text>
             </View>
           ),
           headerLeft: () => {

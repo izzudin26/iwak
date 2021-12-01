@@ -53,11 +53,13 @@ const Login = ({navigation}) => {
           key: 'userId',
           id: 'userId',
           data: res.body.data.id_account,
+          expires: null,
         });
         Storage.save({
           key: 'user',
           id: 'user',
           data: res.body.data,
+          expires: null,
         });
         navigation.replace('MainApp');
       }
