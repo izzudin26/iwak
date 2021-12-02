@@ -6,6 +6,7 @@ import {
 } from 'react-native-responsive-screen';
 import {getProducts} from '../../webservice/seller.service';
 import {url} from '../../webservice/url';
+import {deleteProduct} from '../../webservice/seller.service';
 
 const ProductForSale = props => {
   const [datas, setData] = useState([]);
@@ -17,10 +18,21 @@ const ProductForSale = props => {
         .then(res => {
           setFetch(false);
           setData(res.body.data);
+          console.log(res.body.data);
         })
         .catch(err => alert(err));
     }
   });
+
+  const doDelete = async index => {
+    const idProduk = datas[index].id_produk;
+    try {
+      await deleteProduct(idProduk);
+      setData(oldData => oldData.filter(data => data.id_produk != idProduk));
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   return (
     <View style={style.container}>
@@ -61,7 +73,7 @@ const ProductForSale = props => {
                 Stock : {data.stock}
               </Text>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => doDelete(i)}>
               <Image
                 style={{width: 30, height: 30}}
                 source={require('../../assets/icons/delete.png')}></Image>
