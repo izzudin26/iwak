@@ -13,10 +13,56 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import ImagePicker from 'react-native-image-crop-picker';
+import {openToko} from '../../webservice/buyer.service';
 
 const CreateStore = ({navigation}) => {
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
+  const [bank, setBank] = useState('');
+  const [rekening, setRekening] = useState('');
+  const [image, setImage] = useState(null);
+
+  const changeImage = () => {
+    ImagePicker.openPicker({
+      multiple: false,
+      mediaType: 'photo',
+      cropping: true,
+      forceJpg: true,
+    }).then(async res => {
+      if (res.width != res.height) {
+        alert('Mohon Pilih Rasio Gambar 1:1');
+      } else {
+        setImage(res);
+      }
+    });
+  };
+
+  const doCreate = async () => {
+    const formData = new FormData();
+    formData.append('namatoko', name);
+    formData.append('bank', bank);
+    formData.append('nomor_rekening', rekening);
+    formData.append('image', {
+      name: `${image.filename}.jpeg`,
+      type: image.mime,
+      uri: image.path,
+    });
+    try {
+      await openToko({formdata: formData});
+      navigation.navigate('Account');
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const ImageProfile = () => {
+    return (
+      <Image
+        source={{uri: image.path}}
+        style={{borderRadius: 20, width: wp('25%'), height: wp('25%')}}></Image>
+    );
+  };
 
   return (
     <ScrollView>
@@ -50,8 +96,12 @@ const CreateStore = ({navigation}) => {
                 justifyContent: 'center',
                 backgroundColor: '#fff',
               }}
-              onPress={() => navigation.navigate('EditName')}>
-              <FontAwesome5 name="plus" solid size={20} color="black" />
+              onPress={() => changeImage()}>
+              {image != null ? (
+                <ImageProfile />
+              ) : (
+                <FontAwesome5 name="plus" solid size={20} color="black" />
+              )}
             </TouchableOpacity>
             <Text
               style={{
@@ -80,7 +130,7 @@ const CreateStore = ({navigation}) => {
             style={styles.inputStyle}
             value={name}
             onChangeText={userState => setName(userState)}
-            placeholder="State"
+            placeholder="Nama Toko"
             placeholderTextColor="#000"
             autoCapitalize="none"
             keyboardType="default"
@@ -103,7 +153,53 @@ const CreateStore = ({navigation}) => {
             style={styles.inputStyle}
             value={location}
             onChangeText={userState => setLocation(userState)}
-            placeholder="State"
+            placeholder="Lokasi Toko"
+            placeholderTextColor="#000"
+            autoCapitalize="none"
+            keyboardType="default"
+            returnKeyType="next"
+            // onSubmitEditing={() => doUpdate()}
+            underlineColorAndroid="#f000"
+            blurOnSubmit={false}
+          />
+          <Text
+            style={{
+              alignSelf: 'flex-start',
+              marginHorizontal: 30,
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: 17,
+            }}>
+            Rekening
+          </Text>
+          <TextInput
+            style={styles.inputStyle}
+            value={rekening}
+            onChangeText={value => setRekening(value)}
+            placeholder="Nomor Rekening"
+            placeholderTextColor="#000"
+            autoCapitalize="none"
+            keyboardType="default"
+            returnKeyType="next"
+            // onSubmitEditing={() => doUpdate()}
+            underlineColorAndroid="#f000"
+            blurOnSubmit={false}
+          />
+          <Text
+            style={{
+              alignSelf: 'flex-start',
+              marginHorizontal: 30,
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: 17,
+            }}>
+            Bank
+          </Text>
+          <TextInput
+            style={styles.inputStyle}
+            value={bank}
+            onChangeText={value => setBank(value)}
+            placeholder="Nama Bank"
             placeholderTextColor="#000"
             autoCapitalize="none"
             keyboardType="default"
@@ -124,8 +220,7 @@ const CreateStore = ({navigation}) => {
             justifyContent: 'center',
             alignSelf: 'center',
           }}
-          // onPress={() => doUpdate()}
-        >
+          onPress={doCreate}>
           <Text style={{color: '#F0C341', fontWeight: 'bold'}}>DONE</Text>
         </TouchableOpacity>
       </View>
