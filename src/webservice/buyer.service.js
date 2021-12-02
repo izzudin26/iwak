@@ -62,3 +62,19 @@ export const getProductSegment = async ({urlSegment}) => {
     throw error;
   }
 };
+
+export const openToko = async ({formdata}) => {
+  const idAccount = await getCurrentIdAccount();
+  formdata.append('id', idAccount);
+  const res = await axios.post(`${url}/api/pembeli/bukatoko`, formdata, {
+    headers: {
+      'content-type': 'multipart/form-data',
+    },
+  });
+  console.log(res);
+  if (res.data.code != 200) {
+    throw res.data.message;
+  } else {
+    return {status: res.data.code, body: res.data};
+  }
+};

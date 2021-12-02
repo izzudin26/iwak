@@ -120,3 +120,13 @@ export const updateProfile = (body, header) => {
       .catch(err => reject(err));
   });
 };
+
+export const getProfile = async () => {
+  const idAccount = await getCurrentIdAccount();
+  const res = await axios.get(`${url}/api/profile?id_account=${idAccount}`);
+  if (res.data.code == 200) {
+    return {status: res.data.status, body: res.data};
+  } else {
+    throw res.data.message;
+  }
+};
