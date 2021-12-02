@@ -210,6 +210,7 @@ const MainApp = () => {
         name="Account"
         component={Account}
         options={({navigation, route}) => ({
+          unmountOnBlur: true,
           headerStyle: {
             backgroundColor: '#043C88',
             height: 70,
