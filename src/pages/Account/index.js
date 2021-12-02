@@ -17,7 +17,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import ImagePicker from 'react-native-image-crop-picker';
-import {logout} from '../../webservice/user.service';
+import {logout, getProfile} from '../../webservice/user.service';
 
 const Account = ({navigation}) => {
   const [name, setName] = useState('');
@@ -26,22 +26,28 @@ const Account = ({navigation}) => {
   const [password, setpassword] = useState('');
   const [toko, setToko] = useState('');
   const [tokoImage, setTokoImage] = useState(null);
+  const [currentProfile, setProfile] = useState(null);
+  const [doFetch, setFetch] = useState(true);
 
   useEffect(() => {
-    if (name == '' || email == '' || password == '')
-      Storage.load({key: 'user', id: 'user'}).then(data => {
-        if (data) {
-          console.log(data);
-          setName(data.fullname);
-          setemail(data.email);
-          setpassword(data.password);
-          setToko(data.namatoko);
-          setImagePath(`${url}/${data.profile_picture}`);
-          setTokoImage(`${url}/${data.profile_toko}`);
-          console.log(tokoImage);
-        }
-      });
+    if (doFetch) {
+      fetchProfile();
+    }
+    setFetch(false);
   });
+
+  const fetchProfile = () => {
+    getProfile().then(res => {
+      setProfile(res.body.data);
+      const {fullname, email, profile_picture, profile_toko, namatoko} =
+        res.body.data;
+      setName(fullname);
+      setemail(email);
+      setImagePath(`${url}/${profile_picture}`);
+      setTokoImage(`${url}/${profile_toko}`);
+      setToko(namatoko);
+    });
+  };
 
   const changeImage = () => {
     ImagePicker.openPicker({
@@ -56,7 +62,7 @@ const Account = ({navigation}) => {
 
   const handleUpload = async (file = {}) => {
     let form = new FormData();
-    let data = await Storage.load({key: 'user', id: 'user'});
+    let data = currentProfile;
     form.append('id_account', data.id_account);
     form.append('fullname', data.fullname);
     form.append('password', data.password);
@@ -77,11 +83,9 @@ const Account = ({navigation}) => {
     try {
       let res = await updateProfile(formdata, 'form-data');
       let img = res.body.data.profile_picture;
-      setImagePath(`${url}/${res.body.data.profile_picture}`);
-      await Storage.remove({key: 'user', id: 'user'});
-      await Storage.save({key: 'user', id: 'user', data: res.body.data});
+      fetchProfile();
     } catch (error) {
-      console.log(error.message);
+      alert(error.message);
     }
   };
 
@@ -216,7 +220,7 @@ const Account = ({navigation}) => {
               size={12}
               color="#fff"
               onPress={() =>
-                toko != ''
+                toko != null
                   ? navigation.navigate('MyStore')
                   : navigation.navigate('CreateStore')
               }
