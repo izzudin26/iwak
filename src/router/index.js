@@ -389,6 +389,7 @@ const MainApp = () => {
         name="Cart"
         component={Cart}
         options={({navigation, route}) => ({
+          unmountOnBlur: true,
           headerStyle: {
             backgroundColor: '#043C88',
             height: 70,
@@ -870,6 +871,7 @@ const MainApp = () => {
         name="ListProduct"
         component={ListProduct}
         options={({navigation, route}) => ({
+          unmountOnBlur: true,
           headerStyle: {
             backgroundColor: '#043C88',
             height: 70,

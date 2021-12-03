@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,30 +9,23 @@ import {
   Dimensions,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
+import {getCart} from '../../webservice/buyer.service';
+import {url} from '../../webservice/url';
 
 const h = Dimensions.get('window').height;
 const w = Dimensions.get('window').width;
 const Cart = ({navigation, route}) => {
-  const [carts, setCart] = useState([
-    {
-      productName: 'Oranda',
-      price: 10000,
-      qty: 3,
-      description: 'Pancawarna Rostail 15 cm',
-    },
-    {
-      productName: 'Pil Biru',
-      price: 10000,
-      qty: 3,
-      description: 'Pancawarna Rostail 15 cm',
-    },
-    {
-      productName: 'Oranda2',
-      price: 10000,
-      qty: 3,
-      description: 'Pancawarna Rostail 15 cm',
-    },
-  ]);
+  const [carts, setCart] = useState([]);
+  const [doFetch, setFetch] = useState(true);
+
+  useEffect(() => {
+    if (doFetch) {
+      getCart().then(res => {
+        setCart(res.body);
+      });
+      setFetch(false);
+    }
+  });
 
   const _getTotal = () => {
     let total = 0;
@@ -94,7 +87,7 @@ const Cart = ({navigation, route}) => {
 
   const CartComponent = () => {
     return carts.map((cart, i) => (
-      <View style={css.cartCard} key={i}>
+      <View style={css.cartCard} key={cart.id_cart}>
         <View style={css.containerImage}>
           <TouchableOpacity style={css.closeBtn} onPress={() => _removeItem(i)}>
             <FontAwesome
@@ -103,7 +96,13 @@ const Cart = ({navigation, route}) => {
               size={15}
               color="#F60202"></FontAwesome>
           </TouchableOpacity>
-          <Image source={require('../../assets/images/obat.png')}></Image>
+          <Image
+            source={{uri: `${url}/${cart.image}`}}
+            style={{
+              width: w * 0.17,
+              height: w * 0.17,
+              borderRadius: 15,
+            }}></Image>
         </View>
         <View
           style={{
@@ -112,7 +111,7 @@ const Cart = ({navigation, route}) => {
             marginTop: 15,
           }}>
           <Text style={{color: 'black', fontWeight: 'bold', fontSize: 20}}>
-            {cart.productName}
+            {cart.name}
           </Text>
           <Text style={{color: 'black'}}>{cart.description}</Text>
         </View>
@@ -127,23 +126,23 @@ const Cart = ({navigation, route}) => {
             Rp. {cart.price}
           </Text>
           <View style={css.contaienrValue}>
-            <TouchableOpacity>
+            {/* <TouchableOpacity>
               <FontAwesome
                 name="minus"
                 size={15}
                 color="black"
                 onPress={() => _decrementItem(i)}></FontAwesome>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <Text style={{color: 'black', marginHorizontal: 10}}>
               {cart.qty}
             </Text>
-            <TouchableOpacity>
+            {/* <TouchableOpacity>
               <FontAwesome
                 name="plus"
                 size={15}
                 color="black"
                 onPress={() => _incrementItem(i)}></FontAwesome>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </View>
@@ -190,7 +189,6 @@ const css = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    padding: 10,
     margin: 5,
     borderRadius: 15,
     backgroundColor: '#fff',
@@ -201,7 +199,6 @@ const css = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 4.65,
-    elevation: 5,
   },
   closeBtn: {
     padding: 3,
