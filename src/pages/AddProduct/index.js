@@ -14,8 +14,8 @@ import {
 } from 'react-native-responsive-screen';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
+import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import {getCategories, saveProduct} from '../../webservice/seller.service';
-import {getCurrentIdAccount} from '../../webservice/user.service';
 import {url} from '../../webservice/url';
 
 function AddProduct({navigation}) {
@@ -28,7 +28,6 @@ function AddProduct({navigation}) {
   const [stock, setStock] = useState('');
   const [showDialog, setShowDialog] = useState(false);
   const [isFetch, setFetch] = useState(true);
-  const [increments, setIncrement] = useState(0);
   const fd = new FormData();
   useEffect(() => {
     if (isFetch) {
@@ -59,14 +58,17 @@ function AddProduct({navigation}) {
   };
 
   const saveProductData = async () => {
-    fd.append('id_account', await getCurrentIdAccount());
     try {
       await saveProduct(fd);
-      navigation.pop();
+      navigation.navigate('ListProduct');
     } catch (error) {
       console.log(error);
       alert(error);
     }
+  };
+
+  const removeUnsaveImage = async index => {
+    setImages(oldImage => oldImage.filter((img, i) => i != index));
   };
 
   const handlerImage = () => {
@@ -80,7 +82,6 @@ function AddProduct({navigation}) {
         if (res.width != res.height) {
           alert('Mohon pilih rasio 1:1');
         } else {
-          setIncrement(oldI => oldI + 1);
           setImages(currentImages => [...currentImages, res]);
         }
       }, 100)
@@ -102,7 +103,7 @@ function AddProduct({navigation}) {
     );
   };
 
-  const showModal = () => (
+  const ShowModal = () => (
     <View>
       <Modal
         isVisible={showDialog}
@@ -168,7 +169,7 @@ function AddProduct({navigation}) {
           placeholder="Stok"
           keyboardType="numeric"
           placeholderTextColor="#707070"></TextInput>
-        {showModal()}
+        {ShowModal()}
       </View>
     );
   };
@@ -178,9 +179,20 @@ function AddProduct({navigation}) {
       <ScrollView horizontal={true}>
         {images.map((image, i) => {
           return (
-            <TouchableOpacity style={styles.imageAddButton} key={i}>
+            <View style={styles.imageAddButton} key={i}>
+              <TouchableOpacity>
+                <FontAwesome
+                  name="times"
+                  size={20}
+                  color={'red'}
+                  style={{
+                    position: 'relative',
+                    elevation: 20,
+                  }}
+                  onPress={() => removeUnsaveImage(i)}></FontAwesome>
+              </TouchableOpacity>
               <Image style={styles.images} source={{uri: image.path}}></Image>
-            </TouchableOpacity>
+            </View>
           );
         })}
         <TouchableOpacity style={styles.imageAddButton} onPress={handlerImage}>
@@ -224,7 +236,7 @@ function AddProduct({navigation}) {
       <View>{photoProduct()}</View>
       <View style={{paddingVertical: 15}}>
         <TouchableOpacity
-          onPress={() => {}}
+          onPress={handlerSave}
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -236,9 +248,7 @@ function AddProduct({navigation}) {
             borderRadius: 10,
             alignSelf: 'center',
           }}>
-          <Text
-            style={{color: '#F0C341', marginLeft: 5, fontSize: 17}}
-            onPress={handlerSave}>
+          <Text style={{color: '#F0C341', marginLeft: 5, fontSize: 17}}>
             DONE
           </Text>
         </TouchableOpacity>
@@ -280,15 +290,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     marginBottom: 10,
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    elevation: 6,
   },
   scrollImage: {
     width: wp('100%'),
