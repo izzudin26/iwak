@@ -14,7 +14,9 @@ import {
 } from 'react-native-responsive-screen';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
-import {saveProduct, getCategories} from '../../webservice/seller.service';
+import {getCategories, saveProduct} from '../../webservice/seller.service';
+import {getCurrentIdAccount} from '../../webservice/user.service';
+import {url} from '../../webservice/url';
 
 function AddProduct({navigation}) {
   const [images, setImages] = useState([]);
@@ -26,7 +28,8 @@ function AddProduct({navigation}) {
   const [stock, setStock] = useState('');
   const [showDialog, setShowDialog] = useState(false);
   const [isFetch, setFetch] = useState(true);
-
+  const [increments, setIncrement] = useState(0);
+  const fd = new FormData();
   useEffect(() => {
     if (isFetch) {
       getCategories().then(res => {
@@ -37,44 +40,39 @@ function AddProduct({navigation}) {
   });
 
   const handlerSave = () => {
-    let form = new FormData();
-    form.append('name', name);
-    form.append('category', categories[indexCategory].id_category);
-    form.append('price', price);
-    form.append('stock', stock);
-    form.append('diskon', 0);
-    form.append('isdiskon', 'N');
-    form.append('description', detail);
-    for (let i in images) {
-      form.append(`file[${i}]`, {
-        name: `${images[i].filename}.jpeg`,
-        uri: images[i].path,
-        mime: images[i].mime,
-      });
+    fd.append('name', name);
+    fd.append('category', categories[indexCategory].id_category);
+    fd.append('price', price);
+    fd.append('stock', stock);
+    fd.append('diskon', 0);
+    fd.append('isdiskon', 'N');
+    fd.append('description', detail);
+    images.forEach((img, i) => {
+      const val = {
+        uri: img.path,
+        type: img.mime,
+        name: img.path.split('/').join(''),
+      };
+      fd.append(`file[${i}]`, val);
+    });
+    saveProductData(fd);
+  };
+
+  const saveProductData = async () => {
+    fd.append('id_account', await getCurrentIdAccount());
+    try {
+      await saveProduct(fd);
+      navigation.pop();
+    } catch (error) {
+      console.log(error);
+      alert(error);
     }
-    for (let i in images) {
-      console.log(i);
-      form.append(`file`, {
-        name: `${images[i].filename}.jpeg`,
-        mime: images[i].mime,
-        uri: images[i].path,
-      });
-    }
-    saveProduct(form)
-      .then(res => {
-        console.log(res);
-        if (res.status == 200) {
-          alert('Berhasil Menyimpan data');
-          navigation.pop();
-        } else {
-          alert(res.body.message);
-        }
-      })
-      .catch(err => alert(err));
   };
 
   const handlerImage = () => {
     ImageCropPicker.openPicker({
+      multiple: false,
+      mediaType: 'photo',
       cropping: true,
       forceJpg: true,
     })
@@ -82,14 +80,8 @@ function AddProduct({navigation}) {
         if (res.width != res.height) {
           alert('Mohon pilih rasio 1:1');
         } else {
-          setImages(currentImages => [
-            ...currentImages,
-            {
-              filename: res.filename,
-              mime: res.mime,
-              path: res.path,
-            },
-          ]);
+          setIncrement(oldI => oldI + 1);
+          setImages(currentImages => [...currentImages, res]);
         }
       }, 100)
       .catch(err => console.log(err));

@@ -49,7 +49,6 @@ export const getProductLelang = async (
 };
 
 export const getProductSegment = async ({urlSegment}) => {
-  console.log(`${url}/api/pembeli/product/detail/${urlSegment}`);
   try {
     const res = await axios.get(
       `${url}/api/pembeli/product/detail/${urlSegment}`,
@@ -71,7 +70,6 @@ export const openToko = async ({formdata}) => {
       'content-type': 'multipart/form-data',
     },
   });
-  console.log(res);
   if (res.data.code != 200) {
     throw res.data.message;
   } else {
@@ -87,10 +85,21 @@ export const addCart = async ({idProduct} = {}) => {
   };
   try {
     let res = await axios.post(`${url}/api/pembeli/addcart`, data);
-    console.log(res.data);
     if (res.data.code != 200) {
       throw res.data;
     }
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCart = async () => {
+  const data = {
+    id_account: await getCurrentIdAccount(),
+  };
+  try {
+    let res = await axios.post(`${url}/api/pembeli/opencart`, data);
+    return {status: res.data.code, body: res.data};
   } catch (error) {
     throw error;
   }

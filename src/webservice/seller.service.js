@@ -98,16 +98,20 @@ export const getProducts = async () => {
  */
 export const saveProduct = async photoFormData => {
   photoFormData.append('id_account', await getCurrentIdAccount());
-  return new Promise((resolve, reject) => {
-    axios
-      .post(`${url}/api/penjual/produk/simpan`, photoFormData, {
-        headers: {
-          'content-type': 'multipart/form-data',
-        },
-      })
-      .then(res => resolve({status: res.data.code, body: res.data}))
-      .catch(err => reject(err));
-  });
+  const res = await axios.post(
+    `${url}/api/penjual/produk/simpan`,
+    photoFormData,
+    {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    },
+  );
+  if (res.data.code == 200) {
+    return {status: res.data.code, body: res.data};
+  } else {
+    throw res.data.message;
+  }
 };
 
 /**
@@ -163,13 +167,15 @@ export const updateToko = form => {
  * @param {number} productId
  * @returns {Promise<response>}
  */
-export const deleteProduct = productId => {
-  return new Promise((resolve, reject) => {
-    axios
-      .post(`${url}/api/penjual/produk/hapus`, {id: productId})
-      .then(res => resolve({status: res.status, body: res.data}))
-      .catch(err => reject(err));
+export const deleteProduct = async productId => {
+  const res = await axios.post(`${url}/api/penjual/produk/hapus`, {
+    id: productId,
   });
+  if (res.data.code == 200) {
+    return {status: res.data.code, body: res.data};
+  } else {
+    throw res.data.message;
+  }
 };
 
 export const lelang = () => {
