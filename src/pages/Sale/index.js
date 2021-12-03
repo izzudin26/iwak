@@ -186,27 +186,6 @@ const Sale = ({navigation}) => {
 
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-around',
-            marginTop: 20,
-          }}>
-          <Text style={{color: 'black'}}>PROMO</Text>
-          <Text style={{color: 'black'}}>PROMO</Text>
-        </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-around',
-          }}>
-          <ProductList navigation={navigation} />
-          <ProductList navigation={navigation} />
-        </View>
-
-        <View
-          style={{
             flexWrap: 'wrap',
             flexDirection: 'row',
             width: wp('100%'),
@@ -220,7 +199,7 @@ const Sale = ({navigation}) => {
               fontWeight: 'bold',
               color: 'black',
             }}>
-            Found{'\n'}3 Results
+            {doFetch ? 'Loading' : `Found\n3 Results`}
           </Text>
           {datas.length > 0 &&
             datas.map((product, i) => (
