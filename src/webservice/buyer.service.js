@@ -78,3 +78,20 @@ export const openToko = async ({formdata}) => {
     return {status: res.data.code, body: res.data};
   }
 };
+
+export const addCart = async ({idProduct} = {}) => {
+  const idAccount = await getCurrentIdAccount();
+  const data = {
+    id: idProduct,
+    id_account: idAccount,
+  };
+  try {
+    let res = await axios.post(`${url}/api/pembeli/addcart`, data);
+    console.log(res.data);
+    if (res.data.code != 200) {
+      throw res.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};

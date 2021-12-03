@@ -14,6 +14,7 @@ import {
 } from 'react-native-responsive-screen';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Storage from '../../storage/index';
+import {addCart} from '../../webservice/buyer.service';
 
 const Wishlist = ({navigation}) => {
   const [searh, setSearch] = useState('');
@@ -82,6 +83,17 @@ const Wishlist = ({navigation}) => {
       );
     }
     return stars;
+  };
+
+  const doAddCart = async index => {
+    try {
+      console.log(datas[index].idproduct);
+      await addCart({idProduct: datas[index].idproduct});
+      remove(index);
+      alert('Berhasil ditambahkan ke keranjang');
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   const remove = index => {
@@ -172,7 +184,7 @@ const Wishlist = ({navigation}) => {
             justifyContent: 'center',
             alignSelf: 'center',
           }}
-          onPress={() => {}}>
+          onPress={() => doAddCart(indexItem)}>
           <Text style={{color: '#FFF', fontWeight: 'bold'}}>
             {stock > 0 ? '+ Cart' : 'Out of stock'}
           </Text>

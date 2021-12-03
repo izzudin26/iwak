@@ -13,7 +13,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {url} from '../../webservice/url';
-import {getProductSegment} from '../../webservice/buyer.service';
+import {getProductSegment, addCart} from '../../webservice/buyer.service';
 
 const DetailProductStore = ({navigation, route}) => {
   const [click, setClick] = useState(1);
@@ -57,6 +57,16 @@ const DetailProductStore = ({navigation, route}) => {
       setFetch(false);
     }
   });
+
+  const addtoCart = async () => {
+    try {
+      await addCart({idProduct: idProduct});
+      alert('Produk Berhasil ditambahkan ke keranjang');
+      navigation.pop();
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   const PressedPlus = () => {
     if (total < stock) setTotal(prevTotal => total + 1);
@@ -104,21 +114,21 @@ const DetailProductStore = ({navigation, route}) => {
   const Many = () => {
     return (
       <View style={styles.contaienrValue}>
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           <FontAwesome5
             name="minus"
             size={15}
             color="black"
             onPress={PressedMinus}></FontAwesome5>
-        </TouchableOpacity>
-        <Text style={{color: 'black', marginHorizontal: 20}}>{total}</Text>
-        <TouchableOpacity>
+        </TouchableOpacity> */}
+        <Text style={{color: 'black', marginHorizontal: 20}}>1</Text>
+        {/* <TouchableOpacity>
           <FontAwesome5
             name="plus"
             size={15}
             color="black"
             onPress={PressedPlus}></FontAwesome5>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     );
   };
@@ -255,7 +265,7 @@ const DetailProductStore = ({navigation, route}) => {
                 justifyContent: 'center',
                 alignSelf: 'center',
               }}
-              onPress={() => {}}>
+              onPress={addtoCart}>
               <Text style={{color: '#FFF', fontWeight: 'bold'}}>Cart</Text>
             </TouchableOpacity>
           </View>
