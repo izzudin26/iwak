@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,55 +14,103 @@ import {
 } from 'react-native-responsive-screen';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
-import {saveProduct} from '../../webservice/seller.service';
+import FontAwesome from 'react-native-vector-icons/FontAwesome5';
+import {
+  getCategories,
+  saveProduct,
+  removeImage,
+} from '../../webservice/seller.service';
 
 function EditProduct({navigation, route}) {
   const [images, setImages] = useState([]);
   const {product} = route.params;
+  const [savedImage, setSavedImage] = useState(route.params.savedImage);
   const [name, setName] = useState(product.name);
   const [detail, setDetail] = useState(product.description);
   const [price, setPrice] = useState(product.price.toString());
   const [stock, setStock] = useState(product.stock.toString());
+  const [showDialog, setShowDialog] = useState(false);
+  const [indexCategory, setIndexCategory] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [doFetch, setFetch] = useState(true);
+  const fd = new FormData();
+
+  useEffect(() => {
+    if (doFetch) {
+      getCategories().then(res => {
+        const {data} = res.body;
+        setCategories(data);
+        data.forEach((c, i) => {
+          if (c.id_category == product.category) {
+            setIndexCategory(i);
+          }
+        });
+      });
+      setFetch(false);
+    }
+  });
 
   const handlerSave = () => {
-    let form = new FormData();
-    form.append('id', product.id);
-    form.append('name', name);
-    form.append('description', detail);
-    form.append('price', parseInt(price));
-    form.append('stock', parseInt(stock));
-    form.append('category', product.category);
-    form.append('isdiskon', product.isdiskon);
-    form.append('diskon', product.diskon);
-    saveProduct(form)
-      .then(res => {
-        if (res.status == 200) {
-          alert('Data Berhasil Disimpan');
-          navigation.navigate('ListProduct');
-        }
-      })
-      .catch(err => alert(err));
+    fd.append('id', product.id);
+    fd.append('name', name);
+    fd.append('category', categories[indexCategory].id_category);
+    fd.append('price', price);
+    fd.append('stock', stock);
+    fd.append('diskon', 0);
+    fd.append('isdiskon', 'N');
+    fd.append('description', detail);
+    images.forEach((img, i) => {
+      const val = {
+        uri: img.path,
+        type: img.mime,
+        name: img.path.split('/').join(''),
+      };
+      fd.append(`file[${i}]`, val);
+    });
+    saveProductData(fd);
+  };
+
+  const saveProductData = async () => {
+    try {
+      await saveProduct(fd);
+      navigation.navigate('ListProduct');
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
+  };
+
+  const handlerRemoveImageServer = async index => {
+    try {
+      await removeImage({
+        id_image: savedImage[index].imgId,
+        id_produk: product.id,
+      });
+      setSavedImage(oldImage => oldImage.filter((o, i) => i != index));
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const removeUnsaveImage = async index => {
+    setImages(oldImage => oldImage.filter((img, i) => i != index));
   };
 
   const handlerImage = () => {
     ImageCropPicker.openPicker({
+      multiple: false,
+      mediaType: 'photo',
       cropping: true,
       forceJpg: true,
-    }).then(res => {
-      if (res.width != res.height) {
-        alert('Mohon pilih rasio 1:1');
-      } else {
-        setImages(currentImages => [
-          ...currentImages,
-          {
-            filename: res.filename,
-            mime: res.mime,
-            path: res.path,
-          },
-        ]);
-        console.log(images);
-      }
-    });
+    })
+      .then(res => {
+        if (res.width != res.height) {
+          alert('Mohon pilih rasio 1:1');
+        } else {
+          setImages(currentImages => [...currentImages, res]);
+        }
+      }, 100)
+      .catch(err => console.log(err));
   };
 
   const header = () => {
@@ -80,6 +128,28 @@ function EditProduct({navigation, route}) {
     );
   };
 
+  const ShowModal = () => (
+    <View>
+      <Modal
+        isVisible={showDialog}
+        style={{alignItems: 'center', justifyContent: 'center'}}>
+        <View style={styles.cardBody}>
+          {categories.map((c, i) => (
+            <TouchableOpacity
+              key={i}
+              style={styles.btnCategories}
+              onPress={() => {
+                setIndexCategory(i);
+                setShowDialog(!showDialog);
+              }}>
+              <Text style={{color: 'black'}}>{c.category_name}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </Modal>
+    </View>
+  );
+
   const form = () => {
     return (
       <View>
@@ -89,7 +159,18 @@ function EditProduct({navigation, route}) {
           onChangeText={value => setName(value)}
           placeholder="Nama Produk"
           placeholderTextColor="#707070"></TextInput>
-
+        <TouchableOpacity onPress={() => setShowDialog(true)}>
+          <TextInput
+            editable={false}
+            style={styles.form}
+            value={
+              indexCategory != null
+                ? categories[indexCategory].category_name
+                : ''
+            }
+            placeholder="Categories"
+            placeholderTextColor="#707070"></TextInput>
+        </TouchableOpacity>
         <TextInput
           style={styles.form}
           value={detail}
@@ -119,11 +200,40 @@ function EditProduct({navigation, route}) {
   const photos = () => {
     return (
       <ScrollView horizontal={true}>
-        {images.map(i => {
+        {savedImage.map((img, i) => {
           return (
-            <TouchableOpacity style={styles.imageAddButton} key={i.filename}>
-              <Image style={styles.images} source={{uri: i.path}}></Image>
-            </TouchableOpacity>
+            <View style={styles.imageAddButton} key={img.imgId}>
+              <TouchableOpacity>
+                <FontAwesome
+                  name="times"
+                  size={20}
+                  color={'red'}
+                  style={{
+                    position: 'relative',
+                    elevation: 20,
+                  }}
+                  onPress={() => handlerRemoveImageServer(i)}></FontAwesome>
+              </TouchableOpacity>
+              <Image style={styles.images} source={{uri: img.url}}></Image>
+            </View>
+          );
+        })}
+        {images.map((img, i) => {
+          return (
+            <View style={styles.imageAddButton} key={i}>
+              <TouchableOpacity>
+                <FontAwesome
+                  name="times"
+                  size={20}
+                  color={'red'}
+                  style={{
+                    position: 'relative',
+                    elevation: 20,
+                  }}
+                  onPress={() => removeUnsaveImage(i)}></FontAwesome>
+              </TouchableOpacity>
+              <Image style={styles.images} source={{uri: img.path}}></Image>
+            </View>
           );
         })}
         <TouchableOpacity style={styles.imageAddButton} onPress={handlerImage}>
@@ -184,6 +294,7 @@ function EditProduct({navigation, route}) {
           </Text>
         </TouchableOpacity>
       </View>
+      <ShowModal />
     </ScrollView>
   );
 }
@@ -216,8 +327,9 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   imageAddButton: {
+    flexDirection: 'column',
     marginHorizontal: 5,
-
+    alignSelf: 'center',
     borderRadius: 20,
     padding: 10,
     marginBottom: 10,
@@ -229,7 +341,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
-    elevation: 6,
+    elevation: 0,
   },
   scrollImage: {
     width: wp('100%'),
@@ -246,8 +358,8 @@ const styles = StyleSheet.create({
   images: {
     borderRadius: 10,
     padding: 15,
-    width: 60,
-    height: 60,
+    width: wp('18%'),
+    height: wp('18%'),
     backgroundColor: '#fff',
   },
   cardBody: {

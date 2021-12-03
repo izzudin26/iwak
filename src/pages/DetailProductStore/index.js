@@ -22,8 +22,8 @@ import {url} from '../../webservice/url';
 const DetailProductStore = ({navigation, route}) => {
   const [click, setClick] = useState(1);
   const [indexImage, setIndexImage] = useState(0);
-  const [stock, setStock] = useState(10);
-  const [price, setPrice] = useState(200000);
+  const [stock, setStock] = useState(null);
+  const [price, setPrice] = useState(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [stars, setStar] = useState(0);
@@ -263,6 +263,7 @@ const DetailProductStore = ({navigation, route}) => {
                     isDiskon: isDiskon,
                     diskon: diskon,
                   },
+                  savedImage: images,
                 })
               }>
               <Text style={{color: '#FFF', fontWeight: 'bold'}}>

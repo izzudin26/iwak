@@ -128,26 +128,6 @@ export const getProduct = idProduct => {
   });
 };
 
-/**
- * Remove Image Product
- * @param {number} idProduct
- * @param {number} idImage
- * @returns {Promise<response>}
- */
-export const removeImage = (idProduct, idImage) => {
-  let idAccount = getCurrentIdAccount();
-  return new Promise((resolve, reject) => {
-    axios
-      .post(`${url}/api/penjual/produk`, {
-        id_account: idAccount,
-        id_produk: idProduct,
-        id_image: idImage,
-      })
-      .then(res => resolve({status: res.status, body: res.data}))
-      .catch(err => reject(err));
-  });
-};
-
 export const updateToko = form => {
   return new Promise((resolve, reject) => {
     axios
@@ -300,4 +280,18 @@ export const getCategories = () => {
       .then(res => resolve({status: res.status, body: res.data}))
       .catch(err => reject(err));
   });
+};
+
+export const removeImage = async ({id_produk, id_image} = {}) => {
+  try {
+    let res = await axios.post(`${url}/api/penjual/produk/removeimage`, {
+      id_produk,
+      id_image,
+    });
+    if (res.data.code != 200) {
+      throw res.data.message;
+    }
+  } catch (error) {
+    throw error;
+  }
 };
