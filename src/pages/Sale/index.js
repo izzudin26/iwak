@@ -22,9 +22,10 @@ const Sale = ({navigation}) => {
   const [datas, setData] = useState([]);
   const [doFetch, setFetch] = useState(true);
   const [isShowModal, setModal] = useState(false);
-  const [filter, setFilter] = useState(null);
+  const [filter, setFilter] = useState(0);
   const [category, setCategory] = useState(null);
   const [categoryMenu, setCategoryMenu] = useState([]);
+  const [keyword, setKeyword] = useState('');
   const [filterMenu] = useState([
     {
       name: 'Lowest Price',
@@ -37,20 +38,43 @@ const Sale = ({navigation}) => {
   ]);
   useEffect(() => {
     if (doFetch) {
-      getProduct()
-        .then(res => {
-          setData(res.body.data.data);
-        })
-        .catch(err => alert(err));
-
       getCategories()
         .then(res => {
           setCategoryMenu(res.body.data);
         })
         .catch(err => alert(err));
+      getProductPage();
     }
     setFetch(false);
   });
+
+  const getProductPage = () => {
+    getProduct({
+      category: categoryMenu[category]?.id_category,
+      keyword: keyword,
+      sort: filterMenu[filter].method,
+    })
+      .then(res => {
+        setData(res.body.data.data);
+      })
+      .catch(err => alert(err));
+    setModal(false);
+  };
+
+  const buttonMenu = active => {
+    return {
+      width: wp('30%'),
+      borderColor: '#BBBBBB',
+      borderRadius: 15,
+      borderWidth: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 5,
+      marginVertical: 6,
+      marginRight: 10,
+      backgroundColor: active ? '#36629F' : '#FFFFFF',
+    };
+  };
 
   const OptionModal = () => (
     <Modal
@@ -71,9 +95,19 @@ const Sale = ({navigation}) => {
             }}>
             Filter
           </Text>
-          {filterMenu.map((filter, indexFilter) => (
-            <TouchableOpacity style={styles.buttonFilter} key={indexFilter}>
-              <Text style={{color: 'black'}}>{filter.name}</Text>
+          {filterMenu.map((f, indexFilter) => (
+            <TouchableOpacity
+              onPress={() => {
+                setFilter(indexFilter);
+              }}
+              style={buttonMenu(filter == indexFilter)}
+              key={indexFilter}>
+              <Text
+                style={{
+                  color: filter == indexFilter ? '#FFFF' : 'black',
+                }}>
+                {f.name}
+              </Text>
             </TouchableOpacity>
           ))}
           <Text
@@ -92,14 +126,24 @@ const Sale = ({navigation}) => {
               width: wp('70%'),
               backgroundColor: '#0000',
             }}>
-            {categoryMenu.map((category, indexFilter) => (
-              <TouchableOpacity style={styles.buttonFilter} key={indexFilter}>
-                <Text style={{color: 'black'}}>{category.category_name}</Text>
+            {categoryMenu.map((c, indexCategory) => (
+              <TouchableOpacity
+                onPress={() => {
+                  setCategory(indexCategory);
+                }}
+                style={buttonMenu(category == indexCategory)}
+                key={indexCategory}>
+                <Text
+                  style={{
+                    color: category == indexCategory ? '#FFFF' : 'black',
+                  }}>
+                  {c.category_name}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
         </View>
-        <TouchableOpacity style={styles.searchButton}>
+        <TouchableOpacity style={styles.searchButton} onPress={getProductPage}>
           <Text style={{color: '#FFFF', fontWeight: 'bold'}}>Search</Text>
         </TouchableOpacity>
       </View>
@@ -119,6 +163,9 @@ const Sale = ({navigation}) => {
           }}>
           <SearchBar
             clearIcon={false}
+            value={keyword}
+            onChangeText={value => setKeyword(value)}
+            onChange={getProductPage}
             placeholder="Cari ..."
             containerStyle={{
               backgroundColor: 'transparent',
@@ -198,8 +245,9 @@ const Sale = ({navigation}) => {
               fontSize: 30,
               fontWeight: 'bold',
               color: 'black',
+              alignSelf: 'center',
             }}>
-            {doFetch ? 'Loading' : `Found\n3 Results`}
+            {doFetch ? 'Loading' : `Found\n${datas.length} Results`}
           </Text>
           {datas.length > 0 &&
             datas.map((product, i) => (
