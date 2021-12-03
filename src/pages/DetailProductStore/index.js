@@ -12,7 +12,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {getProduct, getToko} from '../../webservice/seller.service';
+import {
+  getProduct,
+  getToko,
+  getCategories,
+} from '../../webservice/seller.service';
 import {url} from '../../webservice/url';
 
 const DetailProductStore = ({navigation, route}) => {
@@ -29,24 +33,9 @@ const DetailProductStore = ({navigation, route}) => {
   const [idCategory, setIdCategory] = useState(null);
   const [isDiskon, setIsDiskon] = useState(null);
   const [diskon, setDiskon] = useState(null);
-  const [images, setImages] = useState([
-    {
-      url: require('../../assets/images/agaru.png'),
-    },
-    {
-      url: require('../../assets/images/Auction.png'),
-    },
-    {
-      url: require('../../assets/images/agaru.png'),
-    },
-    {
-      url: require('../../assets/images/Auction.png'),
-    },
-    {
-      url: require('../../assets/images/agaru.png'),
-    },
-  ]);
+  const [images, setImages] = useState([]);
   const [isFetch, setFetch] = useState(true);
+  const [category, setCategory] = useState('');
   const {productId} = route.params;
 
   useEffect(() => {
@@ -59,7 +48,27 @@ const DetailProductStore = ({navigation, route}) => {
           setDescription(res.body.product.description);
           setDiskon(res.body.product.diskon);
           setIsDiskon(res.body.product.isdiskon);
-          setIdCategory(res.body.product.category);
+          setIdCategory(res.body.product.id_category);
+          const {image} = res.body;
+          image.forEach((img, i) => {
+            setImages(oldImg => [
+              ...oldImg,
+              {
+                imgId: img.id_image,
+                url: `${url}/${img.image}`,
+              },
+            ]);
+          });
+          getCategories()
+            .then(resC => {
+              const {data} = resC.body;
+              data.forEach((c, i) => {
+                if (c.id_category == res.body.product.id_category) {
+                  setCategory(c.category_name);
+                }
+              });
+            })
+            .catch(err => alert(err));
         })
         .catch(err => alert(err));
 
@@ -105,7 +114,10 @@ const DetailProductStore = ({navigation, route}) => {
     <ScrollView>
       <View style={{alignItems: 'center', justifyContent: 'center'}}>
         <View style={styles.ContainerMainImage}>
-          <Image source={images[indexImage].url} style={styles.MainImage} />
+          <Image
+            source={{uri: images.length == 0 ? null : images[indexImage].url}}
+            style={styles.MainImage}
+          />
         </View>
 
         <View
@@ -122,7 +134,7 @@ const DetailProductStore = ({navigation, route}) => {
                 onPress={() => setIndexImage(i)}
                 style={styles.ContainerSmallImage}
                 key={i}>
-                <Image source={image.url} style={styles.ImageSmall} />
+                <Image source={{uri: image.url}} style={styles.ImageSmall} />
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -153,10 +165,10 @@ const DetailProductStore = ({navigation, route}) => {
                 style={{
                   marginVertical: 5,
                   width: wp('60%'),
-                  fontSize: 15,
+                  fontSize: 20,
                   color: 'black',
                 }}>
-                {/* Ini adalah keterangan product */}
+                {category}
               </Text>
               <View style={{flexDirection: 'row', marginVertical: 5}}>
                 {star(stars)}
@@ -342,11 +354,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   MainImage: {
+    borderRadius: 20,
     height: wp('50%'),
     width: wp('50%'),
   },
   ImageSmall: {
-    width: 50,
-    height: 50,
+    borderRadius: 10,
+    width: wp('18%'),
+    height: wp('18%'),
   },
 });
