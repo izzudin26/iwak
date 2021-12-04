@@ -30,6 +30,7 @@ import ChatPerson from './Chat/chatPerson';
 import Feedback from './Feedback';
 import ProductFeedback from './Feedback/ProductFeedback';
 import IncomingOrder from './IncomingOrder';
+import ListBidAuction from './ListBidAuction';
 
 export {
   Splash,
@@ -64,4 +65,5 @@ export {
   Feedback,
   ProductFeedback,
   IncomingOrder,
+  ListBidAuction,
 };

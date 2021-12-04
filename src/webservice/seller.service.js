@@ -262,13 +262,15 @@ export const updateLelang = (idLelang, price) => {
   });
 };
 
-export const getPemenangLelang = idLelang => {
-  return new Promise((resolve, reject) => {
-    axios
-      .post(`${url}/api/penjual/pemenang`, {id: idLelang})
-      .then(res => resolve({status: res.status, body: res.data}))
-      .catch(err => reject(err));
+export const getPemenangLelang = async idLelang => {
+  let res = await axios.post(`${url}/api/penjual/lelang/pemenang`, {
+    id: idLelang,
   });
+  if (res.data.code == 200) {
+    return {status: res.data.code, body: res.data};
+  } else {
+    throw res.data.message;
+  }
 };
 
 export const getCategories = () => {
@@ -301,6 +303,27 @@ export const saveLelang = async ({id_produk, price} = {}) => {
     id_account: await getCurrentIdAccount(),
   };
   let res = await axios.post(`${url}/api/penjual/lelang/simpan`, data);
+  console.log(res.data);
+  if (res.data.code != 200) {
+    throw res.data.message;
+  }
+};
+
+export const getBids = async ({id_lelang}) => {
+  let res = await axios.get(`${url}/api/penjual/lelang/listbid/${id_lelang}`);
+  if (res.data.code == 200) {
+    return {status: res.data.code, body: res.data};
+  } else {
+    throw res.data.message;
+  }
+};
+
+export const sendPemenang = async ({id_bid, id_lelang}) => {
+  const data = {
+    id: id_bid,
+    id_lelang,
+  };
+  const res = await axios.post(`${url}/api/penjual/lelang/won`, data);
   console.log(res.data);
   if (res.data.code != 200) {
     throw res.data.message;

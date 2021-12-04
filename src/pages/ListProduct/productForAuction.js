@@ -11,7 +11,7 @@ import {
 } from '../../webservice/seller.service';
 import {url} from '../../webservice/url';
 
-const ProductForAuction = () => {
+const ProductForAuction = ({navigation}) => {
   const [datas, setData] = useState([]);
   const [doFetch, setFetch] = useState(true);
 
@@ -57,7 +57,15 @@ const ProductForAuction = () => {
   return (
     <View style={style.container}>
       {datas.map((data, i) => (
-        <TouchableOpacity activeOpacity={0.6} style={style.product} key={i}>
+        <TouchableOpacity
+          activeOpacity={0.6}
+          style={style.product}
+          key={i}
+          onPress={() =>
+            navigation.navigate('ListBid', {
+              id_lelang: data.id_lelang,
+            })
+          }>
           <View style={style.photoContainer}>
             <Image
               style={style.photo}
