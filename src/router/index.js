@@ -421,7 +421,7 @@ const MainApp = () => {
                     alignSelf: 'flex-end',
                     paddingHorizontal: 20,
                   }}
-                  onPress={() => navigation.navigate('DetailProduct')}
+                  onPress={() => navigation.navigate('Product')}
                 />
               </View>
             );
