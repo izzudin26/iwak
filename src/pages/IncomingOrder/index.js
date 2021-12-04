@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -11,7 +11,12 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
-
+import {
+  listOrder,
+  getDetailOrder,
+  paymentImage,
+} from '../../webservice/seller.service';
+import {url} from '../../webservice/url';
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
 
@@ -20,24 +25,35 @@ const IncomingOrder = () => {
   const [isShowModal, setShowModal] = useState(false);
   const [messageModal, setMessageModal] = useState('');
   const [isShowTransactionModal, setTransactionModal] = useState(false);
-  const [orders, setOrders] = useState([
-    {
-      producName: 'Oranda',
-      date: '12/12/2021',
-      nameBuyer: 'Radit',
-      type: 'COD',
-      address:
-        'Jl. Lidah Wetan, Lidah Wetan, Kec. Lakarsantri, Kota SBY, Jawa Timur 60213',
-    },
-    {
-      producName: 'Obat Biru',
-      date: '12/12/2021',
-      nameBuyer: 'Radit',
-      type: 'Transfer',
-      address:
-        'Jl. Lidah Wetan, Lidah Wetan, Kec. Lakarsantri, Kota SBY, Jawa Timur 60213',
-    },
-  ]);
+  const [orders, setOrders] = useState([]);
+  const [doFetch, setFetch] = useState(true);
+  const [paymentImages, setPaymentImage] = useState([]);
+
+  useEffect(() => {
+    if (doFetch) {
+      getData();
+      setFetch(false);
+    }
+  });
+
+  const getData = async () => {
+    try {
+      const req = await listOrder();
+      const {data} = req.body;
+      const joinDetail = await Promise.all(
+        data.map(async transaction => {
+          const items = await getDetailOrder({
+            id_transaction: transaction.id_transaction,
+          });
+          transaction.items = items.body;
+          return transaction;
+        }),
+      );
+      setOrders(await joinDetail);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   const SearchBar = () => {
     const [findProduct, seFindProduct] = useState('');
@@ -64,8 +80,17 @@ const IncomingOrder = () => {
     setMessageModal(message);
   };
 
-  const _showModalTransaction = () => {
-    setTransactionModal(true);
+  const _showModalTransaction = async index => {
+    try {
+      const res = await paymentImage({
+        id_transaction: orders[index].id_transaction,
+      });
+      console.log(res.body.data);
+      setPaymentImage(res.body.data);
+      setTransactionModal(true);
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   const _closeModal = () => {
@@ -78,9 +103,11 @@ const IncomingOrder = () => {
     return orders.map((order, i) => (
       <View style={css.cardOrder} key={i}>
         <Text style={{color: 'black', fontSize: 15, fontWeight: 'bold'}}>
-          New Order
+          {order.nota}
         </Text>
-        <Text style={{color: 'black', marginVertical: 2}}>{order.date}</Text>
+        <Text style={{color: 'black', marginVertical: 2}}>
+          {order.created_at.substr(0, 10)}
+        </Text>
         <Text
           style={{
             color: 'black',
@@ -88,24 +115,30 @@ const IncomingOrder = () => {
             borderBottomWidth: 1,
             width: w * 0.78,
           }}>
-          {order.nameBuyer}
+          {order.fullname}
         </Text>
         <View style={css.productDetail}>
-          <View style={css.imageContainer}>
+          {/* <View style={css.imageContainer}>
             <Image
               source={require('../../assets/images/obat.png')}
               style={css.image}></Image>
+          </View> */}
+          <View style={{flexDirection: 'column'}}>
+            {order.items.map((item, indexItem) => {
+              return (
+                <Text
+                  style={{
+                    color: 'black',
+                    fontWeight: 'bold',
+                    marginLeft: 15,
+                    fontSize: 18,
+                    marginTop: 2,
+                  }}>
+                  {item.qty} {item.name}
+                </Text>
+              );
+            })}
           </View>
-          <Text
-            style={{
-              color: 'black',
-              fontWeight: 'bold',
-              marginLeft: 15,
-              fontSize: 18,
-              marginTop: 15,
-            }}>
-            {order.producName}
-          </Text>
         </View>
         <View style={css.additionalInformation}>
           <View style={css.additionalInformationColumn}>
@@ -117,13 +150,11 @@ const IncomingOrder = () => {
                   : 'Transfer - Courier'}
               </Text>
             </View>
-            {order.type == 'Transfer' && (
-              <TouchableOpacity
-                style={css.detailbtn}
-                onPress={_showModalTransaction}>
-                <Text style={{color: '#043C88'}}>Check Transfer</Text>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              style={css.detailbtn}
+              onPress={() => _showModalTransaction(i)}>
+              <Text style={{color: '#043C88'}}>Check Transfer</Text>
+            </TouchableOpacity>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <FontAwesome
                 name="map-marker-alt"
@@ -187,9 +218,13 @@ const IncomingOrder = () => {
           isVisible={isShowTransactionModal}
           style={{alignItems: 'center', justifyContent: 'center'}}>
           <View style={css.modalCard}>
-            <Image
-              source={require('../../assets/images/bcaexample.png')}
-              style={css.imageTransaction}></Image>
+            {paymentImages.length != 0 ? (
+              <Image
+                resizeMode="contain"
+                source={{uri: `${url}/${paymentImages[0].image}`}}
+                style={css.imageTransaction}></Image>
+            ) : null}
+
             <TouchableOpacity style={css.btnCloseModal} onPress={_closeModal}>
               <FontAwesome name="times" color="black" size={20}></FontAwesome>
             </TouchableOpacity>
@@ -317,7 +352,10 @@ const css = StyleSheet.create({
     marginBottom: -40,
   },
   imageTransaction: {
-    maxHeight: h * 0.9,
+    width: w * 0.7,
+    height: h * 0.7,
+    // maxHeight: h * 0.9,
     alignSelf: 'center',
+    marginTop: 10,
   },
 });

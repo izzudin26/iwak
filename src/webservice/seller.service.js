@@ -318,7 +318,7 @@ export const getBids = async ({id_lelang}) => {
   }
 };
 
-export const sendPemenang = async ({id_bid, id_lelang}) => {
+export const sendPemenang = async ({id_bid, id_lelang} = {}) => {
   const data = {
     id: id_bid,
     id_lelang,
@@ -326,6 +326,40 @@ export const sendPemenang = async ({id_bid, id_lelang}) => {
   const res = await axios.post(`${url}/api/penjual/lelang/won`, data);
   console.log(res.data);
   if (res.data.code != 200) {
+    throw res.data.message;
+  }
+};
+
+export const listOrder = async () => {
+  const account = await getCurrentIdAccount();
+  const res = await axios.get(
+    `${url}/api/penjual/listorder?id_account=${account}`,
+  );
+  if (res.data.code == 200) {
+    return {status: res.data.code, body: res.data};
+  } else {
+    throw res.data.message;
+  }
+};
+
+export const getDetailOrder = async ({id_transaction} = {}) => {
+  try {
+    const res = await axios.get(
+      `${url}/api/penjual/listorder/detail?id=${id_transaction}`,
+    );
+    return {body: res.data};
+  } catch (error) {
+    throw error.message;
+  }
+};
+
+export const paymentImage = async ({id_transaction} = {}) => {
+  const res = await axios.get(
+    `${url}/api/penjual/listorder/showpayment/${id_transaction}`,
+  );
+  if (res.data.code == 200) {
+    return {status: res.data.code, body: res.data};
+  } else {
     throw res.data.message;
   }
 };
