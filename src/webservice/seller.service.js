@@ -170,6 +170,13 @@ export const lelang = async () => {
   }
 };
 
+export const nonactiveLelang = async ({id_lelang}) => {
+  let res = await axios.post(`${url}/api/penjual/nonaktif`, {id: id_lelang});
+  if (res.data.code != 200) {
+    throw res.data.message;
+  }
+};
+
 /**
  * ListBid
  * @param {number} idLelang
@@ -293,8 +300,6 @@ export const saveLelang = async ({id_produk, price} = {}) => {
     price,
     id_account: await getCurrentIdAccount(),
   };
-
-  console.log(data);
   let res = await axios.post(`${url}/api/penjual/lelang/simpan`, data);
   console.log(res.data);
   if (res.data.code != 200) {

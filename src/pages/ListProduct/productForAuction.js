@@ -4,7 +4,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {lelang} from '../../webservice/seller.service';
+import {
+  lelang,
+  nonActiveLelang,
+  nonactiveLelang,
+} from '../../webservice/seller.service';
 import {url} from '../../webservice/url';
 
 const ProductForAuction = () => {
@@ -23,6 +27,28 @@ const ProductForAuction = () => {
       let lelangs = await lelang();
       console.log(lelangs);
       setData(lelangs.body.data);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const setNonactiveLelang = async index => {
+    setData(
+      datas.map((d, i) =>
+        i == index
+          ? {
+              name: d.name,
+              image: d.image,
+              price: d.price,
+              isactive: 'N',
+              id_lelang: d.id_lelang,
+              iswon: d.iswon,
+            }
+          : d,
+      ),
+    );
+    try {
+      await nonActiveLelang({id_lelang: datas[index].id_lelang});
     } catch (error) {
       alert(error.message);
     }
@@ -63,12 +89,15 @@ const ProductForAuction = () => {
               </Text> */}
             </View>
             <TouchableOpacity
-              onPress={() => {}}
+              onPress={
+                data.isactive == 'Y' ? () => setNonactiveLelang(i) : null
+              }
+              activeOpacity={data.isactive != 'Y' ? 1 : null}
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: '#043C88',
+                backgroundColor: data.isactive == 'Y' ? '#043C88' : '#E8E8E8',
                 marginVertical: 20,
                 height: 40,
                 width: wp('20%'),
