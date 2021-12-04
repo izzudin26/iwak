@@ -1,23 +1,32 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {lelang} from '../../webservice/seller.service';
+import {url} from '../../webservice/url';
 
 const ProductForAuction = () => {
-  const startTime = '09.00';
-  const endTime = '21.00';
-  const [datas, setData] = useState([
-    {name: 'Oranda', price: '600000', stock: 10},
-    {name: 'Obat Biru Auction', price: '20000', stock: 100},
-    {name: 'Obat Biru Auction', price: '20000', stock: 100},
-    {name: 'Obat Biru Auction', price: '20000', stock: 100},
-    {name: 'Obat Biru Auction', price: '20000', stock: 100},
-    {name: 'Obat Biru Auction', price: '20000', stock: 100},
-    {name: 'Obat Biru Auction', price: '20000', stock: 100},
-    {name: 'Obat Biru Auction', price: '20000', stock: 100},
-  ]);
+  const [datas, setData] = useState([]);
+  const [doFetch, setFetch] = useState(true);
+
+  useEffect(() => {
+    if (doFetch) {
+      fetchLelang();
+      setFetch(false);
+    }
+  });
+
+  const fetchLelang = async () => {
+    try {
+      let lelangs = await lelang();
+      console.log(lelangs);
+      setData(lelangs.body.data);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   return (
     <View style={style.container}>
@@ -26,7 +35,7 @@ const ProductForAuction = () => {
           <View style={style.photoContainer}>
             <Image
               style={style.photo}
-              source={require('../../assets/images/agaru.png')}></Image>
+              source={{uri: `${url}/${data.image}`}}></Image>
           </View>
           <View
             style={{
@@ -46,12 +55,12 @@ const ProductForAuction = () => {
                 }}>
                 Rp. {data.price}
               </Text>
-              <Text style={{color: 'black', fontSize: 15}}>
+              {/* <Text style={{color: 'black', fontSize: 15}}>
                 Stock : {data.stock}
-              </Text>
-              <Text style={{color: 'black', fontSize: 15}}>
+              </Text> */}
+              {/* <Text style={{color: 'black', fontSize: 15}}>
                 {startTime} - {endTime}
-              </Text>
+              </Text> */}
             </View>
             <TouchableOpacity
               onPress={() => {}}

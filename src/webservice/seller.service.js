@@ -158,14 +158,16 @@ export const deleteProduct = async productId => {
   }
 };
 
-export const lelang = () => {
-  let idAccount = getCurrentIdAccount();
-  return new Promise((resolve, reject) => {
-    axios
-      .post(`${url}/api/penjual/lelang`, {id_account: idAccount})
-      .then(res => resolve({status: res.status, body: res.data}))
-      .catch(err => reject(err));
+export const lelang = async () => {
+  let idAccount = await getCurrentIdAccount();
+  let res = await axios.post(`${url}/api/penjual/lelang`, {
+    id_account: idAccount,
   });
+  if (res.data.code == 200) {
+    return {status: res.data.code, body: res.data};
+  } else {
+    throw res.data.message;
+  }
 };
 
 /**
@@ -238,17 +240,6 @@ export const getLelang = idLelang => {
   });
 };
 
-export const saveLelang = (
-  {id_produk, id_account, price} = {id_account: getCurrentIdAccount()},
-) => {
-  return new Promise((resolve, reject) => {
-    axios
-      .post(`${url}/api/penjual/lelang/simpan`, {id_produk, id_account, price})
-      .then(res => resolve({status: res.status, body: res.data}))
-      .catch(err => reject(err));
-  });
-};
-
 /**
  * Update Lelang
  * @param {number} idLelang
@@ -293,5 +284,20 @@ export const removeImage = async ({id_produk, id_image} = {}) => {
     }
   } catch (error) {
     throw error;
+  }
+};
+
+export const saveLelang = async ({id_produk, price} = {}) => {
+  let data = {
+    id_produk,
+    price,
+    id_account: await getCurrentIdAccount(),
+  };
+
+  console.log(data);
+  let res = await axios.post(`${url}/api/penjual/lelang/simpan`, data);
+  console.log(res.data);
+  if (res.data.code != 200) {
+    throw res.data.message;
   }
 };

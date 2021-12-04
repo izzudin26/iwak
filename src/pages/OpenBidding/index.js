@@ -13,12 +13,11 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Modal from 'react-native-modal';
-import {getProduct} from '../../webservice/seller.service';
+import {getProduct, saveLelang} from '../../webservice/seller.service';
+import {url} from '../../webservice/url';
 
 const OpenBidding = ({navigation, route}) => {
-  const [image, setImage] = useState(
-    require('../../assets/images/Oranda2.png'),
-  );
+  const [images, setImage] = useState(null);
   const [product, setProduct] = useState('');
   const [stock, setStock] = useState(0);
   const [price, setPrice] = useState('');
@@ -29,10 +28,10 @@ const OpenBidding = ({navigation, route}) => {
     if (doFetch) {
       getProduct(productId)
         .then(res => {
-          const {product} = res.body;
-          console.log(res);
+          const {product, image} = res.body;
           setProduct(product.name);
           setStock(product.stock);
+          setImage(image[0].image);
         })
         .catch(err => alert(err));
 
@@ -40,8 +39,19 @@ const OpenBidding = ({navigation, route}) => {
     }
   });
 
+  const processLelang = async () => {
+    try {
+      await saveLelang({id_produk: productId, price});
+      navigation.pop();
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   const showModal = () => (
-    <Modal isVisible={visibleModal}>
+    <Modal
+      isVisible={visibleModal}
+      onBackdropPress={() => setVisibleModal(!visibleModal)}>
       <View style={styles.modalCard}>
         <Text style={{color: 'black', fontSize: 25, fontWeight: 'bold'}}>
           Konfirmasi Lelang !
@@ -68,7 +78,10 @@ const OpenBidding = ({navigation, route}) => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => setVisibleModal(!visibleModal)}
+            onPress={() => {
+              processLelang();
+              setVisibleModal(!visibleModal);
+            }}
             style={{
               flexDirection: 'row',
               alignItems: 'center',
@@ -98,7 +111,9 @@ const OpenBidding = ({navigation, route}) => {
       </View>
       <View style={styles.containerProduct}>
         <View style={styles.imageContainer}>
-          <Image source={image} style={styles.image}></Image>
+          <Image
+            source={{uri: images != null ? `${url}/${images}` : null}}
+            style={styles.image}></Image>
         </View>
         <View style={styles.containerDetail}>
           <Text style={styles.text}>{product}</Text>
@@ -107,19 +122,22 @@ const OpenBidding = ({navigation, route}) => {
       </View>
       <View style={styles.sectionMenu}>
         <View style={styles.form}>
+          <Text style={{color: 'black', alignSelf: 'center'}}>Rp. </Text>
           <TextInput
             placeholderTextColor="#707070"
-            placeholder="Harga Lelang"
-            style={{color: 'black'}}
+            keyboardType={'number-pad'}
+            placeholder="Buka Harga Lelang"
+            style={{color: 'black', width: wp('75%')}}
+            onChangeText={val => setPrice(val)}
             value={price}></TextInput>
         </View>
-        <View style={styles.form}>
+        {/* <View style={styles.form}>
           <TextInput
             placeholderTextColor="#707070"
             placeholder="Waktu Lelang"
             style={{color: 'black'}}
             value={price}></TextInput>
-        </View>
+        </View> */}
       </View>
       <View>{showModal()}</View>
       <TouchableOpacity
@@ -174,8 +192,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   image: {
-    width: wp('20%'),
-    height: wp('20%'),
+    borderRadius: 20,
+    width: wp('25%'),
+    height: wp('25%'),
   },
   imageContainer: {
     width: wp('25%'),
@@ -203,12 +222,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   form: {
+    flexDirection: 'row',
     marginVertical: 18,
     width: wp('80%'),
     borderRadius: 10,
     height: hp('8%'),
     paddingHorizontal: 20,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOffset: {

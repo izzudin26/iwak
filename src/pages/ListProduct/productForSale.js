@@ -18,7 +18,6 @@ const ProductForSale = props => {
         .then(res => {
           setFetch(false);
           setData(res.body.data);
-          console.log(res.body.data);
         })
         .catch(err => alert(err));
     }
