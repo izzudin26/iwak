@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,6 +14,9 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
+import {getCartView} from '../../webservice/buyer.service';
+import {url} from '../../webservice/url';
+import ImageCropPicker from 'react-native-image-crop-picker';
 
 import Modal from 'react-native-modal';
 
@@ -26,14 +29,47 @@ const Payment = ({route, navigation}) => {
     value: null,
     color: '#007bff',
   };
-  const {items, userDetail} = route.params;
+
   const [isShowCardSelect, setShow] = useState(false);
-  const [selectItems, setSelectItem] = useState([
-    'Transfer',
-    'Cash On Delivery',
-  ]);
+  const [selectItems, setSelectItem] = useState(['Transfer']);
+  const [items, setItem] = useState([]);
+  const [bank, setBank] = useState('');
+  const [rekening, setRekening] = useState('');
+  const [doFetch, setFetch] = useState(true);
+  const [imagepay, setImagePay] = useState(null);
 
   const [userPayment, setUserPayment] = useState(selectItems[0]);
+
+  useEffect(() => {
+    if (doFetch) {
+      getCartServer();
+      setFetch(false);
+    }
+  });
+
+  const getCartServer = async () => {
+    try {
+      let res = await getCartView();
+      setItem(res.body);
+      setBank(res.body[0].bank);
+      setRekening(res.body[0].nomor_rekening);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const handlerImage = () => {
+    ImageCropPicker.openPicker({
+      multiple: false,
+      mediaType: 'photo',
+      cropping: true,
+      forceJpg: true,
+    })
+      .then(res => {
+        setImagePay(res);
+      }, 100)
+      .catch(err => console.log(err));
+  };
 
   const getTotal = () => {
     let total = 0;
@@ -70,7 +106,7 @@ const Payment = ({route, navigation}) => {
       <View style={styles.cartCard} key={i}>
         <View style={styles.containerImage}>
           <Image
-            source={require('../../assets/images/obat.png')}
+            source={{uri: `${url}/${cart.image}`}}
             style={{
               width: w * 0.1,
               height: w * 0.1,
@@ -84,7 +120,7 @@ const Payment = ({route, navigation}) => {
             marginLeft: 5,
           }}>
           <Text style={{color: 'black', fontWeight: 'bold', fontSize: 15}}>
-            {cart.productName}
+            {cart.name}
           </Text>
           <Text style={{color: 'black', fontSize: 10}}>{cart.description}</Text>
         </View>
@@ -122,7 +158,7 @@ const Payment = ({route, navigation}) => {
         <TouchableOpacity onPress={() => setShow(true)}>
           <TextInput
             editable={false}
-            value={userPayment}
+            value={`${userPayment} ${bank} - ${rekening}`}
             style={styles.inputStyle}
             placeholderTextColor="#000"
             autoCapitalize="none"
@@ -135,8 +171,14 @@ const Payment = ({route, navigation}) => {
         </TouchableOpacity>
         {userPayment == 'Transfer' && (
           <View style={styles.addImageSection}>
-            <TouchableOpacity style={styles.addImageBtn}>
-              <FontAwesome name="plus" size={20} color="black"></FontAwesome>
+            <TouchableOpacity style={styles.addImageBtn} onPress={handlerImage}>
+              {imagepay == null ? (
+                <FontAwesome name="plus" size={20} color="black"></FontAwesome>
+              ) : (
+                <Image
+                  style={{width: w * 0.15, height: w * 0.15}}
+                  source={{uri: imagepay.path}}></Image>
+              )}
             </TouchableOpacity>
             <Text style={{color: 'black'}}>Upload evidence of transfer</Text>
           </View>

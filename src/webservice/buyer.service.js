@@ -104,3 +104,24 @@ export const getCart = async () => {
     throw error;
   }
 };
+
+export const getProfile = async ({userid} = {}) => {
+  const res = await axios.get(`${url}/api/profile?id_account=${userid}`);
+  if (res.data.status == 200) {
+    return {status: res.data.status == 200, body: res.data};
+  } else {
+    throw res.data.message;
+  }
+};
+
+export const getCartView = async () => {
+  const data = {
+    id_account: await getCurrentIdAccount(),
+  };
+  try {
+    let res = await axios.post(`${url}/api/pembeli/viewcart`, data);
+    return {status: res.data.code, body: res.data};
+  } catch (error) {
+    throw error;
+  }
+};

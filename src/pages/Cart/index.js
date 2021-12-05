@@ -55,7 +55,7 @@ const Cart = ({navigation, route}) => {
         <TouchableOpacity
           style={css.checkoutBtn}
           onPress={() => {
-            navigation.navigate('Shipping', {
+            navigation.navigate('Payment', {
               items: carts,
             });
           }}>
