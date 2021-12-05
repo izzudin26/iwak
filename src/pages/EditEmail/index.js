@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   inputStyle: {
+    color: 'black',
     backgroundColor: '#fff',
     width: 250,
     height: 50,
