@@ -20,6 +20,7 @@ import ProductForAuction from './productForAuction';
 
 const ListProduct = ({navigation}) => {
   const [togglePageIndex, setTogglePageIndex] = useState(0);
+  const [findProduct, setFind] = useState('');
 
   const topBar = () => {
     return (
@@ -29,6 +30,8 @@ const ListProduct = ({navigation}) => {
             style={{width: 20, height: 20}}
             source={require('../../assets/icons/search.png')}></Image>
           <TextInput
+            value={findProduct}
+            onChangeText={val => setFind(val)}
             placeholder="Find Product"
             placeholderTextColor="#000"
             style={{
@@ -105,9 +108,9 @@ const ListProduct = ({navigation}) => {
       <View>{toggleComponent()}</View>
       <View>
         {togglePageIndex == 0 ? (
-          <ProductForSale navigation={navigation} />
+          <ProductForSale navigation={navigation} keyword={findProduct} />
         ) : (
-          <ProductForAuction navigation={navigation} />
+          <ProductForAuction navigation={navigation} keyword={findProduct} />
         )}
       </View>
     </ScrollView>

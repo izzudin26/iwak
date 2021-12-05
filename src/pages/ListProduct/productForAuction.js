@@ -11,7 +11,7 @@ import {
 } from '../../webservice/seller.service';
 import {url} from '../../webservice/url';
 
-const ProductForAuction = ({navigation}) => {
+const ProductForAuction = ({navigation, keyword}) => {
   const [datas, setData] = useState([]);
   const [doFetch, setFetch] = useState(true);
 
@@ -54,9 +54,15 @@ const ProductForAuction = ({navigation}) => {
     }
   };
 
+  const filterData = () => {
+    return datas.filter(data =>
+      data.name.toLowerCase().includes(keyword.toLowerCase()),
+    );
+  };
+
   return (
     <View style={style.container}>
-      {datas.map((data, i) => (
+      {filterData().map((data, i) => (
         <TouchableOpacity
           activeOpacity={0.6}
           style={style.product}

@@ -12,16 +12,29 @@ const ProductForSale = props => {
   const [datas, setData] = useState([]);
   const [isFetch, setFetch] = useState(true);
 
+  const {keyword} = props;
+
   useEffect(() => {
     if (isFetch) {
       getProducts()
         .then(res => {
           setFetch(false);
           setData(res.body.data);
+          console.log(
+            res.body.data.filter(data =>
+              data.name.toLowerCase().includes(keyword.toLowerCase()),
+            ),
+          );
         })
         .catch(err => alert(err));
     }
   });
+
+  const filterData = () => {
+    return datas.filter(data =>
+      data.name.toLowerCase().includes(keyword.toLowerCase()),
+    );
+  };
 
   const doDelete = async index => {
     const idProduk = datas[index].id_produk;
@@ -35,7 +48,7 @@ const ProductForSale = props => {
 
   return (
     <View style={style.container}>
-      {datas.map((data, i) => (
+      {filterData().map((data, i) => (
         <TouchableOpacity
           activeOpacity={0.6}
           style={style.product}
