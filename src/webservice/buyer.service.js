@@ -65,7 +65,7 @@ export const getProductSegment = async ({urlSegment}) => {
 export const getLelangSegment = async ({urlSegment}) => {
   try {
     const res = await axios.get(
-      `${url}/api/pembeli/lalng/detail/${urlSegment}`,
+      `${url}/api/pembeli/lelang/detail/${urlSegment}`,
     );
     return {
       status: res.data.code,
