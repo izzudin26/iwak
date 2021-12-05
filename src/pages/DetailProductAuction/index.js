@@ -15,13 +15,17 @@ import {
 } from 'react-native-responsive-screen';
 import Modal from 'react-native-modal';
 import {url} from '../../webservice/url';
-import {getProductSegment, addCart} from '../../webservice/buyer.service';
+import {
+  getProductSegment,
+  getLelangSegment,
+  addCart,
+} from '../../webservice/buyer.service';
 
 const DetailProductAuction = ({navigation, route}) => {
   const [click, setClick] = useState(1);
   const [indexImage, setIndexImage] = useState(null);
   const [stock, setStock] = useState(10);
-  const [price, setPrice] = useState(200000);
+  const [price, setPrice] = useState('');
   const [total, setTotal] = useState(0);
   const [idProduct, setIdProduct] = useState(null);
   const [name, setName] = useState('');
@@ -37,12 +41,12 @@ const DetailProductAuction = ({navigation, route}) => {
   const {urlSegment} = route.params;
   useEffect(() => {
     if (doFetch) {
-      getProductSegment({urlSegment: urlSegment})
+      getLelangSegment({urlSegment: urlSegment})
         .then(res => {
           const {data, image} = res.body;
           setName(data[0].name);
           setIdProduct(data[0].id_produk);
-          setPrice(data[0].price);
+          setBidPrice(data[0].price);
           setDetail(data[0].description);
           setStock(data[0].stock);
           setTokoName(data[0].namatoko);
@@ -54,7 +58,7 @@ const DetailProductAuction = ({navigation, route}) => {
             setImages([...listImage]);
           });
           setIndexImage(0);
-          console.log(images);
+          console.log(res.body.data[0].price);
         })
         .catch(err => alert(err));
       setFetch(false);
@@ -244,17 +248,17 @@ const DetailProductAuction = ({navigation, route}) => {
               alignItems: 'center',
               justifyContent: 'space-between',
               marginBottom: 10,
-              padding: 20,
+              padding: 10,
             }}>
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'column',
-              }}>
-              <Text style={{fontSize: 30, fontWeight: 'bold', color: 'black'}}>
-                Rp. {price}
+            <View style={styles.containerBiding}>
+              <Text style={{fontSize: 20, fontWeight: 'bold', color: 'black'}}>
+                Rp.
               </Text>
+              <TextInput
+                style={styles.inputBidding}
+                keyboardType="number-pad"
+                value={bidPrice.toString()}
+                onChangeText={val => setBidPrice(val)}></TextInput>
             </View>
             {/* <Many /> */}
             <TouchableOpacity
@@ -372,5 +376,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     padding: 10,
+  },
+  containerBiding: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    width: wp('55%'),
+    flexDirection: 'row',
+    borderRadius: 10,
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  inputBidding: {
+    color: 'black',
+    fontSize: 20,
+    fontWeight: 'bold',
+    width: wp('40%'),
   },
 });
