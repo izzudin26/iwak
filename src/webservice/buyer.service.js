@@ -62,6 +62,20 @@ export const getProductSegment = async ({urlSegment}) => {
   }
 };
 
+export const getLelangSegment = async ({urlSegment}) => {
+  try {
+    const res = await axios.get(
+      `${url}/api/pembeli/lalng/detail/${urlSegment}`,
+    );
+    return {
+      status: res.data.code,
+      body: res.data,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const openToko = async ({formdata}) => {
   const idAccount = await getCurrentIdAccount();
   formdata.append('id', idAccount);

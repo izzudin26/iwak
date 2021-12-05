@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {SearchBar, Button} from 'react-native-elements';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import ProductList from '../../components/ProductList';
+import ProductListAuction from '../../components/ProductListAuction';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -251,7 +251,7 @@ const Auction = ({navigation}) => {
           </Text>
           {datas.length > 0 &&
             datas.map((product, i) => (
-              <ProductList
+              <ProductListAuction
                 navigation={navigation}
                 key={product.id_produk}
                 productname={product.name}

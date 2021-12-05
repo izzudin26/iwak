@@ -31,6 +31,7 @@ import Feedback from './Feedback';
 import ProductFeedback from './Feedback/ProductFeedback';
 import IncomingOrder from './IncomingOrder';
 import ListBidAuction from './ListBidAuction';
+import DetailProductAuction from './DetailProductAuction';
 
 export {
   Splash,
@@ -66,4 +67,5 @@ export {
   ProductFeedback,
   IncomingOrder,
   ListBidAuction,
+  DetailProductAuction,
 };
