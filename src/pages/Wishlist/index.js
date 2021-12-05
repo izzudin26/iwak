@@ -17,9 +17,15 @@ import Storage from '../../storage/index';
 import {addCart} from '../../webservice/buyer.service';
 
 const Wishlist = ({navigation}) => {
-  const [searh, setSearch] = useState('');
+  const [search, setSearch] = useState('');
   const [doFetch, setFetch] = useState(true);
   const [datas, setDatas] = useState([]);
+
+  const filterData = () => {
+    return datas.filter(data =>
+      data.productname.toLowerCase().includes(search.toLowerCase()),
+    );
+  };
 
   useEffect(() => {
     if (doFetch) {
@@ -43,6 +49,8 @@ const Wishlist = ({navigation}) => {
             style={{width: 20, height: 20}}
             source={require('../../assets/icons/search.png')}></Image>
           <TextInput
+            value={search}
+            onChangeText={val => setSearch(val)}
             placeholder="Find Product"
             placeholderTextColor="#000"
             style={{
@@ -106,7 +114,7 @@ const Wishlist = ({navigation}) => {
   const dataView = () => (
     <View style={styles.containerCard}>
       <View style={styles.containerCard}>
-        {datas.map((data, i) => (
+        {filterData().map((data, i) => (
           <View style={styles.cardBody} key={i}>
             <View style={styles.productSection}>
               <View style={styles.ContainerImage}>
