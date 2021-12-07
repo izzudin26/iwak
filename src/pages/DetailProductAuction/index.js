@@ -18,7 +18,7 @@ import {url} from '../../webservice/url';
 import {
   getProductSegment,
   getLelangSegment,
-  addCart,
+  addBidding,
 } from '../../webservice/buyer.service';
 
 const DetailProductAuction = ({navigation, route}) => {
@@ -65,10 +65,13 @@ const DetailProductAuction = ({navigation, route}) => {
     }
   });
 
-  const addtoCart = async () => {
+  const bidProduct = async () => {
     try {
-      await addCart({idProduct: idProduct});
-      alert('Produk Berhasil ditambahkan ke keranjang');
+      let res = await addBidding({
+        id_lelang: idProduct,
+        price: parseInt(price),
+      });
+      alert('Lelang Berhasil');
       navigation.pop();
     } catch (error) {
       alert(error.message);
@@ -272,7 +275,7 @@ const DetailProductAuction = ({navigation, route}) => {
                 justifyContent: 'center',
                 alignSelf: 'center',
               }}
-              onPress={addtoCart}>
+              onPress={bidProduct}>
               <Text style={{color: '#FFF', fontWeight: 'bold'}}>
                 Add Bidding
               </Text>

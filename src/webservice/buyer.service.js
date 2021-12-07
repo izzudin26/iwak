@@ -139,3 +139,18 @@ export const getCartView = async () => {
     throw error;
   }
 };
+
+export const addBidding = async ({id_lelang, price} = {}) => {
+  const data = {
+    id: id_lelang,
+    price,
+    id_account: await getCurrentIdAccount(),
+  };
+  let res = await axios.post(`${url}/api/addbid`, data);
+  console.log(res.data);
+  if (res.data.code == 200) {
+    return {status: res.data.code, body: res.data};
+  } else {
+    throw res.data.message;
+  }
+};
