@@ -97,13 +97,9 @@ export const addCart = async ({idProduct} = {}) => {
     id: idProduct,
     id_account: idAccount,
   };
-  try {
-    let res = await axios.post(`${url}/api/pembeli/addcart`, data);
-    if (res.data.code != 200) {
-      throw res.data;
-    }
-  } catch (error) {
-    throw error;
+  let res = await axios.post(`${url}/api/pembeli/addcart`, data);
+  if (res.data.code != 200) {
+    throw res.data.message;
   }
 };
 
@@ -151,6 +147,19 @@ export const addBidding = async ({id_lelang, price} = {}) => {
   if (res.data.code == 200) {
     return {status: res.data.code, body: res.data};
   } else {
+    throw res.data.message;
+  }
+};
+
+export const checkOut = async ({formdata} = {}) => {
+  formdata.append('id_account', await getCurrentIdAccount());
+  const res = await axios.post(`${url}/api/pembeli/checkout`, checkOut, {
+    headers: {
+      'content-type': 'multipart/form-data',
+    },
+  });
+  console.log(res.data);
+  if (res.data.code != 200) {
     throw res.data.message;
   }
 };
