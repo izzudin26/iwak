@@ -15,6 +15,8 @@ import {
   listOrder,
   getDetailOrder,
   paymentImage,
+  deliverOrder,
+  cancelOrder,
 } from '../../webservice/seller.service';
 import {url} from '../../webservice/url';
 const w = Dimensions.get('window').width;
@@ -35,6 +37,54 @@ const IncomingOrder = () => {
       setFetch(false);
     }
   });
+
+  const doAcceptOrder = async index => {
+    try {
+      await deliverOrder({id_transaction: orders[index].id_transaction});
+      setOrders(oldOrder =>
+        oldOrder.map((e, i) =>
+          i == index
+            ? {
+                id_transaction: e.id_transaction,
+                subtotal: e.subtotal,
+                pay: e.pay,
+                deliver: 'Y',
+                cancelled: e.cancelled,
+                created_at: e.created_at,
+                fullname: e.fullname,
+                nota: e.nota,
+              }
+            : e,
+        ),
+      );
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const doCancelOrder = async index => {
+    try {
+      await cancelOrder({id_transaction: orders[index].id_transaction});
+      setOrders(oldOrder =>
+        oldOrder.map((e, i) =>
+          i == index
+            ? {
+                id_transaction: e.id_transaction,
+                subtotal: e.subtotal,
+                pay: e.pay,
+                deliver: e.deliver,
+                cancelled: 'Y',
+                created_at: e.created_at,
+                fullname: e.fullname,
+                nota: e.nota,
+              }
+            : e,
+        ),
+      );
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   const getData = async () => {
     try {
@@ -170,21 +220,43 @@ const IncomingOrder = () => {
               <Text style={{color: '#043C88'}}>Check Detail</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={() => {}}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: '#043C88',
-              marginVertical: 20,
-              borderRadius: 15,
-              paddingVertical: 10,
-              paddingHorizontal: 20,
-              alignSelf: 'flex-end',
-            }}>
-            <Text style={{color: '#F5C63F', fontSize: 15}}>Accept Order</Text>
-          </TouchableOpacity>
+          {order.deliver == 'N' && order.cancelled == 'N' && (
+            <View style={{flexDirection: 'column'}}>
+              <TouchableOpacity
+                onPress={() => doAcceptOrder(i)}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#043C88',
+                  borderRadius: 15,
+                  marginVertical: 5,
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  alignSelf: 'flex-end',
+                }}>
+                <Text style={{color: '#F5C63F', fontSize: 15}}>
+                  Accept Order
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => doCancelOrder(i)}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#043C88',
+                  borderRadius: 15,
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  alignSelf: 'flex-end',
+                }}>
+                <Text style={{color: '#F5C63F', fontSize: 15}}>
+                  Cancel Order
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
     ));
@@ -235,7 +307,7 @@ const IncomingOrder = () => {
   };
 
   return (
-    <View>
+    <View style={{marginBottom: 50}}>
       <SearchBar />
       <ModalAddress />
       <ModalTransaction />
