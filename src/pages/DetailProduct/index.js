@@ -64,7 +64,13 @@ const DetailProductStore = ({navigation, route}) => {
       alert('Produk Berhasil ditambahkan ke keranjang');
       navigation.pop();
     } catch (error) {
-      alert(error.message);
+      if (error == 'Mau ganti card ke toko lain?') {
+        alert(
+          'Tidak dapat menambahkan keranjang, anda dapat menambahkan keranjang hanya pada toko yang sama atau anda dapat menghapus semua produk di keranjang',
+        );
+      } else {
+        alert(error);
+      }
     }
   };
 
