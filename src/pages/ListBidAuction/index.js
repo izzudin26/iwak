@@ -65,7 +65,7 @@ const ListBidAuction = ({navigation, route}) => {
 
   const ViewBids = () => {
     return bids.map((bid, i) => (
-      <View style={css.biddingRow}>
+      <View style={css.biddingRow} key={i}>
         <View style={css.biddingCol}>
           <Text style={{color: 'black', fontSize: 15, fontWeight: 'bold'}}>
             {bid.fullname}
