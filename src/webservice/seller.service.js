@@ -363,3 +363,39 @@ export const paymentImage = async ({id_transaction} = {}) => {
     throw res.data.message;
   }
 };
+
+export const cancelOrder = async ({id_transaction} = {}) => {
+  const res = await axios.post(`${url}/api/penjual/listorder/cancel`, {
+    id: id_transaction,
+  });
+  if (res.data.code != 200) {
+    throw res.data.message;
+  }
+};
+
+export const deliverOrder = async ({id_transaction} = {}) => {
+  const res = await axios.post(`${url}/api/penjual/listorder/deliver`, {
+    id: id_transaction,
+  });
+  if (res.data.code != 200) {
+    throw res.data.message;
+  }
+};
+
+export const deliverDonneOrder = async ({id_transaction} = {}) => {
+  const res = await axios.post(`${url}/api/penjual/listorder/deliverdone`, {
+    id: id_transaction,
+  });
+  if (res.data.code != 200) {
+    throw res.data.message;
+  }
+};
+
+export const approveOrder = async ({id_transaction} = {}) => {
+  const res = await axios.post(`${url}/api/penjual/listorder/approve`, {
+    id: id_transaction,
+  });
+  if (res.data.code != 200) {
+    throw res.data.message;
+  }
+};

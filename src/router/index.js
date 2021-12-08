@@ -979,7 +979,7 @@ const Router = () => {
           },
           headerTitle: () => (
             <View>
-              <Text style={styles.teksHeadLoginSignup}> S A L E </Text>
+              <Text style={styles.teksHeadLoginSignup}> O R D E R S </Text>
             </View>
           ),
           headerLeft: () => {
