@@ -253,16 +253,23 @@ const DetailProductAuction = ({navigation, route}) => {
               marginBottom: 10,
               padding: 10,
             }}>
-            <View style={styles.containerBiding}>
-              <Text style={{fontSize: 20, fontWeight: 'bold', color: 'black'}}>
-                Rp.
+            <View style={{flexDirection: 'column'}}>
+              <View style={styles.containerBiding}>
+                <Text
+                  style={{fontSize: 20, fontWeight: 'bold', color: 'black'}}>
+                  Rp.
+                </Text>
+                <TextInput
+                  style={styles.inputBidding}
+                  keyboardType="number-pad"
+                  value={bidPrice.toString()}
+                  onChangeText={val => setBidPrice(val)}></TextInput>
+              </View>
+              <Text style={{color: 'black', marginTop: 10, fontSize: 20, alignSelf: 'center'}}>
+                Last Bid (Rp. 20.000)
               </Text>
-              <TextInput
-                style={styles.inputBidding}
-                keyboardType="number-pad"
-                value={bidPrice.toString()}
-                onChangeText={val => setBidPrice(val)}></TextInput>
             </View>
+
             {/* <Many /> */}
             <TouchableOpacity
               style={{
