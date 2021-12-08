@@ -14,7 +14,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
-import {getCartView} from '../../webservice/buyer.service';
+import {getCartView, checkOut} from '../../webservice/buyer.service';
 import {url} from '../../webservice/url';
 import ImageCropPicker from 'react-native-image-crop-picker';
 
@@ -36,7 +36,7 @@ const Payment = ({route, navigation}) => {
   const [bank, setBank] = useState('');
   const [rekening, setRekening] = useState('');
   const [doFetch, setFetch] = useState(true);
-  const [imagepay, setImagePay] = useState(null);
+  const [imagepay, setImagePay] = useState({});
 
   const [userPayment, setUserPayment] = useState(selectItems[0]);
 
@@ -67,7 +67,7 @@ const Payment = ({route, navigation}) => {
     })
       .then(res => {
         setImagePay(res);
-      }, 100)
+      })
       .catch(err => console.log(err));
   };
 
@@ -77,6 +77,28 @@ const Payment = ({route, navigation}) => {
       total += item.qty * item.price;
     });
     return total;
+  };
+
+  const doCheckout = () => {
+    let fd = new FormData();
+    for (let i in items) {
+      fd.append(`arridproduk[${i}]`, items[i].id_produk);
+      fd.append(`arrqty[${i}]`, items[i].qty);
+      fd.append(`arrprice[${i}]`, items[i].price);
+    }
+    fd.append('id_penjual', items[0].id_account);
+    fd.append('subtotal', getTotal());
+    fd.append('image', {
+      uri: imagepay.path,
+      type: imagepay.mime,
+      name: imagepay.path.split('/').join(''),
+    });
+    checkOut({formdata: fd})
+      .then(() => {
+        alert('Berhasil melakukan checkout');
+        navigation.pop();
+      })
+      .catch(err => alert(err));
   };
 
   const CardSelect = () => {
@@ -214,7 +236,7 @@ const Payment = ({route, navigation}) => {
           justifyContent: 'center',
           alignSelf: 'center',
         }}
-        onPress={() => {}}>
+        onPress={doCheckout}>
         <Text style={{color: '#F0C341', fontWeight: 'bold'}}> Procceed </Text>
       </TouchableOpacity>
       <CardSelect />
