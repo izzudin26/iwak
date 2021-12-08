@@ -153,13 +153,16 @@ export const addBidding = async ({id_lelang, price} = {}) => {
 
 export const checkOut = async ({formdata} = {}) => {
   formdata.append('id_account', await getCurrentIdAccount());
-  const res = await axios.post(`${url}/api/pembeli/checkout`, checkOut, {
+  const res = await fetch(`${url}/api/pembeli/checkout`, {
     headers: {
-      'content-type': 'multipart/form-data',
+      'Content-Type': 'multipart/form-data',
     },
+    body: formdata,
+    method: 'POST',
   });
-  console.log(res.data);
-  if (res.data.code != 200) {
+  const jsonBody = await res.json();
+  console.log(jsonBody);
+  if (jsonBody.code != 200) {
     throw res.data.message;
   }
 };
