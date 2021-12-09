@@ -391,6 +391,15 @@ export const deliverDonneOrder = async ({id_transaction} = {}) => {
   }
 };
 
+export const deleteOrder = async ({id_transaction} = {}) => {
+  const res = await axios.post(`${url}/api/penjual/listorder/hapus`, {
+    id: id_transaction,
+  });
+  if (res.data.code != 200) {
+    throw res.data.message;
+  }
+};
+
 export const approveOrder = async ({id_transaction} = {}) => {
   const reqPayment = await axios.post(
     `${url}/api/penjual/listorder/showpayment/${id_transaction}`,
