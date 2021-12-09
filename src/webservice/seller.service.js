@@ -392,10 +392,14 @@ export const deliverDonneOrder = async ({id_transaction} = {}) => {
 };
 
 export const approveOrder = async ({id_transaction} = {}) => {
+  const reqPayment = await axios.post(
+    `${url}/api/penjual/listorder/showpayment/${id_transaction}`,
+  );
+  const idPayment = reqPayment.data.data[0].id_payment;
   const res = await axios.post(`${url}/api/penjual/listorder/approve`, {
-    id: id_transaction,
+    id: idPayment,
   });
-  if (res.data.code != 200) {
+  if (res.data.code != 200 || res.data.message != 'Sukses') {
     throw res.data.message;
   }
 };
