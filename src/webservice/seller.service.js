@@ -412,3 +412,20 @@ export const approveOrder = async ({id_transaction} = {}) => {
     throw res.data.message;
   }
 };
+
+export const getAddressListOrder = async ({id_transaction} = {}) => {
+  try {
+    const id_pembeli = (
+      await axios.post(
+        `${url}/api/penjual/listorder/showpayment/${id_transaction}`,
+      )
+    ).data.data[0].id_pembeli;
+
+    const profile = await axios.post(
+      `${url}/api/profile?id_account=${id_pembeli}`,
+    );
+    return profile.data.data.address;
+  } catch (error) {
+    throw error;
+  }
+};

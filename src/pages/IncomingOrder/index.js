@@ -19,6 +19,7 @@ import {
   approveOrder,
   cancelOrder,
   deleteOrder,
+  getAddressListOrder,
 } from '../../webservice/seller.service';
 import {url} from '../../webservice/url';
 const w = Dimensions.get('window').width;
@@ -84,7 +85,7 @@ const IncomingOrder = () => {
                 id_transaction: e.id_transaction,
                 subtotal: e.subtotal,
                 pay: e.pay,
-                deliver: 'Y',
+                deliver: e.deliver,
                 cancelled: e.cancelled,
                 created_at: e.created_at,
                 fullname: e.fullname,
@@ -124,6 +125,12 @@ const IncomingOrder = () => {
     }
   };
 
+  const filteredData = () => {
+    return orders.filter(
+      order => order.fullname.includes(find) || order.nota.includes(find),
+    );
+  };
+
   const getData = async () => {
     try {
       const req = await listOrder();
@@ -137,6 +144,7 @@ const IncomingOrder = () => {
           return transaction;
         }),
       );
+      console.log(joinDetail);
       setOrders(await joinDetail);
     } catch (error) {
       alert(error.message);
@@ -156,6 +164,7 @@ const IncomingOrder = () => {
         <TextInput
           value={findProduct}
           onChangeText={val => seFindProduct(val)}
+          onSubmitEditing={() => setFind(findProduct)}
           style={css.input}
           placeholder="Find Product"
           placeholderTextColor="#020202"></TextInput>
@@ -254,7 +263,7 @@ const IncomingOrder = () => {
             </View>
             <TouchableOpacity
               style={css.detailbtn}
-              onPress={() => _setModal(order.address)}>
+              onPress={() => getAddress(i)}>
               <Text style={{color: '#043C88'}}>Check Detail</Text>
             </TouchableOpacity>
           </View>
@@ -278,27 +287,25 @@ const IncomingOrder = () => {
                 </Text>
               </TouchableOpacity>
             )}
-            {order.deliver == 'N' &&
-              order.pay == 'Y' &&
-              order.cancelled == 'N' && (
-                <TouchableOpacity
-                  onPress={() => doDeliverOrder(i)}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: '#043C88',
-                    borderRadius: 15,
-                    marginVertical: 5,
-                    paddingVertical: 10,
-                    paddingHorizontal: 20,
-                    alignSelf: 'flex-end',
-                  }}>
-                  <Text style={{color: '#F5C63F', fontSize: 15}}>
-                    Deliver Order
-                  </Text>
-                </TouchableOpacity>
-              )}
+            {order.deliver == 'P' && order.pay == 'Y' && (
+              <TouchableOpacity
+                onPress={() => doDeliverOrder(i)}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#043C88',
+                  borderRadius: 15,
+                  marginVertical: 5,
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  alignSelf: 'flex-end',
+                }}>
+                <Text style={{color: '#F5C63F', fontSize: 15}}>
+                  Deliver Order
+                </Text>
+              </TouchableOpacity>
+            )}
             {order.cancelled != 'Y' ? (
               <TouchableOpacity
                 onPress={() => doCancelOrder(i)}
@@ -358,6 +365,19 @@ const IncomingOrder = () => {
         </Modal>
       </View>
     );
+  };
+
+  const getAddress = async index => {
+    try {
+      const address = await getAddressListOrder({
+        id_transaction: orders[index].id_transaction,
+      });
+      console.log(address);
+      setMessageModal(address);
+      setShowModal(true);
+    } catch (error) {
+      alert(error);
+    }
   };
 
   const ModalTransaction = () => {
