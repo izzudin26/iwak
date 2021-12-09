@@ -16,7 +16,9 @@ import {
   getDetailOrder,
   paymentImage,
   deliverOrder,
+  approveOrder,
   cancelOrder,
+  deleteOrder,
 } from '../../webservice/seller.service';
 import {url} from '../../webservice/url';
 const w = Dimensions.get('window').width;
@@ -40,6 +42,40 @@ const IncomingOrder = () => {
 
   const doAcceptOrder = async index => {
     try {
+      await approveOrder({id_transaction: orders[index].id_transaction});
+      setOrders(oldOrder =>
+        oldOrder.map((e, i) =>
+          i == index
+            ? {
+                id_transaction: e.id_transaction,
+                subtotal: e.subtotal,
+                pay: 'Y',
+                deliver: e.deliver,
+                cancelled: e.cancelled,
+                created_at: e.created_at,
+                fullname: e.fullname,
+                nota: e.nota,
+                items: e.items,
+              }
+            : e,
+        ),
+      );
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const dodeleteOrder = async index => {
+    try {
+      await deleteOrder({id_transaction: orders[index].id_transaction});
+      setOrders(oldOrder => oldOrder.filter((e, i) => i != index));
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const doDeliverOrder = async index => {
+    try {
       await deliverOrder({id_transaction: orders[index].id_transaction});
       setOrders(oldOrder =>
         oldOrder.map((e, i) =>
@@ -53,6 +89,7 @@ const IncomingOrder = () => {
                 created_at: e.created_at,
                 fullname: e.fullname,
                 nota: e.nota,
+                items: e.items,
               }
             : e,
         ),
@@ -77,6 +114,7 @@ const IncomingOrder = () => {
                 created_at: e.created_at,
                 fullname: e.fullname,
                 nota: e.nota,
+                items: e.items,
               }
             : e,
         ),
@@ -220,8 +258,8 @@ const IncomingOrder = () => {
               <Text style={{color: '#043C88'}}>Check Detail</Text>
             </TouchableOpacity>
           </View>
-          {order.deliver == 'N' && order.cancelled == 'N' && (
-            <View style={{flexDirection: 'column'}}>
+          <View style={{flexDirection: 'column'}}>
+            {order.pay == 'N' && order.cancelled == 'N' && (
               <TouchableOpacity
                 onPress={() => doAcceptOrder(i)}
                 style={{
@@ -239,6 +277,29 @@ const IncomingOrder = () => {
                   Accept Order
                 </Text>
               </TouchableOpacity>
+            )}
+            {order.deliver == 'N' &&
+              order.pay == 'Y' &&
+              order.cancelled == 'N' && (
+                <TouchableOpacity
+                  onPress={() => doDeliverOrder(i)}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#043C88',
+                    borderRadius: 15,
+                    marginVertical: 5,
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    alignSelf: 'flex-end',
+                  }}>
+                  <Text style={{color: '#F5C63F', fontSize: 15}}>
+                    Deliver Order
+                  </Text>
+                </TouchableOpacity>
+              )}
+            {order.cancelled != 'Y' ? (
               <TouchableOpacity
                 onPress={() => doCancelOrder(i)}
                 style={{
@@ -255,8 +316,25 @@ const IncomingOrder = () => {
                   Cancel Order
                 </Text>
               </TouchableOpacity>
-            </View>
-          )}
+            ) : (
+              <TouchableOpacity
+                onPress={() => dodeleteOrder(i)}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#043C88',
+                  borderRadius: 15,
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  alignSelf: 'flex-end',
+                }}>
+                <Text style={{color: '#F5C63F', fontSize: 15}}>
+                  Delete Order
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       </View>
     ));
@@ -307,11 +385,11 @@ const IncomingOrder = () => {
   };
 
   return (
-    <View style={{marginBottom: 50}}>
+    <View>
       <SearchBar />
       <ModalAddress />
       <ModalTransaction />
-      <ScrollView>
+      <ScrollView style={{marginBottom: 130}}>
         <ListViewData />
       </ScrollView>
     </View>
