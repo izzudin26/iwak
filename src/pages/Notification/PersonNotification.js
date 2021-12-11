@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   ScrollView,
@@ -8,40 +8,74 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
+import {getHistory} from '../../webservice/buyer.service';
+import {getDetailOrder} from '../../webservice/seller.service';
+import {url} from '../../webservice/url';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
 const PersonNotification = () => {
-  const [histories, setHistory] = useState([
-    {
-      status: 'success',
-      productName: 'Oranda',
-      date: '12/12/2021',
-      paymentDate: '11/12/2021',
-      qty: 2,
-      paymentMethod: 'Transfer',
-      totalPayment: 600000,
-      methodPayment: 'Transfer',
-      showDetails: false,
-    },
-    {
-      status: 'success',
-      productName: 'Oranda',
-      date: '12/12/2021',
-      paymentDate: '11/12/2021',
-      qty: 2,
-      paymentMethod: 'Transfer',
-      totalPayment: 600000,
-      methodPayment: 'Transfer',
-      showDetails: false,
-    },
-  ]);
+  const [histories, setHistory] = useState([]);
+
+  useEffect(() => {
+    doFetch();
+  }, []);
+
+  const doFetch = async () => {
+    try {
+      const res = await getHistory();
+      const {body} = res;
+      console.log(body);
+      body.data.map(async history => {
+        const items = await Promise.all(
+          (
+            await getDetailOrder({id_transaction: history.id_transaction})
+          ).body,
+        );
+        history.items = items;
+        console.log(history);
+        setHistory(oldHistory => [...oldHistory, history]);
+      });
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   const setShowDetails = index => {
     let currentHistory = [...histories];
     currentHistory[index].showDetails = !currentHistory[index].showDetails;
     setHistory(currentHistory);
+  };
+
+  const getStatusOrder = (pay, deliver, cancelled) => {
+    if (cancelled == 'Y') {
+      return 'Dibatalkan';
+    } else if (cancelled != 'Y' && pay == 'Y' && deliver == 'N') {
+      return 'Pembayaran Berhasil';
+    } else {
+      return 'Deliver';
+    }
+  };
+
+  const countItemPrice = (items) => {
+    let total = 0;
+    for(let item of items){
+      total += item.price
+    }
+    return total
+  }
+
+  const parseDate = date => {
+    const option = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long',
+    };
+    // const d = new Date(date)
+    const d = new Date(date);
+    return `${d.getDate()}-${d.getMonth()}-${d.getFullYear()}`;
   };
 
   const HistoryView = () => {
@@ -59,7 +93,7 @@ const PersonNotification = () => {
                 </Text>
                 <Text
                   style={{fontSize: 13, fontWeight: 'bold', color: 'black'}}>
-                  Congrats, Your Payment is Successfull
+                  {history.nota}
                 </Text>
               </View>
               <Text style={{fontSize: 16, color: 'black'}}>{history.date}</Text>
@@ -67,7 +101,11 @@ const PersonNotification = () => {
             <View style={style.productContainer}>
               <Image
                 style={style.productImage}
-                source={require('../../assets/images/MainImage.png')}></Image>
+                source={
+                  history.penjual.profile_toko
+                    ? {uri: `${url}/${history.penjual.profile_toko}`}
+                    : null
+                }></Image>
               <Text style={{fontSize: 20, color: 'black'}}>
                 {history.productName}
               </Text>
@@ -84,13 +122,19 @@ const PersonNotification = () => {
                 <View style={style.detailRow}>
                   <View style={{flexDirection: 'column'}}>
                     <Text style={{color: 'black'}}>Status</Text>
-                    <Text style={{color: '#043C88'}}>Payment Successfull</Text>
+                    <Text style={{color: '#043C88'}}>
+                      {getStatusOrder(
+                        history.pay,
+                        history.deliver,
+                        history.cancelled,
+                      )}
+                    </Text>
                   </View>
                 </View>
                 <View style={style.detailRow}>
                   <Text style={{color: 'black'}}>Date</Text>
                   <Text style={{color: 'black', fontSize: 15}}>
-                    {history.date}
+                    {parseDate(history.date)}
                   </Text>
                 </View>
               </View>
@@ -103,18 +147,23 @@ const PersonNotification = () => {
                   }}>
                   Order details
                 </Text>
-                <View style={style.detailColumn}>
-                  <Text style={{color: 'black'}}>Name item</Text>
-                  <Text style={{color: 'black', fontWeight: 'bold'}}>
-                    {history.productName}
-                  </Text>
-                </View>
-                <View style={style.detailColumn}>
-                  <Text style={{color: 'black'}}>Quantity</Text>
-                  <Text style={{color: 'black', fontWeight: 'bold'}}>
-                    {history.qty}
-                  </Text>
-                </View>
+                {history.items.map((item, indexItem) => (
+                  <View key={indexItem}>
+                    <View style={style.detailColumn}>
+                      <Text style={{color: 'black'}}>Name item</Text>
+                      <Text style={{color: 'black', fontWeight: 'bold'}}>
+                        {item.name}
+                      </Text>
+                    </View>
+                    <View style={style.detailColumn}>
+                      <Text style={{color: 'black'}}>Quantity</Text>
+                      <Text style={{color: 'black', fontWeight: 'bold'}}>
+                        {item.qty}
+                      </Text>
+                    </View>
+                  </View>
+                ))}
+
                 <Text
                   style={{
                     color: 'black',
@@ -126,7 +175,7 @@ const PersonNotification = () => {
                 <View style={style.detailColumn}>
                   <Text style={{color: 'black'}}>Metode</Text>
                   <Text style={{color: 'black', fontWeight: 'bold'}}>
-                    {history.methodPayment}
+                    {/* {history.methodPayment} */}Transfer
                   </Text>
                 </View>
                 <View style={style.paymentCost}>
@@ -139,7 +188,7 @@ const PersonNotification = () => {
                       fontWeight: 'bold',
                       fontSize: 17,
                     }}>
-                    Rp. {history.totalPayment}
+                    Rp. {countItemPrice(history.items)}
                   </Text>
                 </View>
               </View>
@@ -188,10 +237,10 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
   productImage: {
-    marginVertical: 15,
+    marginVertical: 10,
     marginHorizontal: 20,
-    width: width * 0.12,
-    height: width * 0.12,
+    width: width * 0.15,
+    height: width * 0.15,
     borderRadius: 10,
   },
   BottomContainer: {

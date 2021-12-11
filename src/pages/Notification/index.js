@@ -24,8 +24,7 @@ const Notification = () => {
   const doFetch = async () => {
     try {
       const res = await getMyProfile();
-      const {status, body} = res;
-      console.log(body);
+      const {body} = res;
       setUsername(body.data.fullname);
       setToko(body.data.namatoko);
     } catch (error) {
