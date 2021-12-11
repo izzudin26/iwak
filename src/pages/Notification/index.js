@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,12 +9,29 @@ import {
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import PersonNotification from './PersonNotification';
 import StoreNotification from './StoreNotification';
-
+import {getMyProfile} from '../../webservice/buyer.service';
 const height = Dimensions.get('window').height;
 
 const Notification = () => {
   const [navState, setNavState] = useState(0);
+  const [username, setUsername] = useState('');
+  const [tokoName, setToko] = useState('');
 
+  useEffect(() => {
+    doFetch();
+  }, []);
+
+  const doFetch = async () => {
+    try {
+      const res = await getMyProfile();
+      const {status, body} = res;
+      console.log(body);
+      setUsername(body.data.fullname);
+      setToko(body.data.namatoko);
+    } catch (error) {
+      alert(error);
+    }
+  };
   const Navbar = () => (
     <View style={styles.navbar}>
       <TouchableOpacity
@@ -31,7 +48,7 @@ const Notification = () => {
         }}
         onPress={() => setNavState(0)}>
         <FontAwesome5 name="user" size={20} solid color="#EBC043" />
-        <Text style={styles.textHeader}>Username</Text>
+        <Text style={styles.textHeader}>{username}</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={{
@@ -47,7 +64,7 @@ const Notification = () => {
         }}
         onPress={() => setNavState(1)}>
         <FontAwesome5 name="store" size={20} solid color="#EBC043" />
-        <Text style={styles.textHeader}>Toko name</Text>
+        <Text style={styles.textHeader}>{tokoName}</Text>
       </TouchableOpacity>
     </View>
   );
