@@ -429,3 +429,13 @@ export const getAddressListOrder = async ({id_transaction} = {}) => {
     throw error;
   }
 };
+
+export const getMyProfile = async () => {
+  const account = await getCurrentIdAccount()
+  const res = await axios.get(`${url}/api/profile?id_account=${account}`);
+  if (res.data.status == 200) {
+    return {status: res.data.status == 200, body: res.data};
+  } else {
+    throw res.data.message;
+  }
+};

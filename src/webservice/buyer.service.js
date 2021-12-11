@@ -166,3 +166,26 @@ export const checkOut = async ({formdata} = {}) => {
     throw res.data.message;
   }
 };
+
+export const getHistory = async () => {
+  try {
+    const account = await getCurrentIdAccount();
+    const res = await axios.get(
+      `${url}/api/pembeli/history?id_account=${account}`,
+    );
+  } catch (error) {
+    console.log(error);
+    throw 'Terjadi Kesalahan Mengambil data';
+  }
+};
+
+export const getMyProfile = async () => {
+  const account = await getCurrentIdAccount();
+  const res = await axios.get(`${url}/api/profile?id_account=${account}`);
+  console.log(res);
+  if (res.data.code == 200) {
+    return {status: res.data.code, body: res.data};
+  } else {
+    throw res.data.message;
+  }
+};
