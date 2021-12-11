@@ -458,13 +458,17 @@ const MainApp = () => {
         name="Notification"
         component={Notification}
         options={({navigation, route}) => ({
+          unmountOnBlur: true,
           headerStyle: {
             backgroundColor: '#043C88',
             height: 70,
           },
           headerTitle: () => (
             <View>
-              <Text style={styles.teksHeadLoginSignup}> NOTIFICATION </Text>
+              <Text style={styles.teksHeadLoginSignup}>
+                {' '}
+                N O T I F I C A T I O N{' '}
+              </Text>
             </View>
           ),
           headerLeft: () => {
@@ -499,13 +503,6 @@ const MainApp = () => {
             return (
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-                <FontAwesome5
-                  name="bell"
-                  solid
-                  size={23}
-                  color="#F0C341"
-                  onPress={() => navigation.navigate('Notification')}
-                />
                 <FontAwesome5
                   name="shopping-cart"
                   solid
