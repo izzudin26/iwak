@@ -161,7 +161,6 @@ export const checkOut = async ({formdata} = {}) => {
     method: 'POST',
   });
   const jsonBody = await res.json();
-  console.log(jsonBody);
   if (jsonBody.code != 200) {
     throw res.data.message;
   }
@@ -173,6 +172,11 @@ export const getHistory = async () => {
     const res = await axios.get(
       `${url}/api/pembeli/history?id_account=${account}`,
     );
+    if (res.data.code == 200) {
+      return {status: res.data.code, body: res.data};
+    } else {
+      throw res.data.message;
+    }
   } catch (error) {
     console.log(error);
     throw 'Terjadi Kesalahan Mengambil data';
@@ -182,7 +186,6 @@ export const getHistory = async () => {
 export const getMyProfile = async () => {
   const account = await getCurrentIdAccount();
   const res = await axios.get(`${url}/api/profile?id_account=${account}`);
-  console.log(res);
   if (res.data.code == 200) {
     return {status: res.data.code, body: res.data};
   } else {
