@@ -58,13 +58,13 @@ const PersonNotification = () => {
     }
   };
 
-  const countItemPrice = (items) => {
+  const countItemPrice = items => {
     let total = 0;
-    for(let item of items){
-      total += item.price
+    for (let item of items) {
+      total += item.price;
     }
-    return total
-  }
+    return total;
+  };
 
   const parseDate = date => {
     const option = {
