@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   ScrollView,
@@ -8,25 +8,28 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
+import {listOrder} from '../../webservice/seller.service';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-const StoreNotification = () => {
-  const [notifications, setNotif] = useState([
-    {
-      productName: 'Oranda',
-      nameBuyer: 'Name Buyer',
-      date: '12/10/2021',
-      img: '',
-    },
-    {
-      productName: 'Oranda',
-      nameBuyer: 'Name Buyer',
-      date: '12/10/2021',
-      img: '',
-    },
-  ]);
+const StoreNotification = ({navigation}) => {
+  const [notifications, setNotif] = useState([]);
+
+  const getNotif = async () => {
+    try {
+      const res = await listOrder();
+      const {body} = res;
+      setNotif(body.data);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  useEffect(() => {
+    getNotif();
+  }, []);
+
   return (
     <ScrollView>
       {notifications.map((notif, i) => (
@@ -39,14 +42,21 @@ const StoreNotification = () => {
             <Text style={{color: 'black', fontSize: 15, fontWeight: 'bold'}}>
               You got new incoming order !
             </Text>
-            <Text style={{color: 'black', borderBottomColor: 'black', borderBottomWidth: 1}}>{notif.nameBuyer}</Text>
+            <Text
+              style={{
+                color: 'black',
+                borderBottomColor: 'black',
+                borderBottomWidth: 1,
+              }}>
+              {notif.fullname}
+            </Text>
           </View>
           <View style={style.product}>
-            <View style={style.imageCard}>
+            {/* <View style={style.imageCard}>
               <Image
                 source={require('../../assets/images/MainImage.png')}
                 style={style.image}></Image>
-            </View>
+            </View> */}
             <Text
               style={{
                 color: 'black',
@@ -54,10 +64,12 @@ const StoreNotification = () => {
                 fontWeight: 'bold',
                 marginHorizontal: 15,
               }}>
-              {notif.productName}
+              {notif.nota}
             </Text>
           </View>
-          <TouchableOpacity style={style.btnShowDetails}>
+          <TouchableOpacity
+            style={style.btnShowDetails}
+            onPress={() => navigation.navigate('IncomingOrder')}>
             <Text style={{color: '#F5C63F'}}>View Detail</Text>
           </TouchableOpacity>
         </View>
