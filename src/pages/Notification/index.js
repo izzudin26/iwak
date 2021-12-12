@@ -12,7 +12,7 @@ import StoreNotification from './StoreNotification';
 import {getMyProfile} from '../../webservice/buyer.service';
 const height = Dimensions.get('window').height;
 
-const Notification = () => {
+const Notification = ({navigation}) => {
   const [navState, setNavState] = useState(0);
   const [username, setUsername] = useState('');
   const [tokoName, setToko] = useState('');
@@ -72,7 +72,11 @@ const Notification = () => {
     <View style={{flex: 1, flexDirection: 'column'}}>
       <Navbar />
       <View style={{padding: 20, marginVertical: 20, height: height * 0.82}}>
-        {navState == 0 ? <PersonNotification /> : <StoreNotification />}
+        {navState == 0 ? (
+          <PersonNotification />
+        ) : (
+          <StoreNotification navigation={navigation} />
+        )}
       </View>
     </View>
   );
