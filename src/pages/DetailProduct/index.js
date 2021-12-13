@@ -13,7 +13,11 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {url} from '../../webservice/url';
-import {getProductSegment, addCart} from '../../webservice/buyer.service';
+import {
+  getProductSegment,
+  addCart,
+  changeTokocart,
+} from '../../webservice/buyer.service';
 
 const DetailProductStore = ({navigation, route}) => {
   const [click, setClick] = useState(1);
@@ -65,12 +69,20 @@ const DetailProductStore = ({navigation, route}) => {
       navigation.pop();
     } catch (error) {
       if (error == 'Mau ganti card ke toko lain?') {
-        alert(
-          'Tidak dapat menambahkan keranjang, anda dapat menambahkan keranjang hanya pada toko yang sama atau anda dapat menghapus semua produk di keranjang',
-        );
+        changeToko();
       } else {
         alert(error);
       }
+    }
+  };
+
+  const changeToko = async () => {
+    try {
+      await changeTokocart({idProduct: idProduct});
+      alert('Produk Berhasil ditambahkan ke keranjang');
+      navigation.pop();
+    } catch (error) {
+      alert(error);
     }
   };
 

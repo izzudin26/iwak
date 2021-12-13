@@ -103,6 +103,19 @@ export const addCart = async ({idProduct} = {}) => {
   }
 };
 
+export const changeTokocart = async ({idProduct} = {}) => {
+  const idAccount = await getCurrentIdAccount();
+  const data = {
+    id: idProduct,
+    id_account: idAccount,
+  };
+  let res = await axios.post(`${url}/api/pembeli/changetoko`, data);
+  console.log(res.data);
+  if (res.data != 'sukses') {
+    throw res.data.message;
+  }
+};
+
 export const deleteCart = async ({idcart}) => {
   const data = {
     id: idcart,
