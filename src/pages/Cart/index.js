@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
-import {getCart} from '../../webservice/buyer.service';
+import {getCart, deleteCart} from '../../webservice/buyer.service';
 import {url} from '../../webservice/url';
 
 const h = Dimensions.get('window').height;
@@ -65,7 +65,8 @@ const Cart = ({navigation, route}) => {
     );
   };
 
-  const _removeItem = index => {
+  const _removeItem = async index => {
+    await deleteCart({idcart: carts[index].id_cart});
     let currentItem = carts;
     carts.splice(index, 1);
     setCart([...currentItem]);

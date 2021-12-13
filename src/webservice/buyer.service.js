@@ -98,6 +98,16 @@ export const addCart = async ({idProduct} = {}) => {
     id_account: idAccount,
   };
   let res = await axios.post(`${url}/api/pembeli/addcart`, data);
+  if (res.data.code != 200 && res.data.status != 1) {
+    throw res.data.message;
+  }
+};
+
+export const deleteCart = async ({idcart}) => {
+  const data = {
+    id: idcart,
+  };
+  let res = await axios.post(`${url}/api/pembeli/deletecart`, data);
   if (res.data.code != 200) {
     throw res.data.message;
   }
