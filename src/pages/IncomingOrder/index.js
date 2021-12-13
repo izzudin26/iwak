@@ -33,6 +33,7 @@ const IncomingOrder = () => {
   const [orders, setOrders] = useState([]);
   const [doFetch, setFetch] = useState(true);
   const [paymentImages, setPaymentImage] = useState([]);
+  const [findProduct, seFindProduct] = useState('');
 
   useEffect(() => {
     if (doFetch) {
@@ -152,7 +153,6 @@ const IncomingOrder = () => {
   };
 
   const SearchBar = () => {
-    const [findProduct, seFindProduct] = useState('');
     return (
       <View style={css.searchBar}>
         <FontAwesome
@@ -287,7 +287,7 @@ const IncomingOrder = () => {
                 </Text>
               </TouchableOpacity>
             )}
-            {order.deliver == 'P' && order.pay == 'Y' && (
+            {order.deliver != 'P' && order.pay == 'Y' && (
               <TouchableOpacity
                 onPress={() => doDeliverOrder(i)}
                 style={{
@@ -306,6 +306,27 @@ const IncomingOrder = () => {
                 </Text>
               </TouchableOpacity>
             )}
+            {
+              (order.deliver = 'P' && order.pay == 'Y' && (
+                <TouchableOpacity
+                  onPress={() => doDeliverOrder(i)}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#043C88',
+                    borderRadius: 15,
+                    marginVertical: 5,
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    alignSelf: 'flex-end',
+                  }}>
+                  <Text style={{color: '#F5C63F', fontSize: 15}}>
+                    Done Deliver
+                  </Text>
+                </TouchableOpacity>
+              ))
+            }
             {order.cancelled != 'Y' ? (
               <TouchableOpacity
                 onPress={() => doCancelOrder(i)}
@@ -341,6 +362,22 @@ const IncomingOrder = () => {
                 </Text>
               </TouchableOpacity>
             )}
+            <TouchableOpacity
+              onPress={() => {}}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#043C88',
+                borderRadius: 15,
+                marginTop: 5,
+                width: w * 0.28,
+                paddingVertical: 10,
+                paddingHorizontal: 20,
+                alignSelf: 'flex-end',
+              }}>
+              <Text style={{color: '#F5C63F', fontSize: 15}}>Chat</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -406,7 +443,21 @@ const IncomingOrder = () => {
 
   return (
     <View>
-      <SearchBar />
+      <View style={css.searchBar}>
+        <FontAwesome
+          name="search"
+          color="black"
+          style={{marginHorizontal: 10}}
+          size={15}
+          solid></FontAwesome>
+        <TextInput
+          value={findProduct}
+          onChangeText={val => seFindProduct(val)}
+          onSubmitEditing={() => setFind(findProduct)}
+          style={css.input}
+          placeholder="Find Product"
+          placeholderTextColor="#020202"></TextInput>
+      </View>
       <ModalAddress />
       <ModalTransaction />
       <ScrollView style={{marginBottom: 130}}>
