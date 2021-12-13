@@ -36,7 +36,7 @@ const Signup = ({navigation}) => {
         navigation.replace('MainApp');
       }
     });
-  });
+  }, []);
 
   const handleSubmitButton = async () => {
     try {
@@ -64,15 +64,17 @@ const Signup = ({navigation}) => {
       if (res.body.code != 200) {
         throw res.body.message;
       }
-      await Storage.save({
+      Storage.save({
         key: 'userId',
-        id: 'user',
+        id: 'userId',
         data: res.body.data.id_account,
+        expires: null,
       });
-      await Storage.save({
+      Storage.save({
         key: 'user',
         id: 'user',
         data: res.body.data,
+        expires: null,
       });
       navigation.replace('MainApp');
     } catch (error) {
