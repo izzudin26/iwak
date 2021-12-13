@@ -18,6 +18,7 @@ import {
   addCart,
   changeTokocart,
 } from '../../webservice/buyer.service';
+import {getCategories} from '../../webservice/seller.service';
 
 const DetailProductStore = ({navigation, route}) => {
   const [click, setClick] = useState(1);
@@ -31,6 +32,7 @@ const DetailProductStore = ({navigation, route}) => {
   const [profileToko, setProfileToko] = useState('');
   const [productStar, setStar] = useState(0);
   const [address, setAddress] = useState('');
+  const [category, setCategory] = useState('');
   const [detail, setDetail] = useState('');
   const [doFetch, setFetch] = useState(true);
   const [images, setImages] = useState([]);
@@ -54,6 +56,17 @@ const DetailProductStore = ({navigation, route}) => {
             listImage.push(`${url}/${i.image}`);
             setImages([...listImage]);
           });
+          getCategories()
+            .then(resC => {
+              const {data} = resC.body;
+              console.log(res.body);
+              data.forEach((c, i) => {
+                if (c.id_category == res.body.data[0].id_category) {
+                  setCategory(c.category_name);
+                }
+              });
+            })
+            .catch(err => alert(err));
           setIndexImage(0);
           console.log(images);
         })
@@ -210,7 +223,7 @@ const DetailProductStore = ({navigation, route}) => {
                   fontSize: 15,
                   color: 'black',
                 }}>
-                Ini adalah keterangan product
+                {category}
               </Text>
               <View style={{flexDirection: 'row', marginVertical: 5}}>
                 {star(productStar)}
