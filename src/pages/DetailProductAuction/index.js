@@ -20,6 +20,7 @@ import {
   getLelangSegment,
   addBidding,
 } from '../../webservice/buyer.service';
+import {getCategories} from '../../webservice/seller.service';
 
 const DetailProductAuction = ({navigation, route}) => {
   const [click, setClick] = useState(1);
@@ -37,6 +38,7 @@ const DetailProductAuction = ({navigation, route}) => {
   const [doFetch, setFetch] = useState(true);
   const [images, setImages] = useState([]);
   const [bidPrice, setBidPrice] = useState(0);
+  const [category, setCategory] = useState('');
 
   const {urlSegment} = route.params;
   useEffect(() => {
@@ -52,6 +54,15 @@ const DetailProductAuction = ({navigation, route}) => {
           setTokoName(data[0].namatoko);
           setProfileToko(`${url}/${data[0].profile_toko}`);
           setStar(parseInt(data[0].star));
+          getCategories().then(resC => {
+            const {data} = resC.body;
+            console.log(res.body);
+            data.forEach((c, i) => {
+              if (c.id_category == res.body.data[0].id_category) {
+                setCategory(c.category_name);
+              }
+            });
+          });
           image.map(i => {
             const listImage = images;
             listImage.push(`${url}/${i.image}`);
@@ -265,7 +276,13 @@ const DetailProductAuction = ({navigation, route}) => {
                   value={bidPrice.toString()}
                   onChangeText={val => setBidPrice(val)}></TextInput>
               </View>
-              <Text style={{color: 'black', marginTop: 10, fontSize: 20, alignSelf: 'center'}}>
+              <Text
+                style={{
+                  color: 'black',
+                  marginTop: 10,
+                  fontSize: 20,
+                  alignSelf: 'center',
+                }}>
                 Last Bid (Rp. 20.000)
               </Text>
             </View>
@@ -349,7 +366,7 @@ const styles = StyleSheet.create({
   },
   ContainerBottom: {
     width: '102%',
-    height: hp('30%'),
+    height: hp('33%'),
     overflow: 'hidden',
     borderTopStartRadius: 50,
     borderTopEndRadius: 50,
