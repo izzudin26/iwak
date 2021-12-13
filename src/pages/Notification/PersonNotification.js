@@ -53,6 +53,8 @@ const PersonNotification = () => {
       return 'Dibatalkan';
     } else if (cancelled != 'Y' && pay == 'Y' && deliver == 'N') {
       return 'Pembayaran Berhasil';
+    } else if (pay == 'N' && cancelled == 'N' && deliver == 'N') {
+      return 'Menunggu Konfirmasi Penjual';
     } else {
       return 'Deliver';
     }

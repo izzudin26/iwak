@@ -34,7 +34,7 @@ const Account = ({navigation}) => {
       fetchProfile();
     }
     setFetch(false);
-  });
+  },[]);
 
   const fetchProfile = () => {
     getProfile().then(res => {
@@ -202,7 +202,9 @@ const Account = ({navigation}) => {
               <Text style={{fontSize: 18, color: 'black', fontWeight: 'bold'}}>
                 Store
               </Text>
-              <Text style={{color: 'black', fontSize: 18}}>{toko}</Text>
+              <Text style={{color: 'black', fontSize: 18}}>
+                {toko ? toko : 'BUKA TOKO'}
+              </Text>
             </View>
           </View>
           <TouchableOpacity
