@@ -105,6 +105,7 @@ const MainApp = () => {
         name="Chat"
         component={Chat}
         options={({navigation, route}) => ({
+          unmountOnBlur: true,
           headerStyle: {
             backgroundColor: '#043C88',
             height: 70,
