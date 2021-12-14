@@ -215,3 +215,60 @@ export const getMyProfile = async () => {
     throw res.data.message;
   }
 };
+
+export const listroomChat = async () => {
+  const account = await getCurrentIdAccount();
+  try {
+    const res = await axios.get(
+      `${url}/api/chat/listroom?id_account=${account}`,
+    );
+    return {body: res.data, status: res.status};
+  } catch (error) {
+    console.log(error);
+    throw 'INTERNAL SERVER ERROR';
+  }
+};
+
+export const listChat = async ({id_room} = {}) => {
+  const account = await getCurrentIdAccount();
+  try {
+    const res = await axios.get(
+      `${url}/api/chat/listchat?id_account=${account}&id=${id_room}`,
+    );
+    return {body: res.data, status: res.status};
+  } catch (error) {
+    console.log(error);
+    throw 'INTERNAL SERVER ERROR';
+  }
+};
+
+export const sendChat = async ({id_room, receiver, message} = {}) => {
+  const account = await getCurrentIdAccount();
+  const data = {
+    id: id_room,
+    id_account: account,
+    penerima: receiver,
+    message,
+  };
+  try {
+    await axios.post(`${url}/api/chat/sendchat`, data);
+  } catch (error) {
+    console.log(error);
+    throw 'INTERNAL SERVER ERROR';
+  }
+};
+
+export const newChat = async ({receiver, message} = {}) => {
+  const account = await getCurrentIdAccount();
+  const data = {
+    idtoko: receiver,
+    id_account: account,
+    message,
+  };
+  try {
+    await axios.post(`${url}/api/chat/newchat`, data);
+  } catch (error) {
+    console.log(error);
+    throw 'INTERNAL SERVER ERROR';
+  }
+};
