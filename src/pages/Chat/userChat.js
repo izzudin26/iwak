@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ScrollView,
   View,
@@ -8,42 +8,48 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-
+import {url} from '../../webservice/url';
+import {listroomChat} from '../../webservice/buyer.service';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
-const UserChat = () => {
-  const [chats, setChats] = useState([
-    {
-      name: 'Opponent 1 User',
-      shortDesc: 'Blablabla Opponent 1 User',
-      image: require('../../assets/images/fotoUser.jpg'),
-    },
-    {
-      name: 'Opponent 2 User',
-      shortDesc: 'Blablabla Opponent 2 User',
-      image: require('../../assets/images/fotoUser.jpg'),
-    },
-    {
-      name: 'Opponent 3 User',
-      shortDesc: 'Blablabla Opponent 3 User',
-      image: require('../../assets/images/fotoUser.jpg'),
-    },
-    {
-      name: 'Opponent 4 User',
-      shortDesc: 'Blablabla Opponent 4 User',
-      image: require('../../assets/images/fotoUser.jpg'),
-    },
-  ]);
+const UserChat = ({navigation}) => {
+  const [chats, setChats] = useState([]);
+
+  useEffect(() => {
+    doGetListRoom();
+  }, []);
+  const doGetListRoom = async () => {
+    try {
+      const req = await listroomChat();
+      setChats(req.body);
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   return (
     <ScrollView style={style.chatList}>
       {chats.map((chat, i) => (
-        <TouchableOpacity key={i} style={style.chatContainer}>
-          <Image source={chat.image} style={style.chatImage}></Image>
+        <TouchableOpacity
+          key={i}
+          style={style.chatContainer}
+          onPress={() => {
+            navigation.navigate('ChatPerson', {
+              idRoom: chat.id_roomchat,
+              idOpponent: chat.account.id_account,
+            });
+          }}>
+          <Image
+            source={
+              chat.account.profile_picture != null
+                ? {uri: `${url}/${chat.account.profile_picture}`}
+                : require('../../assets/images/fotoUser.jpg')
+            }
+            style={style.chatImage}></Image>
           <View style={style.chatDetail}>
-            <Text style={style.textTitle}>{chat.name}</Text>
-            <Text style={style.textDesc}>{chat.shortDesc}</Text>
+            <Text style={style.textTitle}>{chat.account.fullname}</Text>
+            <Text style={style.textDesc}>{chat.last_message}</Text>
           </View>
         </TouchableOpacity>
       ))}

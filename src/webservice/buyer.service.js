@@ -140,7 +140,7 @@ export const getCart = async () => {
 
 export const getProfile = async ({userid} = {}) => {
   const res = await axios.get(`${url}/api/profile?id_account=${userid}`);
-  if (res.data.status == 200) {
+  if (res.data.code == 200) {
     return {status: res.data.status == 200, body: res.data};
   } else {
     throw res.data.message;

@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   Text,
   View,
@@ -12,12 +12,16 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {listChat, getProfile} from '../../webservice/buyer.service';
+import {url} from '../../webservice/url';
+import {getCurrentIdAccount} from '../../webservice/user.service';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-const ChatPerson = () => {
-  const [opponentName, setOpponentName] = useState('Opponent Name');
+const ChatPerson = ({route}) => {
+  const [opponentName, setOpponentName] = useState('');
+  const [opponentImage, setOpponentImage] = useState(null);
   const msgRef = useRef();
   const [chats, setChats] = useState([
     {
@@ -30,44 +34,40 @@ const ChatPerson = () => {
       message: 'Hallo juga Selamat Siang',
       time: '10:20',
     },
-    {
-      label: 'self',
-      message: 'Bagaimana Kabar Anda',
-      time: '10:20',
-    },
-    {
-      label: 'opponent',
-      message: 'Baik Sekali',
-      time: '10:20',
-    },
-    {
-      label: 'opponent',
-      message: 'Bagaimana juga kabar anda',
-      time: '10:20',
-    },
-    {
-      label: 'self',
-      message: 'Saya sangat sehat',
-      time: '10:20',
-    },
-    {
-      label: 'self',
-      message: 'Hallo Selamat Siang',
-      time: '10:20',
-    },
-    {
-      label: 'opponent',
-      message: 'Hallo juga Selamat Siang',
-      time: '10:20',
-    },
   ]);
+
+  useEffect(() => {
+    getOppponentProfile();
+  }, []);
+
+  const getLisfOfChat = async () => {
+    if (route.params.idRoom) {
+      const idAccount = await getCurrentIdAccount();
+      const chatData = await listChat({id_room: route.params.idRoom});
+    }
+  };
+
+  const getOppponentProfile = async () => {
+    const {idOpponent} = route.params;
+    try {
+      const res = await getProfile({userid: idOpponent});
+      setOpponentName(res.body.data.fullname);
+      setOpponentImage(res.body.data.profile_picture);
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   const NavbarComponent = () => {
     return (
       <View style={style.navbar}>
         <Image
           style={style.profileIcon}
-          source={require('../../assets/images/fotoUser.jpg')}></Image>
+          source={
+            opponentImage != null
+              ? {uri: `${url}/${opponentImage}`}
+              : require('../../assets/images/fotoUser.jpg')
+          }></Image>
         <Text style={style.profileName}>{opponentName}</Text>
       </View>
     );
