@@ -1,11 +1,28 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import TokoChat from './tokoChat';
 import UserChat from './userChat';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {getMyProfile} from '../../webservice/buyer.service';
 
 const Chat = ({navigation}) => {
   const [navState, setNavState] = useState(0);
+  const [username, setUsername] = useState('');
+  const [tokoName, setToko] = useState('');
+  useEffect(() => {
+    doFetch();
+  }, []);
+
+  const doFetch = async () => {
+    try {
+      const res = await getMyProfile();
+      const {body} = res;
+      setUsername(body.data.fullname);
+      setToko(body.data.namatoko);
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   const navbar = () => (
     <View style={styles.navbar}>
@@ -23,7 +40,7 @@ const Chat = ({navigation}) => {
         }}
         onPress={() => setNavState(0)}>
         <FontAwesome5 name="user" size={20} solid color="#EBC043" />
-        <Text style={styles.textHeader}>Username</Text>
+        <Text style={styles.textHeader}>{username}</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={{
@@ -39,7 +56,7 @@ const Chat = ({navigation}) => {
         }}
         onPress={() => setNavState(1)}>
         <FontAwesome5 name="store" size={20} solid color="#EBC043" />
-        <Text style={styles.textHeader}>Toko name</Text>
+        <Text style={styles.textHeader}>{tokoName}</Text>
       </TouchableOpacity>
     </View>
   );
