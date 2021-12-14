@@ -29,6 +29,7 @@ const MyStore = ({navigation}) => {
       setImage(`${url}/${res.body.data.profile_toko}`);
     });
     getReport().then(res => {
+      console.log(res.body);
       setOmset(res.body.omset);
     });
     setIsFetch(false);

@@ -8,14 +8,20 @@ import {getCurrentIdAccount} from './user.service';
  * @property {Object} body
  * @returns {Promise<response>}
  */
-export const getReport = () => {
-  let idAccount = getCurrentIdAccount();
-  return new Promise((resolve, reject) => {
-    axios
-      .post(`${url}/api/penjual/laporan`, {id_account: idAccount})
-      .then(res => resolve({status: res.status, body: res.data}))
-      .catch(err => reject(err));
-  });
+export const getReport = async () => {
+  let idAccount = await getCurrentIdAccount();
+  try {
+    const res = await axios.post(`${url}/api/penjual/laporan`, {
+      id_account: idAccount,
+    });
+    if (res.data.code == 200) {
+      return {status: res.data.code, body: res.data};
+    } else {
+      throw res.data.message;
+    }
+  } catch (error) {
+    throw 'ERROR 500 SERVER';
+  }
 };
 
 /**
