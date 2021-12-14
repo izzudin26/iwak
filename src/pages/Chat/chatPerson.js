@@ -23,27 +23,32 @@ const ChatPerson = ({route}) => {
   const [opponentName, setOpponentName] = useState('');
   const [opponentImage, setOpponentImage] = useState(null);
   const msgRef = useRef();
-  const [chats, setChats] = useState([
-    {
-      label: 'self',
-      message: 'Hallo Selamat Siang',
-      time: '10:20',
-    },
-    {
-      label: 'opponent',
-      message: 'Hallo juga Selamat Siang',
-      time: '10:20',
-    },
-  ]);
+  const [chats, setChats] = useState([]);
 
   useEffect(() => {
     getOppponentProfile();
+    getLisfOfChat();
   }, []);
 
   const getLisfOfChat = async () => {
     if (route.params.idRoom) {
-      const idAccount = await getCurrentIdAccount();
-      const chatData = await listChat({id_room: route.params.idRoom});
+      try {
+        const idAccount = await getCurrentIdAccount();
+        const chatData = await listChat({id_room: route.params.idRoom});
+        for (let chat of chatData.body) {
+          const messageAccountId = chat.account.substr(0, 2);
+          const pushData = {
+            label: messageAccountId.includes(idAccount.toString())
+              ? 'self'
+              : 'opponent',
+            message: chat.message,
+            time: chat.created_at,
+          };
+          setChats(prevChat => [...prevChat, pushData]);
+        }
+      } catch (error) {
+        alert(error);
+      }
     }
   };
 
@@ -87,6 +92,7 @@ const ChatPerson = ({route}) => {
             <View
               style={{
                 flexDirection: 'row',
+                flexWrap: 'wrap',
                 margin: 10,
                 padding: 13,
                 backgroundColor: chat.label == 'self' ? '#FFD96E' : '#E4E4E4',
