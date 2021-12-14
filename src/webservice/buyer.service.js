@@ -272,3 +272,18 @@ export const newChat = async ({receiver, message} = {}) => {
     throw 'INTERNAL SERVER ERROR';
   }
 };
+
+export const sendImageChat = async ({formdata} = {}) => {
+  formdata.append('id_account', await getCurrentIdAccount());
+  const res = await fetch(`${url}/api/chat/sendimgchat`, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    body: formdata,
+    method: 'POST',
+  });
+  const jsonBody = await res.json();
+  if (jsonBody.code != 200) {
+    throw res.data.message;
+  }
+};

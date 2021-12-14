@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import ImagePicker from 'react-native-image-crop-picker';
 import {listChat, getProfile, sendChat} from '../../webservice/buyer.service';
 import {url} from '../../webservice/url';
 import {getCurrentIdAccount} from '../../webservice/user.service';
@@ -44,6 +45,7 @@ const ChatPerson = ({route}) => {
               : 'opponent',
             message: chat.message,
             time: chat.created_at,
+            image: chat.photourl,
           };
           setChats(prevChat => [...prevChat, pushData]);
         }
@@ -51,6 +53,16 @@ const ChatPerson = ({route}) => {
         alert(error);
       }
     }
+  };
+
+  const sendImage = async () => {
+    const img = await ImagePicker.openPicker({
+      multiple: false,
+      mediaType: 'photo',
+      cropping: true,
+      forceJpg: true,
+    });
+    console.log(img);
   };
 
   const getOppponentProfile = async () => {
@@ -140,7 +152,7 @@ const ChatPerson = ({route}) => {
               style={style.textInput}
               placeholder="Tulis pesan"
               placeholderTextColor="black"></TextInput>
-            <TouchableOpacity style={style.btnSend}>
+            <TouchableOpacity style={style.btnSend} onPress={sendImage}>
               <FontAwesome5 name="plus" size={20} solid color="black" />
             </TouchableOpacity>
           </View>
