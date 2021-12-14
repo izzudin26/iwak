@@ -55,6 +55,8 @@ const PersonNotification = () => {
       return 'Pembayaran Berhasil';
     } else if (pay == 'N' && cancelled == 'N' && deliver == 'N') {
       return 'Menunggu Konfirmasi Penjual';
+    } else if (pay == 'Y' && cancelled == 'N' && deliver == 'Y') {
+      return 'Deliver Done';
     } else {
       return 'Deliver';
     }
