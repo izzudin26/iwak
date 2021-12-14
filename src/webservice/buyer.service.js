@@ -166,7 +166,7 @@ export const addBidding = async ({id_lelang, price} = {}) => {
     id_account: await getCurrentIdAccount(),
   };
   let res = await axios.post(`${url}/api/addbid`, data);
-  console.log(res.data);
+  console.log(data);
   if (res.data.code == 200) {
     return {status: res.data.code, body: res.data};
   } else {
@@ -213,6 +213,17 @@ export const getMyProfile = async () => {
     return {status: res.data.code, body: res.data};
   } else {
     throw res.data.message;
+  }
+};
+
+export const getLatestBid = async ({idLelang} = {}) => {
+  try {
+    const res = await axios.get(
+      `https://iwakstore.my.id/api/updateprice?id_lelang=${idLelang}`,
+    );
+    return {body: res.data};
+  } catch (error) {
+    throw 'INTERNAL SERVER ERROR';
   }
 };
 
