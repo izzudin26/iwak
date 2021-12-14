@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {listChat, getProfile} from '../../webservice/buyer.service';
+import {listChat, getProfile, sendChat} from '../../webservice/buyer.service';
 import {url} from '../../webservice/url';
 import {getCurrentIdAccount} from '../../webservice/user.service';
 
@@ -35,6 +35,7 @@ const ChatPerson = ({route}) => {
       try {
         const idAccount = await getCurrentIdAccount();
         const chatData = await listChat({id_room: route.params.idRoom});
+        setChats([]);
         for (let chat of chatData.body) {
           const messageAccountId = chat.account.substr(0, 2);
           const pushData = {
@@ -58,6 +59,19 @@ const ChatPerson = ({route}) => {
       const res = await getProfile({userid: idOpponent});
       setOpponentName(res.body.data.fullname);
       setOpponentImage(res.body.data.profile_picture);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const doSendChat = async message => {
+    try {
+      await sendChat({
+        id_room: route.params.idRoom,
+        message,
+        receiver: route.params.idOpponent,
+      });
+      getLisfOfChat();
     } catch (error) {
       alert(error);
     }
@@ -133,15 +147,7 @@ const ChatPerson = ({route}) => {
           <TouchableOpacity
             style={style.btnSend}
             onPress={() => {
-              const date = new Date();
-              setChats(oldChat => [
-                ...oldChat,
-                {
-                  label: 'self',
-                  message: messageInput,
-                  time: `${date.getHours()}:${date.getMinutes()}`,
-                },
-              ]);
+              doSendChat(messageInput);
               setMessage('');
             }}>
             <FontAwesome5 name="paper-plane" size={20} solid color="#EBC043" />

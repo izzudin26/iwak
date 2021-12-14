@@ -248,7 +248,7 @@ export const sendChat = async ({id_room, receiver, message} = {}) => {
     id: id_room,
     id_account: account,
     penerima: receiver,
-    message,
+    message: message,
   };
   try {
     await axios.post(`${url}/api/chat/sendchat`, data);
