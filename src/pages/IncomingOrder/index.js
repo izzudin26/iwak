@@ -19,6 +19,7 @@ import {
   approveOrder,
   cancelOrder,
   deleteOrder,
+  deliverDoneOrder,
   getAddressListOrder,
 } from '../../webservice/seller.service';
 import {url} from '../../webservice/url';
@@ -86,7 +87,32 @@ const IncomingOrder = () => {
                 id_transaction: e.id_transaction,
                 subtotal: e.subtotal,
                 pay: e.pay,
-                deliver: e.deliver,
+                deliver: 'P',
+                cancelled: e.cancelled,
+                created_at: e.created_at,
+                fullname: e.fullname,
+                nota: e.nota,
+                items: e.items,
+              }
+            : e,
+        ),
+      );
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const doneDeliver = async index => {
+    try {
+      await deliverDoneOrder({id_transaction: orders[index].id_transaction});
+      setOrders(oldOrder =>
+        oldOrder.map((e, i) =>
+          i == index
+            ? {
+                id_transaction: e.id_transaction,
+                subtotal: e.subtotal,
+                pay: e.pay,
+                deliver: 'P',
                 cancelled: e.cancelled,
                 created_at: e.created_at,
                 fullname: e.fullname,
@@ -287,7 +313,7 @@ const IncomingOrder = () => {
                 </Text>
               </TouchableOpacity>
             )}
-            {order.deliver != 'P' && order.pay == 'Y' && (
+            {order.deliver == 'N' && order.pay == 'Y' && (
               <TouchableOpacity
                 onPress={() => doDeliverOrder(i)}
                 style={{
@@ -306,28 +332,26 @@ const IncomingOrder = () => {
                 </Text>
               </TouchableOpacity>
             )}
-            {
-              (order.deliver = 'P' && order.pay == 'Y' && (
-                <TouchableOpacity
-                  onPress={() => doDeliverOrder(i)}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: '#043C88',
-                    borderRadius: 15,
-                    marginVertical: 5,
-                    paddingVertical: 10,
-                    paddingHorizontal: 20,
-                    alignSelf: 'flex-end',
-                  }}>
-                  <Text style={{color: '#F5C63F', fontSize: 15}}>
-                    Done Deliver
-                  </Text>
-                </TouchableOpacity>
-              ))
-            }
-            {order.cancelled != 'Y' ? (
+            {order.deliver == 'P' && order.pay == 'Y' && (
+              <TouchableOpacity
+                onPress={() => doneDeliver(i)}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#043C88',
+                  borderRadius: 15,
+                  marginVertical: 5,
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  alignSelf: 'flex-end',
+                }}>
+                <Text style={{color: '#F5C63F', fontSize: 15}}>
+                  Done Deliver
+                </Text>
+              </TouchableOpacity>
+            )}
+            {order.cancelled != 'Y' && order.deliver != 'Y' ? (
               <TouchableOpacity
                 onPress={() => doCancelOrder(i)}
                 style={{

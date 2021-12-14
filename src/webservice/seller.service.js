@@ -388,7 +388,7 @@ export const deliverOrder = async ({id_transaction} = {}) => {
   }
 };
 
-export const deliverDonneOrder = async ({id_transaction} = {}) => {
+export const deliverDoneOrder = async ({id_transaction} = {}) => {
   const res = await axios.post(`${url}/api/penjual/listorder/deliverdone`, {
     id: id_transaction,
   });
