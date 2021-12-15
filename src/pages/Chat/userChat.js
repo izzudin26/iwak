@@ -49,7 +49,10 @@ const UserChat = ({navigation}) => {
             style={style.chatImage}></Image>
           <View style={style.chatDetail}>
             <Text style={style.textTitle}>{chat.account.fullname}</Text>
-            <Text style={style.textDesc}>{chat.last_message}</Text>
+            <Text style={style.textDesc}>
+              {chat.last_message.substr(0, 30)}{' '}
+              {chat.last_message.length > 30 ? '...' : ''}
+            </Text>
           </View>
         </TouchableOpacity>
       ))}
