@@ -32,6 +32,8 @@ import ProductFeedback from './Feedback/ProductFeedback';
 import IncomingOrder from './IncomingOrder';
 import ListBidAuction from './ListBidAuction';
 import DetailProductAuction from './DetailProductAuction';
+import EditPhone from './EditPhone';
+import EditAddress from './EditAddress';
 
 export {
   Splash,
@@ -68,4 +70,6 @@ export {
   IncomingOrder,
   ListBidAuction,
   DetailProductAuction,
+  EditAddress,
+  EditPhone,
 };

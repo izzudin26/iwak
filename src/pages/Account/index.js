@@ -26,26 +26,33 @@ const Account = ({navigation}) => {
   const [password, setpassword] = useState('');
   const [toko, setToko] = useState('');
   const [tokoImage, setTokoImage] = useState(null);
+  const [Address, setAddress] = useState(null);
+  const [Phone, setPhone] = useState(null);
   const [currentProfile, setProfile] = useState(null);
-  const [doFetch, setFetch] = useState(true);
 
   useEffect(() => {
-    if (doFetch) {
-      fetchProfile();
-    }
-    setFetch(false);
-  },[]);
+    fetchProfile();
+  }, []);
 
   const fetchProfile = () => {
     getProfile().then(res => {
       setProfile(res.body.data);
-      const {fullname, email, profile_picture, profile_toko, namatoko} =
-        res.body.data;
+      const {
+        fullname,
+        email,
+        profile_picture,
+        profile_toko,
+        namatoko,
+        address,
+        phone,
+      } = res.body.data;
       setName(fullname);
       setemail(email);
       setImagePath(`${url}/${profile_picture}`);
       setTokoImage(`${url}/${profile_toko}`);
       setToko(namatoko);
+      setAddress(address);
+      setPhone(phone);
     });
   };
 
@@ -179,6 +186,42 @@ const Account = ({navigation}) => {
               backgroundColor: '#043C88',
             }}
             onPress={() => navigation.navigate('EditPassword')}>
+            <FontAwesome5 name="pen" solid size={12} color="#fff" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.containerData}>
+          <View style={{flexDirection: 'column'}}>
+            <Text style={{fontSize: 18, color: 'black'}}>Address</Text>
+            <Text style={{color: 'black', fontSize: 18}}>{Address}</Text>
+          </View>
+          <TouchableOpacity
+            style={{
+              borderRadius: 50,
+              width: 30,
+              height: 30,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#043C88',
+            }}
+            onPress={() => navigation.navigate('EditAddress')}>
+            <FontAwesome5 name="pen" solid size={12} color="#fff" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.containerData}>
+          <View style={{flexDirection: 'column'}}>
+            <Text style={{fontSize: 18, color: 'black'}}>Phone</Text>
+            <Text style={{color: 'black', fontSize: 18}}>{Phone}</Text>
+          </View>
+          <TouchableOpacity
+            style={{
+              borderRadius: 50,
+              width: 30,
+              height: 30,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#043C88',
+            }}
+            onPress={() => navigation.navigate('EditPhone')}>
             <FontAwesome5 name="pen" solid size={12} color="#fff" />
           </TouchableOpacity>
         </View>
