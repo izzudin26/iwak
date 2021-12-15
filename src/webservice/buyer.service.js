@@ -166,7 +166,6 @@ export const addBidding = async ({id_lelang, price} = {}) => {
     id_account: await getCurrentIdAccount(),
   };
   let res = await axios.post(`${url}/api/addbid`, data);
-  console.log(data);
   if (res.data.code == 200) {
     return {status: res.data.code, body: res.data};
   } else {

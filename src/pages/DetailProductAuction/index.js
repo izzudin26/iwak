@@ -19,6 +19,7 @@ import {
   getProductSegment,
   getLelangSegment,
   addBidding,
+  getLatestBid,
 } from '../../webservice/buyer.service';
 import {getCategories} from '../../webservice/seller.service';
 
@@ -29,6 +30,7 @@ const DetailProductAuction = ({navigation, route}) => {
   const [price, setPrice] = useState('');
   const [total, setTotal] = useState(0);
   const [idProduct, setIdProduct] = useState(null);
+  const [idLelang, setIdLelang] = useState(null);
   const [name, setName] = useState('');
   const [tokoName, setTokoName] = useState('');
   const [profileToko, setProfileToko] = useState('');
@@ -38,6 +40,7 @@ const DetailProductAuction = ({navigation, route}) => {
   const [doFetch, setFetch] = useState(true);
   const [images, setImages] = useState([]);
   const [bidPrice, setBidPrice] = useState(0);
+  const [latestBid, setLatestBid] = useState(null);
   const [category, setCategory] = useState('');
 
   const {urlSegment} = route.params;
@@ -53,10 +56,10 @@ const DetailProductAuction = ({navigation, route}) => {
           setStock(data[0].stock);
           setTokoName(data[0].namatoko);
           setProfileToko(`${url}/${data[0].profile_toko}`);
+          setIdLelang(data[0].id_lelang);
           setStar(parseInt(data[0].star));
           getCategories().then(resC => {
             const {data} = resC.body;
-            console.log(res.body);
             data.forEach((c, i) => {
               if (c.id_category == res.body.data[0].id_category) {
                 setCategory(c.category_name);
@@ -69,7 +72,9 @@ const DetailProductAuction = ({navigation, route}) => {
             setImages([...listImage]);
           });
           setIndexImage(0);
-          console.log(res.body.data[0].price);
+          getLatestBid({idLelang: data[0].id_lelang}).then(res =>
+            setLatestBid(res.body.lastbid),
+          );
         })
         .catch(err => alert(err));
       setFetch(false);
@@ -78,14 +83,14 @@ const DetailProductAuction = ({navigation, route}) => {
 
   const bidProduct = async () => {
     try {
-      let res = await addBidding({
-        id_lelang: idProduct,
-        price: parseInt(price),
+      await addBidding({
+        id_lelang: idLelang,
+        price: parseInt(bidPrice),
       });
       alert('Lelang Berhasil');
       navigation.pop();
     } catch (error) {
-      alert(error.message);
+      alert(error);
     }
   };
 
@@ -283,7 +288,7 @@ const DetailProductAuction = ({navigation, route}) => {
                   fontSize: 20,
                   alignSelf: 'center',
                 }}>
-                Last Bid (Rp. 20.000)
+                Last Bid (Rp. {latestBid})
               </Text>
             </View>
 
