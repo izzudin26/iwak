@@ -7,7 +7,7 @@ import {
 import {
   lelang,
   nonActiveLelang,
-  nonactiveLelang,
+  deleteAuction,
 } from '../../webservice/seller.service';
 import {url} from '../../webservice/url';
 
@@ -52,6 +52,11 @@ const ProductForAuction = ({navigation, keyword}) => {
     } catch (error) {
       alert(error.message);
     }
+  };
+
+  const removeLelang = async index => {
+    await deleteAuction({idLelang: datas[index].id_lelang});
+    setData(oldData => oldData.filter((e, i) => i != index));
   };
 
   const filterData = () => {
@@ -102,27 +107,47 @@ const ProductForAuction = ({navigation, keyword}) => {
                 {startTime} - {endTime}
               </Text> */}
             </View>
-            <TouchableOpacity
-              onPress={
-                data.isactive == 'Y' ? () => setNonactiveLelang(i) : null
-              }
-              activeOpacity={data.isactive != 'Y' ? 1 : null}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: data.isactive == 'Y' ? '#043C88' : '#E8E8E8',
-                marginVertical: 20,
-                height: 40,
-                width: wp('20%'),
-                borderRadius: 10,
-                alignSelf: 'center',
-              }}>
-              <Text
-                style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 17}}>
-                DONE
-              </Text>
-            </TouchableOpacity>
+            <View style={{flexDirection: 'column'}}>
+              <TouchableOpacity
+                onPress={
+                  data.isactive == 'Y' ? () => setNonactiveLelang(i) : null
+                }
+                activeOpacity={data.isactive != 'Y' ? 1 : null}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: data.isactive == 'Y' ? '#043C88' : '#E8E8E8',
+                  marginVertical: 3,
+                  height: 40,
+                  width: wp('20%'),
+                  borderRadius: 10,
+                  alignSelf: 'center',
+                }}>
+                <Text
+                  style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 17}}>
+                  DONE
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => removeLelang(i)}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#043C88',
+                  marginVertical: 3,
+                  height: 40,
+                  width: wp('20%'),
+                  borderRadius: 10,
+                  alignSelf: 'center',
+                }}>
+                <Text
+                  style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 17}}>
+                  HAPUS
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </TouchableOpacity>
       ))}

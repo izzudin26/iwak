@@ -445,3 +445,13 @@ export const getMyProfile = async () => {
     throw res.data.message;
   }
 };
+
+export const deleteAuction = async ({idLelang} = {}) => {
+  try {
+    await axios(`${url}/api/penjual/lelang/hapus`, {
+      id: idLelang,
+    });
+  } catch (error) {
+    console.log('INTERNAL SERVER ERROR');
+  }
+};
