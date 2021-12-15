@@ -26,7 +26,7 @@ import {url} from '../../webservice/url';
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
 
-const IncomingOrder = () => {
+const IncomingOrder = ({navigation}) => {
   const [find, setFind] = useState('');
   const [isShowModal, setShowModal] = useState(false);
   const [messageModal, setMessageModal] = useState('');
@@ -37,11 +37,8 @@ const IncomingOrder = () => {
   const [findProduct, seFindProduct] = useState('');
 
   useEffect(() => {
-    if (doFetch) {
-      getData();
-      setFetch(false);
-    }
-  });
+    getData();
+  }, []);
 
   const doAcceptOrder = async index => {
     try {
@@ -158,6 +155,13 @@ const IncomingOrder = () => {
     );
   };
 
+  const chat = async index => {
+    const idTransaction = orders[index].id_transaction;
+    const paymentDetail = await paymentImage({id_transaction: idTransaction});
+    const opponentChatId = paymentDetail.body.data[0].id_pembeli;
+    navigation.navigate('ChatPerson', {idOpponent: opponentChatId});
+  };
+
   const getData = async () => {
     try {
       const req = await listOrder();
@@ -171,7 +175,6 @@ const IncomingOrder = () => {
           return transaction;
         }),
       );
-      console.log(joinDetail);
       setOrders(await joinDetail);
     } catch (error) {
       alert(error.message);
@@ -387,7 +390,9 @@ const IncomingOrder = () => {
               </TouchableOpacity>
             )}
             <TouchableOpacity
-              onPress={() => {}}
+              onPress={() => {
+                chat(i);
+              }}
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',

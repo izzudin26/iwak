@@ -13,7 +13,13 @@ import {
 } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import ImagePicker from 'react-native-image-crop-picker';
-import {listChat, getProfile, sendChat} from '../../webservice/buyer.service';
+import {
+  listChat,
+  getProfile,
+  sendChat,
+  listroomChat,
+  newChat,
+} from '../../webservice/buyer.service';
 import {url} from '../../webservice/url';
 import {getCurrentIdAccount} from '../../webservice/user.service';
 
@@ -23,6 +29,7 @@ const height = Dimensions.get('window').height;
 const ChatPerson = ({route}) => {
   const [opponentName, setOpponentName] = useState('');
   const [opponentImage, setOpponentImage] = useState(null);
+  const [idRoom, setIdRoom] = useState(null);
   const msgRef = useRef();
   const [chats, setChats] = useState([]);
 
@@ -31,11 +38,14 @@ const ChatPerson = ({route}) => {
     getLisfOfChat();
   }, []);
 
-  const getLisfOfChat = async () => {
-    if (route.params.idRoom) {
+  const getLisfOfChat = async ({id_room} = {}) => {
+    if (route.params.idRoom || id_room) {
+      setIdRoom(route.params.idRoom || id_room);
       try {
         const idAccount = await getCurrentIdAccount();
-        const chatData = await listChat({id_room: route.params.idRoom});
+        const chatData = await listChat({
+          id_room: id_room || route.params.idRoom,
+        });
         setChats([]);
         for (let chat of chatData.body) {
           const messageAccountId = chat.account.substr(0, 2);
@@ -52,6 +62,23 @@ const ChatPerson = ({route}) => {
       } catch (error) {
         alert(error);
       }
+    } else {
+      checkIsExist();
+    }
+  };
+
+  const checkIsExist = async () => {
+    const {idOpponent} = route.params;
+    try {
+      const listOfRooms = await listroomChat();
+      listOfRooms.body.map(room => {
+        if (room.account.id_account == idOpponent) {
+          console.log(room);
+          getLisfOfChat({id_room: room.id_roomchat});
+        }
+      });
+    } catch (error) {
+      alert(error);
     }
   };
 
@@ -77,12 +104,25 @@ const ChatPerson = ({route}) => {
   };
 
   const doSendChat = async message => {
+    if (idRoom) {
+      try {
+        await sendChat({
+          id_room: route.params.idRoom,
+          message,
+          receiver: route.params.idOpponent,
+        });
+        getLisfOfChat();
+      } catch (error) {
+        alert(error);
+      }
+    } else {
+      sendNewChat(message);
+    }
+  };
+
+  const sendNewChat = async message => {
     try {
-      await sendChat({
-        id_room: route.params.idRoom,
-        message,
-        receiver: route.params.idOpponent,
-      });
+      await newChat({message, receiver: route.params.idOpponent});
       getLisfOfChat();
     } catch (error) {
       alert(error);
