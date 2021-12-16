@@ -34,6 +34,7 @@ import ListBidAuction from './ListBidAuction';
 import DetailProductAuction from './DetailProductAuction';
 import EditPhone from './EditPhone';
 import EditAddress from './EditAddress';
+import PaymentAuction from './PaymentAuction';
 
 export {
   Splash,
@@ -72,4 +73,5 @@ export {
   DetailProductAuction,
   EditAddress,
   EditPhone,
+  PaymentAuction,
 };
