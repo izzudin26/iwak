@@ -32,31 +32,11 @@ const PaymentAuction = ({route, navigation}) => {
 
   const [isShowCardSelect, setShow] = useState(false);
   const [selectItems, setSelectItem] = useState(['Transfer']);
-  const [items, setItem] = useState([]);
-  const [bank, setBank] = useState('');
-  const [rekening, setRekening] = useState('');
-  const [doFetch, setFetch] = useState(true);
+  const {items} = route.params;
+  const {bank, nomor_rekening} = items[0];
   const [imagepay, setImagePay] = useState({});
 
   const [userPayment, setUserPayment] = useState(selectItems[0]);
-
-  useEffect(() => {
-    if (doFetch) {
-      getCartServer();
-      setFetch(false);
-    }
-  });
-
-  const getCartServer = async () => {
-    try {
-      let res = await getCartView();
-      setItem(res.body);
-      setBank(res.body[0].bank);
-      setRekening(res.body[0].nomor_rekening);
-    } catch (error) {
-      alert(error.message);
-    }
-  };
 
   const handlerImage = () => {
     ImageCropPicker.openPicker({
@@ -128,10 +108,11 @@ const PaymentAuction = ({route, navigation}) => {
       <View style={styles.cartCard} key={i}>
         <View style={styles.containerImage}>
           <Image
-            source={{uri: `${url}/${cart.image}`}}
+            source={{uri: `${cart.image}`}}
             style={{
               width: w * 0.1,
               height: w * 0.1,
+              borderRadius: 10,
             }}></Image>
         </View>
         <View
@@ -180,7 +161,7 @@ const PaymentAuction = ({route, navigation}) => {
         <TouchableOpacity onPress={() => setShow(true)}>
           <TextInput
             editable={false}
-            value={`${userPayment} ${bank} - ${rekening}`}
+            value={`${userPayment} ${bank} - ${nomor_rekening}`}
             style={styles.inputStyle}
             placeholderTextColor="#000"
             autoCapitalize="none"
@@ -287,8 +268,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    padding: 10,
-    margin: 5,
+    margin: 15,
     borderRadius: 15,
     backgroundColor: '#fff',
     shadowColor: '#000',

@@ -48,6 +48,7 @@ const DetailProductAuction = ({navigation, route}) => {
   const [isUserWin, setIsUserWin] = useState(null);
   const [isActive, setIsActive] = useState(null);
   const [isWin, setIsWin] = useState(null);
+  const [data, setData] = useState(null);
 
   const {urlSegment} = route.params;
   useEffect(() => {
@@ -66,6 +67,7 @@ const DetailProductAuction = ({navigation, route}) => {
         setStar(parseInt(data[0].star));
         setIsActive(data[0].isactive);
         setIsWin(data[0].iswon);
+        setData(data[0]);
         getCategories().then(resC => {
           const {data} = resC.body;
           data.forEach((c, i) => {
@@ -97,6 +99,14 @@ const DetailProductAuction = ({navigation, route}) => {
       account: account,
     });
     setIsUserWin(res.body.data.id_account == account);
+  };
+
+  const payBidding = () => {
+    data.qty = 1;
+    data.image = images[0];
+    navigation.navigate('PaymentAuction', {
+      items: [data],
+    });
   };
 
   const bidProduct = async () => {
@@ -323,7 +333,7 @@ const DetailProductAuction = ({navigation, route}) => {
                   justifyContent: 'center',
                   alignSelf: 'center',
                 }}
-                onPress={bidProduct}>
+                onPress={payBidding}>
                 <Text style={{color: '#FFF', fontWeight: 'bold'}}>
                   Checkout
                 </Text>
