@@ -21,7 +21,11 @@ import {
   addBidding,
   getLatestBid,
 } from '../../webservice/buyer.service';
-import {getCategories} from '../../webservice/seller.service';
+import {getCurrentIdAccount} from '../../webservice/user.service';
+import {
+  getCategories,
+  getPemenangLelang,
+} from '../../webservice/seller.service';
 
 const DetailProductAuction = ({navigation, route}) => {
   const [click, setClick] = useState(1);
@@ -37,49 +41,63 @@ const DetailProductAuction = ({navigation, route}) => {
   const [productStar, setStar] = useState(0);
   const [address, setAddress] = useState('');
   const [detail, setDetail] = useState('');
-  const [doFetch, setFetch] = useState(true);
   const [images, setImages] = useState([]);
   const [bidPrice, setBidPrice] = useState(0);
   const [latestBid, setLatestBid] = useState(null);
   const [category, setCategory] = useState('');
+  const [isUserWin, setIsUserWin] = useState(null);
+  const [isActive, setIsActive] = useState(null);
+  const [isWin, setIsWin] = useState(null);
 
   const {urlSegment} = route.params;
   useEffect(() => {
-    if (doFetch) {
-      getLelangSegment({urlSegment: urlSegment})
-        .then(res => {
-          const {data, image} = res.body;
-          setName(data[0].name);
-          setIdProduct(data[0].id_produk);
-          setBidPrice(data[0].price);
-          setDetail(data[0].description);
-          setStock(data[0].stock);
-          setTokoName(data[0].namatoko);
-          setProfileToko(`${url}/${data[0].profile_toko}`);
-          setIdLelang(data[0].id_lelang);
-          setStar(parseInt(data[0].star));
-          getCategories().then(resC => {
-            const {data} = resC.body;
-            data.forEach((c, i) => {
-              if (c.id_category == res.body.data[0].id_category) {
-                setCategory(c.category_name);
-              }
-            });
+    console.log(urlSegment);
+    getLelangSegment({urlSegment: urlSegment})
+      .then(res => {
+        const {data, image} = res.body;
+        setName(data[0].name);
+        setIdProduct(data[0].id_produk);
+        setBidPrice(data[0].price);
+        setDetail(data[0].description);
+        setStock(data[0].stock);
+        setTokoName(data[0].namatoko);
+        setProfileToko(`${url}/${data[0].profile_toko}`);
+        setIdLelang(data[0].id_lelang);
+        setStar(parseInt(data[0].star));
+        setIsActive(data[0].isactive);
+        setIsWin(data[0].iswon);
+        getCategories().then(resC => {
+          const {data} = resC.body;
+          data.forEach((c, i) => {
+            if (c.id_category == res.body.data[0].id_category) {
+              setCategory(c.category_name);
+            }
           });
-          image.map(i => {
-            const listImage = images;
-            listImage.push(`${url}/${i.image}`);
-            setImages([...listImage]);
-          });
-          setIndexImage(0);
-          getLatestBid({idLelang: data[0].id_lelang}).then(res =>
-            setLatestBid(res.body.lastbid),
-          );
-        })
-        .catch(err => alert(err));
-      setFetch(false);
-    }
-  });
+        });
+        image.map(i => {
+          const listImage = images;
+          listImage.push(`${url}/${i.image}`);
+          setImages([...listImage]);
+        });
+        setIndexImage(0);
+        getLatestBid({idLelang: data[0].id_lelang}).then(res =>
+          setLatestBid(res.body.lastbid),
+        );
+      })
+      .catch(err => alert(err));
+    pemenangIsExist();
+  }, []);
+
+  const pemenangIsExist = async () => {
+    const res = await getPemenangLelang(idLelang);
+    const account = await getCurrentIdAccount();
+    console.log(res.body.data);
+    console.log({
+      idWin: res.body.data.id_account,
+      account: account,
+    });
+    setIsUserWin(res.body.data.id_account == account);
+  };
 
   const bidProduct = async () => {
     try {
@@ -293,22 +311,57 @@ const DetailProductAuction = ({navigation, route}) => {
             </View>
 
             {/* <Many /> */}
-            <TouchableOpacity
-              style={{
-                height: 40,
-                width: wp('20%'),
-                backgroundColor: '#043C88',
-                marginVertical: 20,
-                borderRadius: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-                alignSelf: 'center',
-              }}
-              onPress={bidProduct}>
-              <Text style={{color: '#FFF', fontWeight: 'bold'}}>
-                Add Bidding
-              </Text>
-            </TouchableOpacity>
+            {isUserWin ? (
+              <TouchableOpacity
+                style={{
+                  height: 40,
+                  width: wp('20%'),
+                  backgroundColor: '#043C88',
+                  marginVertical: 20,
+                  borderRadius: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignSelf: 'center',
+                }}
+                onPress={bidProduct}>
+                <Text style={{color: '#FFF', fontWeight: 'bold'}}>
+                  Checkout
+                </Text>
+              </TouchableOpacity>
+            ) : isWin == 'Y' || isActive == 'N' ? (
+              <TouchableOpacity
+                style={{
+                  height: 40,
+                  width: wp('20%'),
+                  backgroundColor: '#043C88',
+                  marginVertical: 20,
+                  borderRadius: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignSelf: 'center',
+                }}>
+                <Text style={{color: '#FFF', fontWeight: 'bold'}}>
+                  Lelang Selesai
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={{
+                  height: 40,
+                  width: wp('20%'),
+                  backgroundColor: '#043C88',
+                  marginVertical: 20,
+                  borderRadius: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignSelf: 'center',
+                }}
+                onPress={bidProduct}>
+                <Text style={{color: '#FFF', fontWeight: 'bold'}}>
+                  Add Bidding
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>
