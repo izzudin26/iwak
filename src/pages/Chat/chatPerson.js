@@ -36,6 +36,13 @@ const ChatPerson = ({route}) => {
   useEffect(() => {
     getOppponentProfile();
     getLisfOfChat();
+    const timer = setInterval(() => {
+      console.log('Call Request');
+      getLisfOfChat()
+    }, 15000);
+    return () => {
+      clearInterval(timer);
+    };
   }, []);
 
   const getLisfOfChat = async ({id_room} = {}) => {
