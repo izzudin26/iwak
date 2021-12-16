@@ -63,6 +63,12 @@ const ListBidAuction = ({navigation, route}) => {
     }
   };
 
+  const sendMessage = () => {
+    navigation.navigate('ChatPerson', {
+      idOpponent: winInformation.id_account,
+    });
+  };
+
   const ViewBids = () => {
     return bids.map((bid, i) => (
       <View style={css.biddingRow} key={i}>
@@ -129,6 +135,9 @@ const ListBidAuction = ({navigation, route}) => {
             placeholderTextColor="#707070"
             style={{color: 'black', width: w * 0.75}}></TextInput>
         </View>
+        <TouchableOpacity style={css.buttonChat} onPress={sendMessage}>
+          <Text style={{color: 'white', fontWeight: 'bold'}}>Chat</Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -202,5 +211,15 @@ export const css = StyleSheet.create({
   },
   biddingCol: {
     flexDirection: 'column',
+  },
+  buttonChat: {
+    width: w * 0.8,
+    backgroundColor: '#043C88',
+    marginTop: 15,
+    paddingVertical: 10,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
   },
 });
