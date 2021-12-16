@@ -13,14 +13,10 @@ import {url} from '../../webservice/url';
 
 const ProductForAuction = ({navigation, keyword}) => {
   const [datas, setData] = useState([]);
-  const [doFetch, setFetch] = useState(true);
 
   useEffect(() => {
-    if (doFetch) {
       fetchLelang();
-      setFetch(false);
-    }
-  });
+  }, []);
 
   const fetchLelang = async () => {
     try {
