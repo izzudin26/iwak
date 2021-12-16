@@ -39,7 +39,7 @@ const ChatPerson = ({route}) => {
     const timer = setInterval(() => {
       console.log('Call Request');
       getLisfOfChat()
-    }, 15000);
+    }, 30000);
     return () => {
       clearInterval(timer);
     };
