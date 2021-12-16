@@ -18,7 +18,15 @@ const UserChat = ({navigation}) => {
 
   useEffect(() => {
     doGetListRoom();
+    const timer = setInterval(() => {
+      console.log('Fetch ListRoom');
+      doGetListRoom();
+    }, 30000);
+    return () => {
+      clearInterval(timer);
+    };
   }, []);
+
   const doGetListRoom = async () => {
     try {
       const req = await listroomChat();
