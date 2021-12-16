@@ -103,7 +103,6 @@ const DetailProductAuction = ({navigation, route}) => {
 
   const payBidding = () => {
     data.qty = 1;
-    data.image = images[0];
     navigation.navigate('PaymentAuction', {
       items: [data],
     });

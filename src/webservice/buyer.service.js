@@ -188,6 +188,21 @@ export const checkOut = async ({formdata} = {}) => {
   }
 };
 
+export const checkOutAuction = async ({formdata} = {}) => {
+  formdata.append('id_account', await getCurrentIdAccount());
+  const res = await fetch(`${url}/api/pembeli/checkoutlelang`, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    body: formdata,
+    method: 'POST',
+  });
+  const jsonBody = await res.json();
+  if (jsonBody.code != 200) {
+    throw res.data.message;
+  }
+};
+
 export const getHistory = async () => {
   try {
     const account = await getCurrentIdAccount();

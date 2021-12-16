@@ -14,7 +14,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
-import {getCartView, checkOut} from '../../webservice/buyer.service';
+import {checkOutAuction} from '../../webservice/buyer.service';
 import {url} from '../../webservice/url';
 import ImageCropPicker from 'react-native-image-crop-picker';
 
@@ -73,7 +73,7 @@ const PaymentAuction = ({route, navigation}) => {
       type: imagepay.mime,
       name: imagepay.path.split('/').join(''),
     });
-    checkOut({formdata: fd})
+    checkOutAuction({formdata: fd})
       .then(() => {
         alert('Berhasil melakukan checkout');
         navigation.pop();
