@@ -189,7 +189,7 @@ export const checkOut = async ({formdata} = {}) => {
 
 export const checkOutAuction = async ({formdata} = {}) => {
   formdata.append('id_account', await getCurrentIdAccount());
-  const res = await fetch(`${url}/api/pembeli/checkoutlelang`, {
+  const res = await fetch(`${url}/api/checkoutlelang`, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
