@@ -114,7 +114,10 @@ const Cart = ({navigation, route}) => {
           <Text style={{color: 'black', fontWeight: 'bold', fontSize: 20}}>
             {cart.name}
           </Text>
-          <Text style={{color: 'black'}}>{cart.description}</Text>
+          <Text style={{color: 'black'}}>
+            {cart.description.substr(0, 23)}
+            {cart.description.length > 25 ? '...' : ''}
+          </Text>
         </View>
         <View
           style={{
@@ -126,25 +129,25 @@ const Cart = ({navigation, route}) => {
           <Text style={{color: 'black', fontWeight: 'bold'}}>
             Rp. {cart.price}
           </Text>
-          <View style={css.contaienrValue}>
-            {/* <TouchableOpacity>
+          {/* <View style={css.contaienrValue}> */}
+          {/* <TouchableOpacity>
               <FontAwesome
                 name="minus"
                 size={15}
                 color="black"
                 onPress={() => _decrementItem(i)}></FontAwesome>
             </TouchableOpacity> */}
-            <Text style={{color: 'black', marginHorizontal: 10}}>
+          {/* <Text style={{color: 'black', marginHorizontal: 10}}>
               {cart.qty}
-            </Text>
-            {/* <TouchableOpacity>
+            </Text> */}
+          {/* <TouchableOpacity>
               <FontAwesome
                 name="plus"
                 size={15}
                 color="black"
                 onPress={() => _incrementItem(i)}></FontAwesome>
             </TouchableOpacity> */}
-          </View>
+          {/* </View> */}
         </View>
       </View>
     ));
