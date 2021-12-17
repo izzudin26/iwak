@@ -152,7 +152,7 @@ const ProductListAuction = ({
         }}>
         <Text
           style={{
-            fontSize: price.toString().length > 7 ? 10 : 12,
+            fontSize: price?.toString().length > 7 ? 10 : 12,
             color: 'black',
             marginLeft: 10,
           }}>
