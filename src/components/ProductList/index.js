@@ -152,7 +152,12 @@ const ProductList = ({
           alignItems: 'flex-start',
           justifyContent: 'space-between',
         }}>
-        <Text style={{fontSize: 12, color: 'black', marginLeft: 10}}>
+        <Text
+          style={{
+            fontSize: price.toString().length > 7 ? 10 : 12,
+            color: 'black',
+            marginLeft: 10,
+          }}>
           Rp. {price}
         </Text>
         <FontAwesome5
