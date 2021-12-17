@@ -278,13 +278,19 @@ const DetailProductStore = ({navigation, route}) => {
               style={{
                 justifyContent: 'center',
                 alignItems: 'center',
-                flexDirection: 'column',
+                flexDirection: 'row',
+                flexWrap: 'wrap',
               }}>
-              <Text style={{fontSize: 30, fontWeight: 'bold', color: 'black'}}>
+              <Text
+                style={{
+                  fontSize: price.toString().length > 6 ? 20 : 30,
+                  fontWeight: 'bold',
+                  color: 'black',
+                }}>
                 Rp. {price}
               </Text>
             </View>
-            <Many />
+            {/* <Many /> */}
             <TouchableOpacity
               style={{
                 height: 40,
