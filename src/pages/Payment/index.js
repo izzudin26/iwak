@@ -108,10 +108,11 @@ const Payment = ({route, navigation}) => {
       type: imagepay.mime,
       name: imagepay.path.split('/').join(''),
     });
+
     checkOut({formdata: fd})
       .then(() => {
         alert('Berhasil melakukan checkout');
-        navigation.pop();
+        navigation.navigate('Sale');
       })
       .catch(err => alert(err));
   };

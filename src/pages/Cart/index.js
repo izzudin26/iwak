@@ -19,13 +19,11 @@ const Cart = ({navigation, route}) => {
   const [doFetch, setFetch] = useState(true);
 
   useEffect(() => {
-    if (doFetch) {
-      getCart().then(res => {
-        setCart(res.body);
-      });
-      setFetch(false);
-    }
-  });
+    getCart().then(res => {
+      setCart(res.body);
+    });
+    setFetch(false);
+  }, []);
 
   const _getTotal = () => {
     let total = 0;
