@@ -52,7 +52,6 @@ const DetailProductAuction = ({navigation, route}) => {
 
   const {urlSegment} = route.params;
   useEffect(() => {
-    console.log(urlSegment);
     getLelangSegment({urlSegment: urlSegment})
       .then(res => {
         const {data, image} = res.body;
@@ -82,9 +81,9 @@ const DetailProductAuction = ({navigation, route}) => {
           setImages([...listImage]);
         });
         setIndexImage(0);
-        getLatestBid({idLelang: data[0].id_lelang}).then(res =>
-          setLatestBid(res.body.lastbid),
-        );
+        getLatestBid({idLelang: data[0].id_lelang}).then(res => {
+          setLatestBid(res.body.lastbid.price);
+        });
       })
       .catch(err => alert(err));
     pemenangIsExist();
@@ -93,11 +92,13 @@ const DetailProductAuction = ({navigation, route}) => {
   const pemenangIsExist = async () => {
     const res = await getPemenangLelang(idLelang);
     const account = await getCurrentIdAccount();
-    setIsUserWin(res.body.data.id_account == account);
+    return res.body.data.id_account == account;
   };
 
   const payBidding = () => {
     data.qty = 1;
+    console.log(images[0]);
+    data.image = images[0];
     navigation.navigate('PaymentAuction', {
       items: [data],
     });
@@ -315,7 +316,7 @@ const DetailProductAuction = ({navigation, route}) => {
             </View>
 
             {/* <Many /> */}
-            {isUserWin ? (
+            {pemenangIsExist() ? (
               <TouchableOpacity
                 style={{
                   height: 40,
@@ -394,8 +395,8 @@ const styles = StyleSheet.create({
   },
   ContainerSmallImage: {
     alignContent: 'center',
-    width: 90,
-    height: 90,
+    width: 70,
+    height: 70,
     marginHorizontal: 5,
     alignItems: 'center',
     justifyContent: 'center',
@@ -457,6 +458,7 @@ const styles = StyleSheet.create({
   ImageSmall: {
     width: 50,
     height: 50,
+    borderRadius: 10,
   },
   contaienrValue: {
     flexDirection: 'row',
