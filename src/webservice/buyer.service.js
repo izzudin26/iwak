@@ -3,13 +3,12 @@ import axios from 'axios';
 import {getCurrentIdAccount} from './user.service';
 
 export const getProduct = async (
-  {sort, sortfield, category, keyword} = {sort: 'DESC'},
+  {sort, category, keyword} = {sort: 'DESC'},
 ) => {
   const idAccount = await getCurrentIdAccount();
   const data = {
     id_account: idAccount,
     sort,
-    sortfield,
     category,
     keyword,
   };
