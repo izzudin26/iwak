@@ -93,11 +93,6 @@ const DetailProductAuction = ({navigation, route}) => {
   const pemenangIsExist = async () => {
     const res = await getPemenangLelang(idLelang);
     const account = await getCurrentIdAccount();
-    console.log(res.body.data);
-    console.log({
-      idWin: res.body.data.id_account,
-      account: account,
-    });
     setIsUserWin(res.body.data.id_account == account);
   };
 
