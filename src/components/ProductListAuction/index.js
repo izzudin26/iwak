@@ -58,17 +58,15 @@ const ProductListAuction = ({
   const [isLikeExist, setIsLike] = useState(false);
   const [doGet, setDoGet] = useState(true);
   useEffect(() => {
-    if (doGet) {
-      isLike().then(res => {
-        if (res) {
-          setIsLike(true);
-        } else {
-          setIsLike(false);
-        }
-      });
-    }
+    isLike().then(res => {
+      if (res) {
+        setIsLike(true);
+      } else {
+        setIsLike(false);
+      }
+    });
     setDoGet(false);
-  });
+  }, []);
 
   const isLike = async () => {
     return await Storage.load({
@@ -152,7 +150,12 @@ const ProductListAuction = ({
           alignItems: 'flex-start',
           justifyContent: 'space-between',
         }}>
-        <Text style={{fontSize: 12, color: 'black', marginLeft: 10}}>
+        <Text
+          style={{
+            fontSize: price.toString().length > 7 ? 10 : 12,
+            color: 'black',
+            marginLeft: 10,
+          }}>
           Rp. {price}
         </Text>
         <FontAwesome5

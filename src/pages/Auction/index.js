@@ -37,16 +37,14 @@ const Auction = ({navigation}) => {
     },
   ]);
   useEffect(() => {
-    if (doFetch) {
-      getCategories()
-        .then(res => {
-          setCategoryMenu(res.body.data);
-        })
-        .catch(err => alert(err));
-      getProductPage();
-    }
+    getCategories()
+      .then(res => {
+        setCategoryMenu(res.body.data);
+      })
+      .catch(err => alert(err));
+    getProductPage();
     setFetch(false);
-  });
+  }, []);
 
   const getProductPage = () => {
     getProductLelang({
@@ -55,6 +53,7 @@ const Auction = ({navigation}) => {
       sort: filterMenu[filter].method,
     })
       .then(res => {
+        console.log(res);
         setData(res.body.data.data);
       })
       .catch(err => alert(err));
