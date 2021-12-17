@@ -232,7 +232,7 @@ export const getMyProfile = async () => {
 export const getLatestBid = async ({idLelang} = {}) => {
   try {
     const res = await axios.get(
-      `https://iwakstore.my.id/api/updateprice?id_lelang=${idLelang}`,
+      `https://iwakstore.my.id/api/updateprice?id=${idLelang}`,
     );
     return {body: res.data};
   } catch (error) {
