@@ -36,7 +36,7 @@ const Payment = ({route, navigation}) => {
   const [bank, setBank] = useState('');
   const [rekening, setRekening] = useState('');
   const [doFetch, setFetch] = useState(true);
-  const [imagepay, setImagePay] = useState({});
+  const [imagepay, setImagePay] = useState(null);
 
   const [userPayment, setUserPayment] = useState(selectItems[0]);
 
@@ -64,6 +64,7 @@ const Payment = ({route, navigation}) => {
       mediaType: 'photo',
       cropping: true,
       forceJpg: true,
+      compressImageQuality: 0.7,
     })
       .then(res => {
         setImagePay(res);
@@ -77,6 +78,20 @@ const Payment = ({route, navigation}) => {
       total += item.qty * item.price;
     });
     return total;
+  };
+
+  const _incrementItem = index => {
+    let currentItem = items;
+    currentItem[index].qty = currentItem[index].qty + 1;
+    setItem([...currentItem]);
+  };
+
+  const _decrementItem = index => {
+    let currentItem = items;
+    if (currentItem[index].qty > 0) {
+      currentItem[index].qty = currentItem[index].qty - 1;
+      setItem([...currentItem]);
+    }
   };
 
   const doCheckout = () => {
@@ -130,8 +145,9 @@ const Payment = ({route, navigation}) => {
           <Image
             source={{uri: `${url}/${cart.image}`}}
             style={{
-              width: w * 0.1,
-              height: w * 0.1,
+              width: w * 0.12,
+              height: w * 0.12,
+              borderRadius: 10,
             }}></Image>
         </View>
         <View
@@ -144,7 +160,10 @@ const Payment = ({route, navigation}) => {
           <Text style={{color: 'black', fontWeight: 'bold', fontSize: 15}}>
             {cart.name}
           </Text>
-          <Text style={{color: 'black', fontSize: 10}}>{cart.description}</Text>
+          <Text style={{color: 'black', fontSize: 10}}>
+            {cart.description.substr(0, 65)}
+            {cart.description.length > 65 ? '...' : ''}
+          </Text>
         </View>
         <View
           style={{
@@ -154,8 +173,27 @@ const Payment = ({route, navigation}) => {
             marginTop: 15,
           }}>
           <Text style={{color: 'black', fontWeight: 'bold'}}>
-            Rp. {cart.price * cart.qty}
+            Rp. {cart.price}
           </Text>
+          <View style={styles.contaienrValue}>
+            <TouchableOpacity>
+              <FontAwesome
+                name="minus"
+                size={15}
+                color="black"
+                onPress={() => _decrementItem(i)}></FontAwesome>
+            </TouchableOpacity>
+            <Text style={{color: 'black', marginHorizontal: 10}}>
+              {cart.qty}
+            </Text>
+            <TouchableOpacity>
+              <FontAwesome
+                name="plus"
+                size={15}
+                color="black"
+                onPress={() => _incrementItem(i)}></FontAwesome>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     ));
@@ -198,7 +236,7 @@ const Payment = ({route, navigation}) => {
                 <FontAwesome name="plus" size={20} color="black"></FontAwesome>
               ) : (
                 <Image
-                  style={{width: w * 0.15, height: w * 0.15}}
+                  style={{width: w * 0.15, height: w * 0.15, borderRadius: 10}}
                   source={{uri: imagepay.path}}></Image>
               )}
             </TouchableOpacity>
@@ -222,7 +260,7 @@ const Payment = ({route, navigation}) => {
           Total
         </Text>
         <Text style={{color: 'black', fontSize: 15, fontWeight: 'bold'}}>
-          {getTotal()}
+          Rp. {getTotal()}
         </Text>
       </View>
       <TouchableOpacity
@@ -333,6 +371,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  contaienrValue: {
+    flexDirection: 'row',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    padding: 5,
+    marginTop: 3,
   },
 });
 
