@@ -34,9 +34,11 @@ const PaymentAuction = ({route, navigation}) => {
   const [selectItems, setSelectItem] = useState(['Transfer']);
   const {items} = route.params;
   const {bank, nomor_rekening} = items[0];
-  const [imagepay, setImagePay] = useState({});
+  const [imagepay, setImagePay] = useState(null);
 
   const [userPayment, setUserPayment] = useState(selectItems[0]);
+
+  console.log(route.params);
 
   const handlerImage = () => {
     ImageCropPicker.openPicker({
