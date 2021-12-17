@@ -112,8 +112,8 @@ const PaymentAuction = ({route, navigation}) => {
           <Image
             source={{uri: `${cart.image}`}}
             style={{
-              width: w * 0.1,
-              height: w * 0.1,
+              width: w * 0.12,
+              height: w * 0.12,
               borderRadius: 10,
             }}></Image>
         </View>
@@ -181,7 +181,7 @@ const PaymentAuction = ({route, navigation}) => {
                 <FontAwesome name="plus" size={20} color="black"></FontAwesome>
               ) : (
                 <Image
-                  style={{width: w * 0.15, height: w * 0.15}}
+                  style={{width: w * 0.15, height: w * 0.15, borderRadius: 10}}
                   source={{uri: imagepay.path}}></Image>
               )}
             </TouchableOpacity>
