@@ -44,6 +44,7 @@ import {
 import BottomNavigator from '../components/BottomNavigator';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {Badge} from 'react-native-elements';
+import {useSelector} from 'react-redux';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -55,6 +56,8 @@ const LogoTitle = () => {
 };
 
 const MainApp = () => {
+  const cart = useSelector(state => state.cart.length);
+
   return (
     <Tab.Navigator
       tabBar={props => (
@@ -68,7 +71,7 @@ const MainApp = () => {
         name="Home"
         component={Home}
         options={({navigation, route}) => ({
-          unmountOnBlur: true,
+          // unmountOnBlur: true,
           headerStyle: {
             backgroundColor: '#043C88',
             height: 70,
@@ -91,14 +94,23 @@ const MainApp = () => {
                   color="#F0C341"
                   onPress={() => navigation.navigate('Notification')}
                 />
-                <FontAwesome5
-                  name="shopping-cart"
-                  solid
-                  size={23}
-                  style={{marginHorizontal: 15}}
-                  color="#F0C341"
-                  onPress={() => navigation.navigate('Cart')}
-                />
+                <View style={{flexDirection: 'column'}}>
+                  <FontAwesome5
+                    name="shopping-cart"
+                    solid
+                    size={23}
+                    style={{marginHorizontal: 15}}
+                    color="#F0C341"
+                    onPress={() => navigation.navigate('Cart')}
+                  />
+                  <Badge
+                    containerStyle={{
+                      position: 'absolute',
+                      right: 7,
+                      bottom: -9,
+                    }}
+                    value={cart}></Badge>
+                </View>
               </View>
             );
           },
@@ -311,14 +323,23 @@ const MainApp = () => {
                   color="#F0C341"
                   onPress={() => navigation.navigate('Notification')}
                 />
-                <FontAwesome5
-                  name="shopping-cart"
-                  solid
-                  size={23}
-                  style={{marginHorizontal: 15}}
-                  color="#F0C341"
-                  onPress={() => navigation.navigate('Cart')}
-                />
+                <View style={{flexDirection: 'column'}}>
+                  <FontAwesome5
+                    name="shopping-cart"
+                    solid
+                    size={23}
+                    style={{marginHorizontal: 15}}
+                    color="#F0C341"
+                    onPress={() => navigation.navigate('Cart')}
+                  />
+                  <Badge
+                    containerStyle={{
+                      position: 'absolute',
+                      right: 7,
+                      bottom: -9,
+                    }}
+                    value={cart}></Badge>
+                </View>
               </View>
             );
           },
@@ -378,14 +399,23 @@ const MainApp = () => {
                   color="#F0C341"
                   onPress={() => navigation.navigate('Notification')}
                 />
-                <FontAwesome5
-                  name="shopping-cart"
-                  solid
-                  size={23}
-                  style={{marginHorizontal: 15}}
-                  color="#F0C341"
-                  onPress={() => navigation.navigate('Cart')}
-                />
+                <View style={{flexDirection: 'column'}}>
+                  <FontAwesome5
+                    name="shopping-cart"
+                    solid
+                    size={23}
+                    style={{marginHorizontal: 15}}
+                    color="#F0C341"
+                    onPress={() => navigation.navigate('Cart')}
+                  />
+                  <Badge
+                    containerStyle={{
+                      position: 'absolute',
+                      right: 7,
+                      bottom: -9,
+                    }}
+                    value={cart}></Badge>
+                </View>
               </View>
             );
           },
@@ -434,28 +464,6 @@ const MainApp = () => {
           },
           headerBackVisible: false,
           headerTitleAlign: 'center',
-          headerRight: () => {
-            return (
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-                <FontAwesome5
-                  name="bell"
-                  solid
-                  size={23}
-                  color="#F0C341"
-                  onPress={() => navigation.navigate('Notification')}
-                />
-                <FontAwesome5
-                  name="shopping-cart"
-                  solid
-                  size={23}
-                  style={{marginHorizontal: 15}}
-                  color="#F0C341"
-                  onPress={() => navigation.navigate('Cart')}
-                />
-              </View>
-            );
-          },
         })}
       />
 
@@ -508,14 +516,23 @@ const MainApp = () => {
             return (
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-                <FontAwesome5
-                  name="shopping-cart"
-                  solid
-                  size={23}
-                  style={{marginHorizontal: 15}}
-                  color="#F0C341"
-                  onPress={() => navigation.navigate('Cart')}
-                />
+                <View style={{flexDirection: 'column'}}>
+                  <FontAwesome5
+                    name="shopping-cart"
+                    solid
+                    size={23}
+                    style={{marginHorizontal: 15}}
+                    color="#F0C341"
+                    onPress={() => navigation.navigate('Cart')}
+                  />
+                  <Badge
+                    containerStyle={{
+                      position: 'absolute',
+                      right: 7,
+                      bottom: -9,
+                    }}
+                    value={cart}></Badge>
+                </View>
               </View>
             );
           },
@@ -1010,6 +1027,8 @@ const MainApp = () => {
 };
 
 const Router = () => {
+  const cart = useSelector(state => state.cart.length)
+
   return (
     <Stack.Navigator initialRouteName="Splash" backBehavior="history">
       <Stack.Screen
@@ -1271,14 +1290,23 @@ const Router = () => {
                   color="#F0C341"
                   onPress={() => navigation.navigate('Notification')}
                 />
-                <FontAwesome5
-                  name="shopping-cart"
-                  solid
-                  size={23}
-                  style={{marginHorizontal: 15}}
-                  color="#F0C341"
-                  onPress={() => navigation.navigate('Cart')}
-                />
+                <View style={{flexDirection: 'column'}}>
+                  <FontAwesome5
+                    name="shopping-cart"
+                    solid
+                    size={23}
+                    style={{marginHorizontal: 15}}
+                    color="#F0C341"
+                    onPress={() => navigation.navigate('Cart')}
+                  />
+                  <Badge
+                    containerStyle={{
+                      position: 'absolute',
+                      right: 7,
+                      bottom: -9,
+                    }}
+                    value={cart}></Badge>
+                </View>
               </View>
             );
           },

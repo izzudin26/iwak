@@ -11,19 +11,22 @@ import {
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import {getCart, deleteCart} from '../../webservice/buyer.service';
 import {url} from '../../webservice/url';
+import {useSelector, useDispatch} from 'react-redux';
 
 const h = Dimensions.get('window').height;
 const w = Dimensions.get('window').width;
 const Cart = ({navigation, route}) => {
-  const [carts, setCart] = useState([]);
-  const [doFetch, setFetch] = useState(true);
+  // const [carts, setCart] = useState([]);
+  const carts = useSelector(state => state.cart);
+  const dispatch = useDispatch();
+  const [doFetch, setFetch] = useState();
 
   useEffect(() => {
-    getCart().then(res => {
-      setCart(res.body);
-    });
-    setFetch(false);
-  }, []);
+    //   getCart().then(res => {
+    //     setCart(res.body);
+    //   });
+    //   setFetch(false);
+  }, [dispatch]);
 
   const _getTotal = () => {
     let total = 0;
@@ -65,24 +68,26 @@ const Cart = ({navigation, route}) => {
 
   const _removeItem = async index => {
     await deleteCart({idcart: carts[index].id_cart});
-    let currentItem = carts;
-    carts.splice(index, 1);
-    setCart([...currentItem]);
+    // let currentItem = carts;
+    // currentItem.splice(index, 1);
+    dispatch({type: 'REMOVE_CART', payload: index});
+    setFetch(!doFetch);
+    // setCart([...currentItem]);
   };
 
-  const _incrementItem = index => {
-    let currentItem = carts;
-    currentItem[index].qty = currentItem[index].qty + 1;
-    setCart([...currentItem]);
-  };
+  // const _incrementItem = index => {
+  //   let currentItem = carts;
+  //   currentItem[index].qty = currentItem[index].qty + 1;
+  //   setCart([...currentItem]);
+  // };
 
-  const _decrementItem = index => {
-    let currentItem = carts;
-    if (currentItem[index].qty > 0) {
-      currentItem[index].qty = currentItem[index].qty - 1;
-      setCart([...currentItem]);
-    }
-  };
+  // const _decrementItem = index => {
+  //   let currentItem = carts;
+  //   if (currentItem[index].qty > 0) {
+  //     currentItem[index].qty = currentItem[index].qty - 1;
+  //     setCart([...currentItem]);
+  //   }
+  // };
 
   const CartComponent = () => {
     return carts.map((cart, i) => (
@@ -124,7 +129,12 @@ const Cart = ({navigation, route}) => {
             alignItems: 'flex-end',
             marginTop: 15,
           }}>
-          <Text style={{color: 'black', fontWeight: 'bold'}}>
+          <Text
+            style={{
+              color: 'black',
+              fontWeight: 'bold',
+              fontSize: cart.price.toString().length > 7 ? 10 : 15,
+            }}>
             Rp. {cart.price}
           </Text>
           {/* <View style={css.contaienrValue}> */}

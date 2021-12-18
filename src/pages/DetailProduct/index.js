@@ -17,7 +17,9 @@ import {
   getProductSegment,
   addCart,
   changeTokocart,
+  getCart,
 } from '../../webservice/buyer.service';
+import {useDispatch} from 'react-redux';
 import {getCategories} from '../../webservice/seller.service';
 
 const DetailProductStore = ({navigation, route}) => {
@@ -36,48 +38,47 @@ const DetailProductStore = ({navigation, route}) => {
   const [detail, setDetail] = useState('');
   const [doFetch, setFetch] = useState(true);
   const [images, setImages] = useState([]);
+  const dispatch = useDispatch();
 
   const {urlSegment} = route.params;
   useEffect(() => {
-    if (doFetch) {
-      getProductSegment({urlSegment: urlSegment})
-        .then(res => {
-          const {data, image} = res.body;
-          setName(data[0].name);
-          setIdProduct(data[0].id_produk);
-          setPrice(data[0].price);
-          setDetail(data[0].description);
-          setStock(data[0].stock);
-          setTokoName(data[0].namatoko);
-          setProfileToko(`${url}/${data[0].profile_toko}`);
-          setStar(parseInt(data[0].star));
-          image.map(i => {
-            const listImage = images;
-            listImage.push(`${url}/${i.image}`);
-            setImages([...listImage]);
-          });
-          getCategories()
-            .then(resC => {
-              const {data} = resC.body;
-              console.log(res.body);
-              data.forEach((c, i) => {
-                if (c.id_category == res.body.data[0].id_category) {
-                  setCategory(c.category_name);
-                }
-              });
-            })
-            .catch(err => alert(err));
-          setIndexImage(0);
-          console.log(images);
-        })
-        .catch(err => alert(err));
-      setFetch(false);
-    }
-  });
+    getProductSegment({urlSegment: urlSegment})
+      .then(res => {
+        const {data, image} = res.body;
+        setName(data[0].name);
+        setIdProduct(data[0].id_produk);
+        setPrice(data[0].price);
+        setDetail(data[0].description);
+        setStock(data[0].stock);
+        setTokoName(data[0].namatoko);
+        setProfileToko(`${url}/${data[0].profile_toko}`);
+        setStar(parseInt(data[0].star));
+        image.map(i => {
+          const listImage = images;
+          listImage.push(`${url}/${i.image}`);
+          setImages([...listImage]);
+        });
+        getCategories()
+          .then(resC => {
+            const {data} = resC.body;
+            data.forEach((c, i) => {
+              if (c.id_category == res.body.data[0].id_category) {
+                setCategory(c.category_name);
+              }
+            });
+          })
+          .catch(err => alert(err));
+        setIndexImage(0);
+      })
+      .catch(err => alert(err));
+    setFetch(false);
+  }, []);
 
   const addtoCart = async () => {
     try {
       await addCart({idProduct: idProduct});
+      const carts = await getCart();
+      dispatch({type: 'SET_CART', payload: carts.body});
       alert('Produk Berhasil ditambahkan ke keranjang');
       navigation.pop();
     } catch (error) {

@@ -17,6 +17,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import {getCartView, checkOut} from '../../webservice/buyer.service';
 import {url} from '../../webservice/url';
 import ImageCropPicker from 'react-native-image-crop-picker';
+import {useSelector, useDispatch} from 'react-redux';
 
 import Modal from 'react-native-modal';
 
@@ -32,7 +33,9 @@ const Payment = ({route, navigation}) => {
 
   const [isShowCardSelect, setShow] = useState(false);
   const [selectItems, setSelectItem] = useState(['Transfer']);
-  const [items, setItem] = useState([]);
+  const items = useSelector(state => state.cart);
+  const dispatch = useDispatch();
+  const [itemsV, setItem] = useState([]);
   const [bank, setBank] = useState('');
   const [rekening, setRekening] = useState('');
   const [doFetch, setFetch] = useState(true);
@@ -81,9 +84,11 @@ const Payment = ({route, navigation}) => {
   };
 
   const _incrementItem = index => {
-    let currentItem = items;
-    currentItem[index].qty = currentItem[index].qty + 1;
-    setItem([...currentItem]);
+    // let currentItem = items;
+    // currentItem[index].qty = currentItem[index].qty + 1;
+    dispatch({type: 'UPDATE_QTY', payload: index});
+    console.log(items);
+    setItem([]);
   };
 
   const _decrementItem = index => {
@@ -112,7 +117,8 @@ const Payment = ({route, navigation}) => {
     checkOut({formdata: fd})
       .then(() => {
         alert('Berhasil melakukan checkout');
-        navigation.navigate('Sale');
+        dispatch({type: 'SET_CART', payload: []});
+        navigation.pop();
       })
       .catch(err => alert(err));
   };

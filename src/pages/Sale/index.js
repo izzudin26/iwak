@@ -46,7 +46,7 @@ const Sale = ({navigation}) => {
       getProductPage();
     }
     setFetch(false);
-  });
+  }, []);
 
   const getProductPage = () => {
     getProduct({

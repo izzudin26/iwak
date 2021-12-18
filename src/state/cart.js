@@ -9,7 +9,11 @@ export default (cart = [], action) => {
     case 'REMOVE_CART':
       cart.splice(action.payload, 1);
       return cart;
-      
+
+    case 'UPDATE_QTY':
+      ++cart[action.payload].qty;
+      return cart;
+
     default:
       return cart;
   }

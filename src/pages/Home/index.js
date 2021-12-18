@@ -1,11 +1,24 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, View, ScrollView, Image} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {useSelector, useDispatch} from 'react-redux';
+import {getCart} from '../../webservice/buyer.service';
 
 const Home = () => {
+  const data = useSelector(state => state.cart);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    getCartView();
+  }, []);
+
+  const getCartView = async () => {
+    const cartFetch = await getCart();
+    dispatch({type: 'SET_CART', payload: cartFetch.body});
+  };
+
   return (
     <ScrollView>
       <View style={{alignSelf: 'center', marginBottom: 20}}>
@@ -20,6 +33,7 @@ const Home = () => {
               opacity: 0.8,
             }}
           />
+          <Text style={styles.teksSatu}>{data.length}</Text>
           <Text style={styles.teksSatu}>SPECIALIST MARKET FISH AND ITEM</Text>
           <Text style={styles.teksAtas}> ORANDA </Text>
           <Text style={styles.teksTengah}> PANCAWARNA </Text>
