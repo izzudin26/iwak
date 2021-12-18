@@ -68,6 +68,7 @@ const MainApp = () => {
         name="Home"
         component={Home}
         options={({navigation, route}) => ({
+          unmountOnBlur: true,
           headerStyle: {
             backgroundColor: '#043C88',
             height: 70,
