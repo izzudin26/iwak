@@ -35,6 +35,7 @@ import DetailProductAuction from './DetailProductAuction';
 import EditPhone from './EditPhone';
 import EditAddress from './EditAddress';
 import PaymentAuction from './PaymentAuction';
+import InputFeedback from './InputFeedback';
 
 export {
   Splash,
@@ -74,4 +75,5 @@ export {
   EditAddress,
   EditPhone,
   PaymentAuction,
+  InputFeedback,
 };
