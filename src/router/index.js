@@ -103,13 +103,15 @@ const MainApp = () => {
                     color="#F0C341"
                     onPress={() => navigation.navigate('Cart')}
                   />
-                  <Badge
-                    containerStyle={{
-                      position: 'absolute',
-                      right: 7,
-                      bottom: -9,
-                    }}
-                    value={cart}></Badge>
+                  {cart != 0 && (
+                    <Badge
+                      containerStyle={{
+                        position: 'absolute',
+                        right: 7,
+                        bottom: -9,
+                      }}
+                      value={cart}></Badge>
+                  )}
                 </View>
               </View>
             );
@@ -332,13 +334,15 @@ const MainApp = () => {
                     color="#F0C341"
                     onPress={() => navigation.navigate('Cart')}
                   />
-                  <Badge
-                    containerStyle={{
-                      position: 'absolute',
-                      right: 7,
-                      bottom: -9,
-                    }}
-                    value={cart}></Badge>
+                  {cart != 0 && (
+                    <Badge
+                      containerStyle={{
+                        position: 'absolute',
+                        right: 7,
+                        bottom: -9,
+                      }}
+                      value={cart}></Badge>
+                  )}
                 </View>
               </View>
             );
@@ -408,13 +412,15 @@ const MainApp = () => {
                     color="#F0C341"
                     onPress={() => navigation.navigate('Cart')}
                   />
-                  <Badge
-                    containerStyle={{
-                      position: 'absolute',
-                      right: 7,
-                      bottom: -9,
-                    }}
-                    value={cart}></Badge>
+                  {cart != 0 && (
+                    <Badge
+                      containerStyle={{
+                        position: 'absolute',
+                        right: 7,
+                        bottom: -9,
+                      }}
+                      value={cart}></Badge>
+                  )}
                 </View>
               </View>
             );
@@ -525,13 +531,15 @@ const MainApp = () => {
                     color="#F0C341"
                     onPress={() => navigation.navigate('Cart')}
                   />
-                  <Badge
-                    containerStyle={{
-                      position: 'absolute',
-                      right: 7,
-                      bottom: -9,
-                    }}
-                    value={cart}></Badge>
+                  {cart != 0 && (
+                    <Badge
+                      containerStyle={{
+                        position: 'absolute',
+                        right: 7,
+                        bottom: -9,
+                      }}
+                      value={cart}></Badge>
+                  )}
                 </View>
               </View>
             );
@@ -1027,7 +1035,7 @@ const MainApp = () => {
 };
 
 const Router = () => {
-  const cart = useSelector(state => state.cart.length)
+  const cart = useSelector(state => state.cart.length);
 
   return (
     <Stack.Navigator initialRouteName="Splash" backBehavior="history">
@@ -1299,13 +1307,15 @@ const Router = () => {
                     color="#F0C341"
                     onPress={() => navigation.navigate('Cart')}
                   />
-                  <Badge
-                    containerStyle={{
-                      position: 'absolute',
-                      right: 7,
-                      bottom: -9,
-                    }}
-                    value={cart}></Badge>
+                  {cart != 0 && (
+                    <Badge
+                      containerStyle={{
+                        position: 'absolute',
+                        right: 7,
+                        bottom: -9,
+                      }}
+                      value={cart}></Badge>
+                  )}
                 </View>
               </View>
             );
