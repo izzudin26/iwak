@@ -263,6 +263,7 @@ const Sale = ({navigation}) => {
                 price={product.price}
                 urlSegment={product.url_segment}
                 productStar={product.starproduk}
+                description={product.description}
                 stock={product.stock}
               />
             ))}

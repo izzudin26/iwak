@@ -19,6 +19,7 @@ const ProductList = ({
   urlSegment,
   productStar,
   stock,
+  description,
 }) => {
   const star = n => {
     let stars = [];
@@ -120,7 +121,7 @@ const ProductList = ({
         {productname}
       </Text>
       <Text style={{height: 15, fontSize: 10, color: 'black', marginBottom: 2}}>
-        Ini adalah keterangan product
+        {description.substr(0, 25)}...
       </Text>
       <View style={{flexDirection: 'row', marginBottom: 5}}>
         {star(productStar)}
