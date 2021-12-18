@@ -115,23 +115,27 @@ const PersonNotification = () => {
               </Text>
             </View>
             <View style={style.BottomContainer}>
-              <TouchableOpacity
-                onPress={async () => {}}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: '#043C88',
-                  height: 40,
-                  marginBottom: 5,
-                  width: width * 0.22,
-                  borderRadius: 10,
-                  alignSelf: 'flex-end',
-                }}>
-                <Text style={{color: '#F0C341', fontSize: 15}}>Feedback</Text>
-              </TouchableOpacity>
-              <Text
-                style={{fontSize: 15, color: 'black', alignSelf: 'center'}}>
+              {history.ulasan == null &&
+              getStatusOrder(history.pay, history.deliver, history.cancelled) ==
+                'Deliver Done' ? (
+                <TouchableOpacity
+                  onPress={async () => {}}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#043C88',
+                    height: 40,
+                    marginBottom: 5,
+                    width: width * 0.22,
+                    borderRadius: 10,
+                    alignSelf: 'flex-end',
+                  }}>
+                  <Text style={{color: '#F0C341', fontSize: 15}}>Feedback</Text>
+                </TouchableOpacity>
+              ) : null}
+
+              <Text style={{fontSize: 15, color: 'black', alignSelf: 'center'}}>
                 {history.showDetails ? 'Hide Details' : 'Show Detail'}
               </Text>
             </View>
