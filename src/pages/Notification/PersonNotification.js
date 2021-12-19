@@ -15,7 +15,7 @@ import {url} from '../../webservice/url';
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-const PersonNotification = () => {
+const PersonNotification = ({navigation}) => {
   const [histories, setHistory] = useState([]);
 
   useEffect(() => {
@@ -26,7 +26,6 @@ const PersonNotification = () => {
     try {
       const res = await getHistory();
       const {body} = res;
-      console.log(body);
       body.data.map(async history => {
         const items = await Promise.all(
           (
@@ -34,7 +33,6 @@ const PersonNotification = () => {
           ).body,
         );
         history.items = items;
-        console.log(history);
         setHistory(oldHistory => [...oldHistory, history]);
       });
     } catch (error) {
@@ -85,7 +83,7 @@ const PersonNotification = () => {
   const HistoryView = () => {
     return histories.map((history, i) => {
       return (
-        <View>
+        <View key={i}>
           <TouchableOpacity
             style={style.containerHistory}
             key={i}
@@ -119,7 +117,9 @@ const PersonNotification = () => {
               getStatusOrder(history.pay, history.deliver, history.cancelled) ==
                 'Deliver Done' ? (
                 <TouchableOpacity
-                  onPress={async () => {}}
+                  onPress={async () => {
+                    navigation.navigate('InputFeedback');
+                  }}
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',

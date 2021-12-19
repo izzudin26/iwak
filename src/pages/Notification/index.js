@@ -73,7 +73,7 @@ const Notification = ({navigation}) => {
       <Navbar />
       <View style={{padding: 20, marginVertical: 20, height: height * 0.82}}>
         {navState == 0 ? (
-          <PersonNotification />
+          <PersonNotification navigation={navigation} />
         ) : (
           <StoreNotification navigation={navigation} />
         )}
