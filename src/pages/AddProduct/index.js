@@ -30,13 +30,10 @@ function AddProduct({navigation}) {
   const [isFetch, setFetch] = useState(true);
   const fd = new FormData();
   useEffect(() => {
-    if (isFetch) {
-      getCategories().then(res => {
-        setCategories(res.body.data);
-      });
-    }
-    setFetch(false);
-  });
+    getCategories().then(res => {
+      setCategories(res.body.data);
+    });
+  }, []);
 
   const handlerSave = () => {
     fd.append('name', name);
@@ -77,6 +74,7 @@ function AddProduct({navigation}) {
       mediaType: 'photo',
       cropping: true,
       forceJpg: true,
+      compressImageQuality: 0.7,
     })
       .then(res => {
         if (res.width != res.height) {

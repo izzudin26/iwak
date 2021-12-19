@@ -29,6 +29,7 @@ const CreateStore = ({navigation}) => {
       mediaType: 'photo',
       cropping: true,
       forceJpg: true,
+      compressImageQuality: 0.7,
     }).then(async res => {
       if (res.width != res.height) {
         alert('Mohon Pilih Rasio Gambar 1:1');
