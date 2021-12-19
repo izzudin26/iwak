@@ -311,3 +311,27 @@ export const sendImageChat = async ({formdata} = {}) => {
     throw res.data.message;
   }
 };
+
+export const inputUlasan = async ({
+  idTransaction,
+  id_penjual,
+  rating,
+  ulasan,
+} = {}) => {
+  const data = {
+    id_account: await getCurrentIdAccount(),
+    id: idTransaction,
+    id_penjual,
+    rating,
+    ulasan,
+  };
+  try {
+    const req = await axios.post(`${url}/api/pembeli/inputulasan`, data);
+    if (req.data.code != 200) {
+      throw req.data.message;
+    }
+  } catch (error) {
+    console.log(error);
+    throw 'INTERNAL SERVER ERROR';
+  }
+};
