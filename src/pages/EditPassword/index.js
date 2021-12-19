@@ -1,6 +1,7 @@
 import React, {useState, createRef} from 'react';
 import Storage from '../../storage';
 import {updateProfile} from '../../webservice/user.service';
+import {getMyProfile} from '../../webservice/buyer.service';
 import {
   StyleSheet,
   Text,
@@ -17,11 +18,7 @@ const EditPassword = ({navigation}) => {
   const confirmInputRef = createRef();
 
   const doUpdate = async () => {
-    const currentData = await Storage.load({
-      key: 'user',
-      id: 'user',
-      autoSync: true,
-    });
+    const currentData = await (await getMyProfile()).body.data;
     currentData.password = password;
     currentData.confirm_password = confirmPassword;
     let updateData = {
@@ -42,11 +39,6 @@ const EditPassword = ({navigation}) => {
       if (res.body.code != 200) {
         throw Error(res.body.message);
       }
-      await Storage.save({
-        key: 'user',
-        id: 'user',
-        data: currentData,
-      });
       navigation.replace('MainApp');
     } catch (error) {
       alert(error.message);
