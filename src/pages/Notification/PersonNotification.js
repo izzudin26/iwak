@@ -118,7 +118,9 @@ const PersonNotification = ({navigation}) => {
                 'Deliver Done' ? (
                 <TouchableOpacity
                   onPress={async () => {
-                    navigation.navigate('InputFeedback');
+                    navigation.navigate('InputFeedback', {
+                      data: history,
+                    });
                   }}
                   style={{
                     flexDirection: 'row',
