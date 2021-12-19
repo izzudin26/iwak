@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -9,6 +9,8 @@ import {
   Image,
 } from 'react-native';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import {getFeed} from '../../webservice/seller.service';
+import {url} from '../../webservice/url';
 
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
@@ -16,20 +18,72 @@ const h = Dimensions.get('window').height;
 const Feedback = ({navigation}) => {
   const [feeds, setFeeds] = useState([
     {
-      productName: 'Oranda',
-      date: '12/12/2021',
-      reviewCounts: 2,
-      stars: 10,
-      starsAvg: 4.7,
-    },
-    {
-      productName: 'Obat Biru',
-      date: '12/12/2021',
-      reviewCounts: 2,
-      stars: 10,
-      starsAvg: 4.7,
+      star: 5,
+      image: null,
+      nota: 'PO-004/1221',
+      id_feedback: 8,
+      akun: {
+        id_account: 15,
+        fullname: 'upin',
+        email: 'upin@mail.com',
+        password: '123123',
+        confirm_password: '123123',
+        role: 'member',
+        phone: '',
+        address: '',
+        gender: 'P',
+        profile_picture: 'image/uploads/User/15/2021121639427014.jpeg',
+        profile_toko: null,
+        namatoko: null,
+        islogin: 'Y',
+        istoko: 'N',
+        star: 0,
+        nomor_rekening: 'null',
+        bank: 'null',
+        codeforgot: '',
+        created_at: '2021-12-14 03:02:47',
+        updated_at: '2021-12-19 04:58:04',
+        last_online: '2021-12-19 04:58:04',
+      },
+      feedback: 'Pengiriman sangat cepat mantap',
+      toko: {
+        id_account: 7,
+        fullname: 'Pak bambang',
+        email: 'Pakbambang@mail.com',
+        password: '123123',
+        confirm_password: '123123',
+        role: 'member',
+        phone: '08123456789',
+        address: 'Jl. Raya Veteran',
+        gender: 'P',
+        profile_picture: 'image/uploads/User/7/2021121639301696.jpeg',
+        profile_toko: 'image/uploads/Toko/7/2021121639398258.jpeg',
+        namatoko: 'BambangFish',
+        islogin: 'N',
+        istoko: 'N',
+        star: 0,
+        nomor_rekening: '320012200',
+        bank: 'BCA',
+        codeforgot: '',
+        created_at: '2021-12-12 16:32:51',
+        updated_at: '2021-12-19 04:57:23',
+        last_online: '2021-12-19 04:57:23',
+      },
     },
   ]);
+
+  useEffect(() => {
+    fetchFeed();
+  }, []);
+
+  const fetchFeed = async () => {
+    try {
+      const res = await getFeed();
+      setFeeds(res.body.data);
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   return (
     <View style={style.container}>
@@ -40,21 +94,40 @@ const Feedback = ({navigation}) => {
             key={i}
             activeOpacity={0.7}
             onPress={() => {
-              navigation.navigate('ProductFeedback');
+              navigation.navigate('ProductFeedback', {
+                data: feed,
+              });
             }}>
-            <View style={{flexDirection: 'row'}}>
-              <View style={style.containerImage}>
-                <Image
-                  source={require('../../assets/images/MainImage.png')}
-                  style={style.image}></Image>
-              </View>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              {feed.image != null && (
+                <View style={style.containerImage}>
+                  <Image
+                    source={feed.image != null && {uri: `${url}`}}
+                    style={style.image}></Image>
+                </View>
+              )}
               <View style={style.details}>
-                <Text style={{color: 'black'}}>{feed.date}</Text>
-                <Text style={style.productName}>{feed.productName}</Text>
+                <Text
+                  style={{color: 'black', fontSize: 20, fontWeight: 'bold'}}>
+                  {feed.nota}
+                </Text>
+                {/* <Text style={style.productName}>{feed.akun.fullname}</Text> */}
+              </View>
+              <View style={{flexDirection: 'row'}}>
+                {[1, 2, 3, 4, 5].map((n, i) => (
+                  <FontAwesome5Icon
+                    key={i}
+                    name="star"
+                    color={feed.star <= i ? '#707070' : '#EBC043'}
+                    solid
+                    style={{marginHorizontal: 3, alignSelf: 'center'}}
+                    size={20}></FontAwesome5Icon>
+                ))}
               </View>
             </View>
             <View style={{flexDirection: 'row'}}>
-              <View style={style.additionalInformation}>
+              {/* <View style={style.additionalInformation}>
                 <FontAwesome5Icon
                   name="star"
                   color="#EBC043"
@@ -96,7 +169,17 @@ const Feedback = ({navigation}) => {
                   }}>
                   ({feed.reviewCounts})
                 </Text>
-              </View>
+              </View> */}
+              {/* <Text
+                style={{
+                  color: 'black',
+                  fontSize: 15,
+                  marginTop: 5,
+                  marginHorizontal: 15,
+                  flexWrap: 'wrap',
+                }}>
+                {feed.feedback}
+              </Text> */}
             </View>
           </TouchableOpacity>
         ))}

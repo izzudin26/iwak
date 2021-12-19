@@ -14,9 +14,57 @@ const h = Dimensions.get('window').height;
 
 const ProductFeedback = () => {
   const [feedback, setFeedback] = useState({
-    rate: 5.0,
-    avgRate: 10.0,
-    message: '100% Buyer Happy with this item',
+    star: 5,
+    image: null,
+    nota: 'PO-004/1221',
+    id_feedback: 8,
+    akun: {
+      id_account: 15,
+      fullname: 'upin',
+      email: 'upin@mail.com',
+      password: '123123',
+      confirm_password: '123123',
+      role: 'member',
+      phone: '',
+      address: '',
+      gender: 'P',
+      profile_picture: 'image/uploads/User/15/2021121639427014.jpeg',
+      profile_toko: null,
+      namatoko: null,
+      islogin: 'Y',
+      istoko: 'N',
+      star: 0,
+      nomor_rekening: 'null',
+      bank: 'null',
+      codeforgot: '',
+      created_at: '2021-12-14 03:02:47',
+      updated_at: '2021-12-19 04:58:04',
+      last_online: '2021-12-19 04:58:04',
+    },
+    feedback: 'Pengiriman sangat cepat mantap',
+    toko: {
+      id_account: 7,
+      fullname: 'Pak bambang',
+      email: 'Pakbambang@mail.com',
+      password: '123123',
+      confirm_password: '123123',
+      role: 'member',
+      phone: '08123456789',
+      address: 'Jl. Raya Veteran',
+      gender: 'P',
+      profile_picture: 'image/uploads/User/7/2021121639301696.jpeg',
+      profile_toko: 'image/uploads/Toko/7/2021121639398258.jpeg',
+      namatoko: 'BambangFish',
+      islogin: 'N',
+      istoko: 'N',
+      star: 0,
+      nomor_rekening: '320012200',
+      bank: 'BCA',
+      codeforgot: '',
+      created_at: '2021-12-12 16:32:51',
+      updated_at: '2021-12-19 04:57:23',
+      last_online: '2021-12-19 04:57:23',
+    },
   });
 
   const [reviews, setReviews] = useState([
@@ -72,30 +120,34 @@ const ProductFeedback = () => {
       ));
 
   const Content = () => {
-    return reviews.map((review, i) => (
+    return (
       <View style={css.contentContainer}>
         <View style={{flexDirection: 'row'}}>
-          {stars(review.rate)}
-          <Text style={{color: 'black', marginLeft: 10}}>{review.date}</Text>
+          {stars(feedback.star)}
+          {/* <Text style={{color: 'black', marginLeft: 10}}>{review.date}</Text> */}
         </View>
-        <Text style={{color: 'black', fontSize: 15, fontWeight: 'bold'}}>
-          {review.name}
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 15,
+            marginVertical: 5,
+            fontWeight: 'bold',
+          }}>
+          {feedback.akun.fullname}
         </Text>
         <View style={css.descriptionBox}>
           <Text style={{color: 'black', fontSize: 17}}>
-            {review.description}
+            {feedback.feedback}
           </Text>
         </View>
       </View>
-    ));
+    );
   };
 
   return (
     <View>
-      <Header />
-      <ScrollView>
-        <Content />
-      </ScrollView>
+      {/* <Header /> */}
+      <Content />
     </View>
   );
 };
@@ -139,6 +191,7 @@ const css = StyleSheet.create({
     marginLeft: 10,
   },
   contentContainer: {
+    marginTop: 20,
     flexDirection: 'column',
     marginHorizontal: 25,
     marginVertical: 5,
