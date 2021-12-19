@@ -150,21 +150,21 @@ const ProductListAuction = ({
           alignItems: 'flex-start',
           justifyContent: 'space-between',
         }}>
-        <Text
+        {/* <Text
           style={{
             fontSize: price?.toString().length > 7 ? 10 : 12,
             color: 'black',
             marginLeft: 10,
           }}>
           Rp. {price}
-        </Text>
-        <FontAwesome5
+        </Text> */}
+        {/* <FontAwesome5
           onPress={triggerWishlist}
           name="gratipay"
           size={30}
           color={isLikeExist ? 'red' : 'pink'}
           solid={true}
-        />
+        /> */}
       </View>
     </TouchableOpacity>
   );
