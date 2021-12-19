@@ -8,8 +8,8 @@ const BottomNavigator = ({state, descriptors, navigation}) => {
   useEffect(() => {
     const int = setInterval(() => {
       getChatCount();
-      return () => clearInterval(int);
     }, 20000);
+    return () => clearInterval(int);
   }, []);
 
   const getChatCount = async () => {
