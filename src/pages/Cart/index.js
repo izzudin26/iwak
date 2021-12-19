@@ -187,7 +187,7 @@ const css = StyleSheet.create({
     justifyContent: 'center',
   },
   containerCart: {
-    height: h * 0.7,
+    height: h * 0.75,
     padding: 20,
     marginBottom: 20,
   },

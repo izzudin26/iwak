@@ -33,7 +33,6 @@ const Home = () => {
               opacity: 0.8,
             }}
           />
-          <Text style={styles.teksSatu}>{data.length}</Text>
           <Text style={styles.teksSatu}>SPECIALIST MARKET FISH AND ITEM</Text>
           <Text style={styles.teksAtas}> ORANDA </Text>
           <Text style={styles.teksTengah}> PANCAWARNA </Text>
