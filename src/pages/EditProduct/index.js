@@ -36,19 +36,16 @@ function EditProduct({navigation, route}) {
   const fd = new FormData();
 
   useEffect(() => {
-    if (doFetch) {
-      getCategories().then(res => {
-        const {data} = res.body;
-        setCategories(data);
-        data.forEach((c, i) => {
-          if (c.id_category == product.category) {
-            setIndexCategory(i);
-          }
-        });
+    getCategories().then(res => {
+      const {data} = res.body;
+      setCategories(data);
+      data.forEach((c, i) => {
+        if (c.id_category == product.category) {
+          setIndexCategory(i);
+        }
       });
-      setFetch(false);
-    }
-  });
+    });
+  }, []);
 
   const handlerSave = () => {
     fd.append('id', product.id);
@@ -102,6 +99,7 @@ function EditProduct({navigation, route}) {
       mediaType: 'photo',
       cropping: true,
       forceJpg: true,
+      compressImageQuality: 0.7,
     })
       .then(res => {
         if (res.width != res.height) {
