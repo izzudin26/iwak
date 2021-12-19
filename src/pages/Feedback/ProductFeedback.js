@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -8,80 +8,39 @@ import {
   Dimensions,
 } from 'react-native';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import {getProfile} from '../../webservice/buyer.service';
 
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
 
-const ProductFeedback = () => {
-  const [feedback, setFeedback] = useState({
-    star: 5,
-    image: null,
-    nota: 'PO-004/1221',
-    id_feedback: 8,
-    akun: {
-      id_account: 15,
-      fullname: 'upin',
-      email: 'upin@mail.com',
-      password: '123123',
-      confirm_password: '123123',
-      role: 'member',
-      phone: '',
-      address: '',
-      gender: 'P',
-      profile_picture: 'image/uploads/User/15/2021121639427014.jpeg',
-      profile_toko: null,
-      namatoko: null,
-      islogin: 'Y',
-      istoko: 'N',
-      star: 0,
-      nomor_rekening: 'null',
-      bank: 'null',
-      codeforgot: '',
-      created_at: '2021-12-14 03:02:47',
-      updated_at: '2021-12-19 04:58:04',
-      last_online: '2021-12-19 04:58:04',
-    },
-    feedback: 'Pengiriman sangat cepat mantap',
-    toko: {
-      id_account: 7,
-      fullname: 'Pak bambang',
-      email: 'Pakbambang@mail.com',
-      password: '123123',
-      confirm_password: '123123',
-      role: 'member',
-      phone: '08123456789',
-      address: 'Jl. Raya Veteran',
-      gender: 'P',
-      profile_picture: 'image/uploads/User/7/2021121639301696.jpeg',
-      profile_toko: 'image/uploads/Toko/7/2021121639398258.jpeg',
-      namatoko: 'BambangFish',
-      islogin: 'N',
-      istoko: 'N',
-      star: 0,
-      nomor_rekening: '320012200',
-      bank: 'BCA',
-      codeforgot: '',
-      created_at: '2021-12-12 16:32:51',
-      updated_at: '2021-12-19 04:57:23',
-      last_online: '2021-12-19 04:57:23',
-    },
-  });
+const ProductFeedback = ({route}) => {
+  const {feedback} = route.params;
+  const [totalRate, setTotalRate] = useState(null);
+  const [happyCount, setHappy] = useState(null);
+  const [feedbacksUser, setFeedbacks] = useState([]);
 
-  const [reviews, setReviews] = useState([
-    {
-      rate: 5,
-      date: '10/12/2021',
-      name: 'Nama Pembeli',
-      description:
-        'Kondisi ikan sehat sempurna perfect dan seperti di deskpripsi (emotapi) (emotapi)',
-    },
-    {
-      rate: 6,
-      date: '10/12/2021',
-      name: 'Nama Pembeli',
-      description: 'Kondisi Ikan sehat dan sempurna mantap mantap penjualn',
-    },
-  ]);
+  useEffect(() => {
+    joinFeedbackUser();
+  }, []);
+
+  const joinFeedbackUser = async () => {
+    let total = 0;
+    let happy = 0;
+    const newFeeddbacks = await Promise.all(
+      feedback.feedback.map(async (f, i) => {
+        const userName = await (
+          await getProfile({userid: f.id_user})
+        ).body.data.fullname;
+        f.username = userName;
+        if (f.star > 2) happy += 1;
+        total += f.star;
+        return f;
+      }),
+    );
+    setHappy(happy);
+    setTotalRate(total);
+    setFeedbacks(await newFeeddbacks);
+  };
 
   const Header = () => (
     <View style={css.header}>
@@ -91,16 +50,22 @@ const ProductFeedback = () => {
           color="#EBC043"
           solid
           size={20}></FontAwesome5Icon>
-        <Text style={css.textRate}>{feedback.avgRate}</Text>
-        <Text style={{color: 'black'}}>/{feedback.rate}</Text>
+        <Text style={css.textRate}>
+          {totalRate != null && parseFloat(totalRate / feedbacksUser.length)}
+        </Text>
+        <Text style={{color: 'black'}}>/5.0</Text>
       </View>
       <View style={css.contentDetail}>
         <Text style={{fontWeight: 'bold', color: 'black'}}>
-          {feedback.message}
+          {happyCount != null && (happyCount / feedbacksUser.length) * 100}%
+          Buyer Happy with this item
         </Text>
         <View style={{flexDirection: 'row'}}>
-          <Text style={{color: 'black'}}>{feedback.rate} rating - </Text>
-          <Text style={{color: 'black'}}>{reviews.length} review </Text>
+          <Text style={{color: 'black'}}>
+            {totalRate != null && parseFloat(totalRate / feedbacksUser.length)}{' '}
+            rating -
+          </Text>
+          <Text style={{color: 'black'}}>{feedbacksUser.length} review </Text>
         </View>
       </View>
     </View>
@@ -119,11 +84,24 @@ const ProductFeedback = () => {
         />
       ));
 
-  const Content = () => {
+  const unstars = n =>
+    Array(n)
+      .fill(0)
+      .map(() => (
+        <FontAwesome5Icon
+          onPress={() => {}}
+          name="star"
+          size={15}
+          color="#f1c40f"
+        />
+      ));
+
+  const Content = ({star, id_user, feedback_description, username}) => {
     return (
       <View style={css.contentContainer}>
         <View style={{flexDirection: 'row'}}>
-          {stars(feedback.star)}
+          {stars(star)}
+          {unstars(5 - star)}
           {/* <Text style={{color: 'black', marginLeft: 10}}>{review.date}</Text> */}
         </View>
         <Text
@@ -133,11 +111,11 @@ const ProductFeedback = () => {
             marginVertical: 5,
             fontWeight: 'bold',
           }}>
-          {feedback.akun.fullname}
+          {username}
         </Text>
         <View style={css.descriptionBox}>
           <Text style={{color: 'black', fontSize: 17}}>
-            {feedback.feedback}
+            {feedback_description}
           </Text>
         </View>
       </View>
@@ -146,8 +124,18 @@ const ProductFeedback = () => {
 
   return (
     <View>
-      {/* <Header /> */}
-      <Content />
+      <Header />
+      <ScrollView>
+        {feedback.feedback.map((f, i) => (
+          <Content
+            key={i}
+            id_user={f.id_user}
+            feedback_description={f.feedback}
+            star={f.star}
+            username={f.username}
+          />
+        ))}
+      </ScrollView>
     </View>
   );
 };
@@ -175,7 +163,6 @@ const css = StyleSheet.create({
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
   },
   contentDetail: {
     flexDirection: 'column',

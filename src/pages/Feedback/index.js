@@ -18,57 +18,80 @@ const h = Dimensions.get('window').height;
 const Feedback = ({navigation}) => {
   const [feeds, setFeeds] = useState([
     {
-      star: 5,
-      image: null,
-      nota: 'PO-004/1221',
-      id_feedback: 8,
-      akun: {
-        id_account: 15,
-        fullname: 'upin',
-        email: 'upin@mail.com',
-        password: '123123',
-        confirm_password: '123123',
-        role: 'member',
-        phone: '',
-        address: '',
-        gender: 'P',
-        profile_picture: 'image/uploads/User/15/2021121639427014.jpeg',
-        profile_toko: null,
-        namatoko: null,
-        islogin: 'Y',
-        istoko: 'N',
-        star: 0,
-        nomor_rekening: 'null',
-        bank: 'null',
-        codeforgot: '',
-        created_at: '2021-12-14 03:02:47',
-        updated_at: '2021-12-19 04:58:04',
-        last_online: '2021-12-19 04:58:04',
-      },
-      feedback: 'Pengiriman sangat cepat mantap',
-      toko: {
-        id_account: 7,
-        fullname: 'Pak bambang',
-        email: 'Pakbambang@mail.com',
-        password: '123123',
-        confirm_password: '123123',
-        role: 'member',
-        phone: '08123456789',
-        address: 'Jl. Raya Veteran',
-        gender: 'P',
-        profile_picture: 'image/uploads/User/7/2021121639301696.jpeg',
-        profile_toko: 'image/uploads/Toko/7/2021121639398258.jpeg',
-        namatoko: 'BambangFish',
-        islogin: 'N',
-        istoko: 'N',
-        star: 0,
-        nomor_rekening: '320012200',
-        bank: 'BCA',
-        codeforgot: '',
-        created_at: '2021-12-12 16:32:51',
-        updated_at: '2021-12-19 04:57:23',
-        last_online: '2021-12-19 04:57:23',
-      },
+      id_imageproduk: 75,
+      id_image: 1,
+      id_produk: 5,
+      image: 'image/uploads/Product/5/1/2021121639398584.jpg',
+      id_account: 7,
+      name: 'Ikan Cupang',
+      id_category: '1',
+      price: 20000,
+      description: 'Ikan cupang menarik cocok untuk aquarium',
+      stock: 18,
+      sold: 2,
+      url_segment: 'ikan-cupang',
+      diskon: 0,
+      isdiskon: 'N',
+      star: '5.0000',
+      created_at: '2021-12-13 19:29:44',
+      feedback: [
+        {
+          id_detail: 5,
+          id_transaction: 4,
+          id_produk: 5,
+          price: 20000,
+          qty: 2,
+          id_feedback: 9,
+          id_user: 15,
+          id_toko: 7,
+          star: 5,
+          image: null,
+          feedback: 'Pengiriman sangat cepat mantap',
+          created_at: '2021-12-19 08:19:22',
+        },
+        {
+          id_detail: 5,
+          id_transaction: 4,
+          id_produk: 5,
+          price: 20000,
+          qty: 2,
+          id_feedback: 8,
+          id_user: 15,
+          id_toko: 7,
+          star: 5,
+          image: null,
+          feedback: 'Pengiriman sangat cepat mantap',
+          created_at: '2021-12-19 08:04:35',
+        },
+        {
+          id_detail: 5,
+          id_transaction: 4,
+          id_produk: 5,
+          price: 20000,
+          qty: 2,
+          id_feedback: 7,
+          id_user: 15,
+          id_toko: 7,
+          star: 5,
+          image: null,
+          feedback: 'Mantap Pengiriman sangat cepat',
+          created_at: '2021-12-19 08:02:05',
+        },
+        {
+          id_detail: 5,
+          id_transaction: 4,
+          id_produk: 5,
+          price: 20000,
+          qty: 2,
+          id_feedback: 6,
+          id_user: 15,
+          id_toko: 7,
+          star: 5,
+          image: null,
+          feedback: 'Mantap Pengiriman sangat cepat',
+          created_at: '2021-12-19 08:01:46',
+        },
+      ],
     },
   ]);
 
@@ -85,6 +108,14 @@ const Feedback = ({navigation}) => {
     }
   };
 
+  const countTotalStar = feedback => {
+    let totalStar = 0;
+    feedback.forEach((f, i) => {
+      totalStar += f.star;
+    });
+    return totalStar;
+  };
+
   return (
     <View style={style.container}>
       <ScrollView>
@@ -95,39 +126,27 @@ const Feedback = ({navigation}) => {
             activeOpacity={0.7}
             onPress={() => {
               navigation.navigate('ProductFeedback', {
-                data: feed,
+                feedback: feed,
               });
             }}>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
               {feed.image != null && (
                 <View style={style.containerImage}>
                   <Image
-                    source={feed.image != null && {uri: `${url}`}}
+                    source={feed.image != null && {uri: `${url}/${feed.image}`}}
                     style={style.image}></Image>
                 </View>
               )}
               <View style={style.details}>
                 <Text
                   style={{color: 'black', fontSize: 20, fontWeight: 'bold'}}>
-                  {feed.nota}
+                  {feed.name}
                 </Text>
                 {/* <Text style={style.productName}>{feed.akun.fullname}</Text> */}
               </View>
-              <View style={{flexDirection: 'row'}}>
-                {[1, 2, 3, 4, 5].map((n, i) => (
-                  <FontAwesome5Icon
-                    key={i}
-                    name="star"
-                    color={feed.star <= i ? '#707070' : '#EBC043'}
-                    solid
-                    style={{marginHorizontal: 3, alignSelf: 'center'}}
-                    size={20}></FontAwesome5Icon>
-                ))}
-              </View>
             </View>
             <View style={{flexDirection: 'row'}}>
-              {/* <View style={style.additionalInformation}>
+              <View style={style.additionalInformation}>
                 <FontAwesome5Icon
                   name="star"
                   color="#EBC043"
@@ -140,7 +159,8 @@ const Feedback = ({navigation}) => {
                     marginLeft: 5,
                     fontWeight: 'bold',
                   }}>
-                  {feed.starsAvg}
+                  {feed.star != null &&
+                    countTotalStar(feed.feedback) / feed.feedback.length}
                 </Text>
                 <Text
                   style={{
@@ -148,7 +168,7 @@ const Feedback = ({navigation}) => {
                     fontSize: 15,
                     marginLeft: 20,
                   }}>
-                  ({feed.stars})
+                  ({countTotalStar(feed.feedback)})
                 </Text>
               </View>
               <View style={style.additionalInformation}>
@@ -159,27 +179,15 @@ const Feedback = ({navigation}) => {
                     marginLeft: 5,
                     fontWeight: 'bold',
                   }}>
-                  Review
+                  Review ({feed.feedback.length})
                 </Text>
                 <Text
                   style={{
                     color: 'black',
                     fontSize: 15,
                     marginLeft: 20,
-                  }}>
-                  ({feed.reviewCounts})
-                </Text>
-              </View> */}
-              {/* <Text
-                style={{
-                  color: 'black',
-                  fontSize: 15,
-                  marginTop: 5,
-                  marginHorizontal: 15,
-                  flexWrap: 'wrap',
-                }}>
-                {feed.feedback}
-              </Text> */}
+                  }}></Text>
+              </View>
             </View>
           </TouchableOpacity>
         ))}
@@ -227,8 +235,9 @@ const style = StyleSheet.create({
     elevation: 6,
   },
   image: {
-    width: w * 0.12,
-    height: w * 0.12,
+    width: w * 0.15,
+    height: w * 0.15,
+    borderRadius: 10,
   },
   productName: {
     fontWeight: 'bold',
