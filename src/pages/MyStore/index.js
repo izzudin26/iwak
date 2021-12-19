@@ -20,6 +20,7 @@ const MyStore = ({navigation}) => {
   const [toko, setToko] = useState('');
   const [location, setLocation] = useState('');
   const [omset, setOmset] = useState(0);
+  const [resOmset, setResOmset] = useState(null);
   const [fetch, setIsFetch] = useState(true);
 
   useEffect(() => {
@@ -29,7 +30,7 @@ const MyStore = ({navigation}) => {
       setImage(`${url}/${res.body.data.profile_toko}`);
     });
     getReport().then(res => {
-      console.log(res.body);
+      setResOmset(res.body);
       setOmset(res.body.omset);
     });
     setIsFetch(false);
@@ -69,18 +70,24 @@ const MyStore = ({navigation}) => {
               </Text>
             </View>
           </View>
-          <View style={styles.omsetSection}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('Report', {
+                data: resOmset,
+              })
+            }
+            style={styles.omsetSection}>
             <Text
               style={{
-                fontSize: 13,
+                fontSize: 15,
                 color: 'white',
                 textAlign: 'left',
               }}>
-              Omset
+              Turnover
             </Text>
             <Text
               style={{
-                fontSize: 13,
+                fontSize: omset.toString().length > 6 ? 10 : 15,
                 fontWeight: 'bold',
                 color: 'white',
                 textAlign: 'left',
@@ -88,7 +95,7 @@ const MyStore = ({navigation}) => {
               }}>
               Rp. {omset}
             </Text>
-          </View>
+          </TouchableOpacity>
         </View>
         <View style={styles.containerMenu}>
           <Text
