@@ -130,3 +130,11 @@ export const getProfile = async () => {
     throw res.data.message;
   }
 };
+
+export const chatCount = async () => {
+  const idAccount = await getCurrentIdAccount();
+  const res = await axios.post(`${url}/api/chat/countchat`, {
+    id_account: idAccount,
+  });
+  return res.data;
+};
