@@ -62,6 +62,7 @@ const Account = ({navigation}) => {
       mediaType: 'photo',
       cropping: true,
       forceJpg: true,
+      compressImageQuality: 0.7,
     }).then(async res => {
       handleUpload(res);
     });
@@ -158,7 +159,7 @@ const Account = ({navigation}) => {
             <Text style={{fontSize: 18, color: 'black'}}>Email Address</Text>
             <Text style={{color: 'black', fontSize: 18}}>{email}</Text>
           </View>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               borderRadius: 50,
               width: 30,
@@ -169,7 +170,7 @@ const Account = ({navigation}) => {
             }}
             onPress={() => navigation.navigate('EditEmail')}>
             <FontAwesome5 name="pen" solid size={12} color="#fff" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View style={styles.containerData}>
           <View style={{flexDirection: 'column'}}>

@@ -148,7 +148,10 @@ export const updateToko = form => {
           'content-type': 'multipart/form-data',
         },
       })
-      .then(res => resolve({status: res.status, body: res.data}))
+      .then(res => {
+        console.log(res.data);
+        resolve({status: res.status, body: res.data});
+      })
       .catch(err => reject(err));
   });
 };

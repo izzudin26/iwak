@@ -11,7 +11,7 @@ import {
 
 const EditPhone = ({navigation}) => {
   const [userState, setUserState] = useState(null);
-  const [userdata, setUserData] = useState({})
+  const [userdata, setUserData] = useState({});
   useEffect(() => {
     getData();
   }, []);
@@ -19,6 +19,7 @@ const EditPhone = ({navigation}) => {
   const getData = async () => {
     try {
       const res = await getProfile();
+      setUserState(res.body.data.phone);
       setUserData(res.body.data);
     } catch (error) {
       console.log(error);

@@ -19,6 +19,7 @@ const EditAddress = ({navigation}) => {
   const getData = async () => {
     try {
       const res = await getProfile();
+      setUserState(res.body.data.address);
       setUserData(res.body.data);
     } catch (error) {
       console.log(error);

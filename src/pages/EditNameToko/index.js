@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Storage from '../../storage';
 import {updateToko} from '../../webservice/seller.service';
+import {getMyProfile} from '../../webservice/buyer.service';
 import {
   StyleSheet,
   Text,
@@ -11,30 +12,22 @@ import {
 
 const EditName = ({navigation}) => {
   const [name, setName] = useState(null);
-  const [isFetch, setIsFetch] = useState(true);
+  const [data, setData] = useState({});
   useEffect(() => {
-    if (name == null)
-      Storage.load({
-        key: 'user',
-        id: 'user',
-        autoSync: true,
-      }).then(data => {
-        setName(data.namatoko);
-        setIsFetch(false);
-      });
-  }, [isFetch]);
+    getMyProfile().then(data => {
+      setName(data.body.data.namatoko);
+      setData(data.body.data);
+    });
+  }, []);
 
   const handleUpload = async () => {
     let form = new FormData();
-    let data = await Storage.load({key: 'user', id: 'user'});
     form.append('id_account', data.id_account);
     form.append('namatoko', name);
     form.append('nomor_rekening', data.nomor_rekening);
     form.append('istoko', data.istoko);
     form.append('bank', data.bank);
-    const res = await updateToko(form);
-    await Storage.remove({key: 'user', id: 'user'});
-    await Storage.save({key: 'user', id: 'user', data: res.body.data});
+    await updateToko(form);
     navigation.replace('MainApp');
   };
 
@@ -111,7 +104,6 @@ const styles = StyleSheet.create({
   inputStyle: {
     color: 'black',
     backgroundColor: '#fff',
-    color: 'black',
     width: 250,
     height: 50,
     paddingLeft: 20,

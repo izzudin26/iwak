@@ -118,7 +118,7 @@ const SettingStore = ({navigation}) => {
             <Text style={{fontSize: 18, color: 'black'}}>Name</Text>
             <Text style={{color: 'black', fontSize: 18}}>{toko}</Text>
           </View>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               borderRadius: 50,
               width: 30,
@@ -129,7 +129,7 @@ const SettingStore = ({navigation}) => {
             }}
             onPress={() => navigation.navigate('EditNameToko')}>
             <FontAwesome5 name="pen" solid size={12} color="#fff" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View style={styles.containerData}>
           <View style={{flexDirection: 'column'}}>
@@ -145,7 +145,7 @@ const SettingStore = ({navigation}) => {
               justifyContent: 'center',
               backgroundColor: '#043C88',
             }}
-            onPress={() => navigation.navigate('EditEmail')}>
+            onPress={() => navigation.navigate('EditAddress')}>
             <FontAwesome5 name="pen" solid size={12} color="#fff" />
           </TouchableOpacity>
         </View>

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import Storage from '../../storage';
 import {updateProfile} from '../../webservice/user.service';
+import {getMyProfile} from '../../webservice/buyer.service';
 import {
   StyleSheet,
   Text,
@@ -12,23 +12,13 @@ import {
 const EditEmail = ({navigation}) => {
   const [userState, setUserState] = useState(null);
   useEffect(() => {
-    if (userState == null) {
-      Storage.load({
-        key: 'user',
-        id: 'user',
-        autoSync: true,
-      }).then(data => {
-        setUserState(data.email);
-      });
-    }
-  });
+    getMyProfile().then(data => {
+      setUserState(data.body.data.email);
+    });
+  }, []);
 
   const doUpdate = async () => {
-    const currentData = await Storage.load({
-      key: 'user',
-      id: 'user',
-      autoSync: true,
-    });
+    const currentData = await (await getMyProfile()).body.data;
     currentData.email = userState;
     let updateData = {
       id_account: currentData.id_account,
@@ -41,16 +31,13 @@ const EditEmail = ({navigation}) => {
       norek: currentData.nomor_rekening,
       bank: currentData.bank,
     };
+    console.log(updateData);
+
     try {
       const res = await updateProfile(updateData, 'json');
       if (res.body.code != 200) {
         throw Error(res.body.message);
       }
-      await Storage.save({
-        key: 'user',
-        id: 'user',
-        data: currentData,
-      });
       navigation.replace('MainApp');
     } catch (error) {
       alert(error.message);

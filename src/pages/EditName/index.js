@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Storage from '../../storage';
 import {updateProfile} from '../../webservice/user.service';
+import {getMyProfile} from '../../webservice/buyer.service';
 import {
   StyleSheet,
   Text,
@@ -13,21 +14,13 @@ const EditName = ({navigation}) => {
   const [userState, setUserState] = useState(null);
   useEffect(() => {
     if (userState == null)
-      Storage.load({
-        key: 'user',
-        id: 'user',
-        autoSync: true,
-      }).then(data => {
-        setUserState(data.fullname);
+      getMyProfile().then(data => {
+        setUserState(data.body.data.fullname);
       });
-  });
+  }, []);
 
   const doUpdate = async () => {
-    const currentData = await Storage.load({
-      key: 'user',
-      id: 'user',
-      autoSync: true,
-    });
+    const currentData = await (await getMyProfile()).body.data;
     currentData.fullname = userState;
     let updateData = {
       id_account: currentData.id_account,
@@ -44,11 +37,6 @@ const EditName = ({navigation}) => {
       if (res.body.code != 200) {
         throw Error(res.body.message);
       }
-      await Storage.save({
-        key: 'user',
-        id: 'user',
-        data: currentData,
-      });
       navigation.replace('MainApp');
     } catch (error) {
       alert(error.message);
